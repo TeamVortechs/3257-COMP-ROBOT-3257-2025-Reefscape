@@ -5,15 +5,13 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.KDoublePreferences.PWrist;
 import org.littletonrobotics.junction.AutoLogOutput;
 
 public class WristIOTalonFX implements WristIO {
   private TalonFX arm;
-  private SparkMax rollers;
+  private TalonFX rollers;
   private CANrange canRange;
 
   @AutoLogOutput private double angle;
@@ -21,7 +19,7 @@ public class WristIOTalonFX implements WristIO {
   public WristIOTalonFX(int armID, int rollerID, String canbusName, int CanrangeID) {
 
     this.arm = new TalonFX(armID, canbusName);
-    this.rollers = new SparkMax(rollerID, MotorType.kBrushless);
+    this.rollers = new TalonFX(rollerID, canbusName);
     this.canRange = new CANrange(CanrangeID);
 
     TalonFXConfiguration talonFXConfigs = new TalonFXConfiguration();
@@ -85,8 +83,8 @@ public class WristIOTalonFX implements WristIO {
 
     inputs.canRangeDistance = canRange.getDistance().getValueAsDouble();
 
-    inputs.rollersCurrent = rollers.getOutputCurrent();
-    inputs.rollersEncoder = rollers.getEncoder().getPosition();
+    inputs.rollersCurrent = rollers.getStatorCurrent().getValueAsDouble();
+    inputs.rollersEncoder = rollers.getPosition().getValueAsDouble();
     inputs.rollersSpeed = rollers.get();
   }
 
