@@ -19,6 +19,10 @@ public class ScoringCommands {
         return new SetElevatorPresetCommand(elevator, wrist, Constants.Elevator.STAGE_3_LEVEL)
             .alongWith(new SetWristTargetAngleCommand(wrist, WristAngle.STAGE2_ANGLE.getAngle()));
 
+      case 3:
+        return new SetElevatorPresetCommand(elevator, wrist, Constants.Elevator.STAGE_4_LEVEL)
+            .alongWith(new SetWristTargetAngleCommand(wrist, WristAngle.STAGE2_ANGLE.getAngle()));
+
       default:
         return null;
     }

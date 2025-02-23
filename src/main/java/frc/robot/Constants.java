@@ -42,13 +42,13 @@ public final class Constants {
     public static final int MOTOR_RIGHT_ID = 22;
     public static final String CANBUS = "rio";
 
-    public static final double MAX_HEIGHT = 36;
+    public static final double MAX_HEIGHT = 37.072;
     public static final double MIN_HEIGHT = 0;
     public static final double INTAKE_HEIGHT = 0;
     // public static final double STAGE_1_LEVEL = 0; // currently unimplemented
-    public static final double STAGE_2_LEVEL = 4.780;
-    public static final double STAGE_3_LEVEL = 16.343;
-    public static final double STAGE_4_LEVEL = 35.75; // currently impossible to achieve
+    public static final double STAGE_2_LEVEL = 6.638;
+    public static final double STAGE_3_LEVEL = 18.436;
+    public static final double STAGE_4_LEVEL = 36.435; // currently impossible to achieve
   }
 
   // constants used for the arm/wrist (naming inconsistency)
@@ -58,7 +58,7 @@ public final class Constants {
     public static final int CANRANGE_ID = 60;
     public static final String CANBUS = "rio";
 
-    public static final double WRIST_STAGE_2_ANGLE = 2.211;
+    public static final double WRIST_STAGE_2_ANGLE = 2.251;
     // public static final double WRIST_STAGE_4_ANGLE = 0; // currently impossible to achieve
     public static final double WRIST_HIGHEST_ANGLE = 2.56;
   }

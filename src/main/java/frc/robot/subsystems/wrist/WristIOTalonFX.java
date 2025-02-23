@@ -1,9 +1,14 @@
 package frc.robot.subsystems.wrist;
 
+import static edu.wpi.first.units.Units.Amps;
+
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.KDoublePreferences.PWrist;
@@ -22,9 +27,20 @@ public class WristIOTalonFX implements WristIO {
     this.rollers = new TalonFX(rollerID, canbusName);
     this.canRange = new CANrange(CanrangeID);
 
-    TalonFXConfiguration talonFXConfigs = new TalonFXConfiguration();
+    TalonFXConfiguration armMotorConfigs =
+        new TalonFXConfiguration()
+            .withCurrentLimits(
+                new CurrentLimitsConfigs()
+                    // Swerve azimuth does not require much torque output, so we can set a
+                    // relatively
+                    // low
+                    // stator current limit to help avoid brownouts without impacting performance.
+                    .withStatorCurrentLimit(Amps.of(40))
+                    .withStatorCurrentLimitEnable(true))
+            .withMotorOutput(
+                new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive));
 
-    var slot0Configs = talonFXConfigs.Slot0;
+    var slot0Configs = armMotorConfigs.Slot0;
     slot0Configs.kS = PWrist.kS.getValue(); // Add 0.25 V output to overcome static friction
     slot0Configs.kV = PWrist.kV.getValue(); // A velocity target of 1 rps results in 0.12 V output
     slot0Configs.kA = PWrist.kA.getValue(); // An acceleration of 1 rps/s requires 0.01 V output
@@ -33,15 +49,30 @@ public class WristIOTalonFX implements WristIO {
     slot0Configs.kI = PWrist.kI.getValue(); // no output for integrated error
     slot0Configs.kD = PWrist.kD.getValue(); // A velocity error of 1 rps results in 0.1 V output
 
-    var motionMagicConfigs = talonFXConfigs.MotionMagic;
+    var motionMagicConfigs = armMotorConfigs.MotionMagic;
     motionMagicConfigs.MotionMagicCruiseVelocity = PWrist.speedLimit.getValue();
     motionMagicConfigs.MotionMagicAcceleration = PWrist.accelerationLimit.getValue();
     motionMagicConfigs.MotionMagicJerk = PWrist.jerkLimit.getValue();
 
-    arm.getConfigurator().apply(talonFXConfigs);
+    arm.getConfigurator().apply(armMotorConfigs);
 
     // Set motor to Brake mode by default.
     arm.setNeutralMode(NeutralModeValue.Brake);
+
+    TalonFXConfiguration rollerMotorConfigs =
+        new TalonFXConfiguration()
+            .withCurrentLimits(
+                new CurrentLimitsConfigs()
+                    // Swerve azimuth does not require much torque output, so we can set a
+                    // relatively
+                    // low
+                    // stator current limit to help avoid brownouts without impacting performance.
+                    .withStatorCurrentLimit(Amps.of(40))
+                    .withStatorCurrentLimitEnable(true));
+    rollers.getConfigurator().apply(rollerMotorConfigs);
+
+    // Set motor to Brake mode by default.
+    rollers.setNeutralMode(NeutralModeValue.Brake);
   }
 
   // sets the PID target angle

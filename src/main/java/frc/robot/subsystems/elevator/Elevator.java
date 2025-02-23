@@ -31,7 +31,7 @@ public class Elevator extends SubsystemBase {
 
   private Wrist wrist;
 
-  @AutoLogOutput public boolean wristAngleValid = true;
+  // @AutoLogOutput public boolean wristAngleValid = true;
 
   /**
    * Constructor for the Elevator subsystem.
@@ -160,6 +160,10 @@ public class Elevator extends SubsystemBase {
   // gest the current height of the elevator motor
   public double getCurrentHeight() {
     return currentHeight;
+  }
+
+  public double getTargetHeight() {
+    return targetHeight;
   }
 
   // returns wether or not the elevaotr is on target

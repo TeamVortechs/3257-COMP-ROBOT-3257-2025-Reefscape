@@ -235,6 +235,9 @@ public class RobotContainer {
     // moves elevator and wrist to the scoring positions level 2 after the right button is tapped
     controller.leftBumper().whileTrue(ScoringCommands.prepForScoring(2, wrist, elevator));
 
+    // moves elevator and wrist to scoring position for level 3
+    controller.rightBumper().whileTrue(ScoringCommands.prepForScoring(3, wrist, elevator));
+
     // intakes then vibrates controlller when in position and has coral
     // y shoots coral out
     controller.a().whileTrue(new SetWristRollerSpeedCommand(wrist, -0.5));
@@ -262,11 +265,13 @@ public class RobotContainer {
     controller
         .rightTrigger()
         .whileTrue(
-            new InstantCommand(() -> elevator.setTargetHeight(Constants.Elevator.INTAKE_HEIGHT)));
-    IntakingCommands.intakeCommand(wrist, elevator)
-        // vibrates the controller for half a second after intake
-        .andThen(
-            Commands.deadline(new WaitCommand(0.5), new ControllerVibrateCommand(0.7, controller)));
+            // new InstantCommand(() ->
+            // elevator.setTargetHeight(Constants.Elevator.INTAKE_HEIGHT)));
+            IntakingCommands.intakeCommand(wrist, elevator)
+                // vibrates the controller for half a second after intake
+                .andThen(
+                    Commands.deadline(
+                        new WaitCommand(0.5), new ControllerVibrateCommand(0.7, controller))));
 
     // old elevator default command
     // elevator.setDefaultCommand(
@@ -279,7 +284,7 @@ public class RobotContainer {
             // set the elevator to move up to stage 1 if it's below and has the coral(that way cycle
             // time is increased if they forgot to do it)
             new SetElevatorPresetCommand(elevator, wrist, Constants.Elevator.STAGE_2_LEVEL)
-                .unless(() -> elevator.getCurrentHeight() > Constants.Elevator.STAGE_2_LEVEL),
+                .unless(() -> elevator.getTargetHeight() > Constants.Elevator.STAGE_2_LEVEL),
             // sets the the elevator to go zero if it doesn't have a coral
             new SetElevatorPresetCommand(elevator, wrist, 0),
             // conditional that controls the elevator
@@ -296,7 +301,7 @@ public class RobotContainer {
                 // unless the elevator is not on the floor
                 .unless(() -> !elevator.isOnFloor()),
             // controller of the conditional
-            () -> wrist.isCanCloserThan(0.01)));
+            () -> wrist.isCanCloserThan(0.1)));
 
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
@@ -324,11 +329,11 @@ public class RobotContainer {
     controller.y().whileTrue(new PathfindToClosestDepotCommand(drive, true));
     controller.y().onFalse(new PathfindingCommandCancel(drive));
 
-    controller.x().whileTrue(new PathfindToClosestDepotCommand(drive, false));
-    controller.x().onFalse(new PathfindingCommandCancel(drive));
+    // controller.x().whileTrue(new PathfindToClosestDepotCommand(drive, false));
+    // controller.x().onFalse(new PathfindingCommandCancel(drive));
 
-    controller.y().whileTrue(new PathfindToClosestDepotCommand(drive, true));
-    controller.y().onFalse(new PathfindingCommandCancel(drive));
+    // controller.y().whileTrue(new PathfindToClosestDepotCommand(drive, true));
+    // controller.y().onFalse(new PathfindingCommandCancel(drive));
 
     // controller
     //     .leftTrigger()

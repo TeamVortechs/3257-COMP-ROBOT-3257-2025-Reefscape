@@ -1,5 +1,8 @@
 package frc.robot.subsystems.elevator;
 
+import static edu.wpi.first.units.Units.Amps;
+
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -23,7 +26,16 @@ public class ElevatorModuleTalonFXIO implements ElevatorModuleIO {
     this.leftMotor = new TalonFX(motorIDLeft, canbusName);
     this.rightMotor = new TalonFX(motorIDRight, canbusName);
 
-    TalonFXConfiguration elevatorConfigs = new TalonFXConfiguration();
+    TalonFXConfiguration elevatorConfigs =
+        new TalonFXConfiguration()
+            .withCurrentLimits(
+                new CurrentLimitsConfigs()
+                    // Swerve azimuth does not require much torque output, so we can set a
+                    // relatively
+                    // low
+                    // stator current limit to help avoid brownouts without impacting performance.
+                    .withStatorCurrentLimit(Amps.of(80))
+                    .withStatorCurrentLimitEnable(true));
 
     var slot0Configs = elevatorConfigs.Slot0;
     slot0Configs.kG = PElevator.kG.getValue();

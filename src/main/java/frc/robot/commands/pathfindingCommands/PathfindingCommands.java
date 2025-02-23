@@ -28,7 +28,7 @@ public class PathfindingCommands {
 
   // Define path constraints used by the AutoBuilder for following paths.
   private static final PathConstraints pathConstraints =
-      new PathConstraints(0.75, 0.5, Units.degreesToRadians(540), Units.degreesToRadians(720));
+      new PathConstraints(0.5, 0.4, Units.degreesToRadians(540), Units.degreesToRadians(720));
 
   /** Initializes the path arrays if they haven't been already. */
   private static void init() {
