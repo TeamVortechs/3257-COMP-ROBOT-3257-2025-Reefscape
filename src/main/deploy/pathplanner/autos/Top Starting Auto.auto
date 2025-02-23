@@ -1,0 +1,133 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Coral Score Top Stage 1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Scoring"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Intake From Coral Score Top Starting"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Intake to Coral Score Stage 1 Top"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Scoring"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Top Coral Score To Intake Closest"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Top Intake to Coral Score Stage 2 Closest"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Scoring"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Top Coral Score To Intake Closest"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Top Intake to Coral Score Stage 1 Second Spot Closest"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Scoring"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Top Coral Score To Intake Second Spot Closest"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Intake to Coral Score Stage 2 Second Spot Closest"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Scoring"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Top Coral Score To Intake Second Spot Closest"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
