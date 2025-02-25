@@ -14,11 +14,12 @@ import frc.robot.subsystems.drive.Drive;
 public class PathfindToClosestDepotCommand extends Command {
 
   private final Drive drive;
-  private final boolean left;
   private Command activeCommand; // Dynamically created command instance
   // private int targetPoseID = -1; // -1 indicates no target selected yet
 
   private boolean scheduledPath = false;
+
+  private PathfindingCommandsHelp pathfindingCommandsHelp;
 
   /**
    * Constructs a new PathfindToClosestDepotCommand.
@@ -26,9 +27,9 @@ public class PathfindToClosestDepotCommand extends Command {
    * @param drive the drive subsystem.
    * @param left whether to use left-side depot paths.
    */
-  public PathfindToClosestDepotCommand(Drive drive, boolean left) {
+  public PathfindToClosestDepotCommand(Drive drive, String... paths) {
     this.drive = drive;
-    this.left = left;
+    pathfindingCommandsHelp = new PathfindingCommandsHelp(paths);
     // Declare dependency on the drive subsystem.
     addRequirements(drive);
   }
@@ -58,13 +59,13 @@ public class PathfindToClosestDepotCommand extends Command {
     // }
 
     if (scheduledPath == false) {
-      int curPoseID = PathfindingCommands.getClosestDepotPath(drive.getPose(), left);
+      int curPoseID = pathfindingCommandsHelp.getClosestDepotPath(drive.getPose());
 
       if (activeCommand != null && activeCommand.isScheduled()) {
         activeCommand.cancel();
       }
 
-      activeCommand = PathfindingCommands.pathfindToDepotCommand(curPoseID, left);
+      activeCommand = pathfindingCommandsHelp.pathfindToDepotCommand(curPoseID);
       activeCommand.schedule();
 
       scheduledPath = true;

@@ -55,7 +55,6 @@ import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import frc.robot.subsystems.wrist.Wrist;
-import frc.robot.subsystems.wrist.Wrist.WristAngle;
 import frc.robot.subsystems.wrist.WristIOTalonFX;
 // import frc.robot.subsystems.wrist.WristIOTalonFX;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -243,9 +242,13 @@ public class RobotContainer {
     controller.a().whileTrue(new SetWristRollerSpeedCommand(wrist, -0.5));
 
     // left bumper sets the wrist outwards manually
+    // controller
+    //     .b()
+    //     .whileTrue(new SetWristTargetAngleCommand(wrist, WristAngle.STAGE2_ANGLE.getAngle()));
     controller
         .b()
-        .whileTrue(new SetWristTargetAngleCommand(wrist, WristAngle.STAGE2_ANGLE.getAngle()));
+        .whileTrue(new PathfindToClosestDepotCommand(drive, "Intake Left", "Intake Right"));
+    controller.b().onFalse(new PathfindingCommandCancel(drive));
 
     // controller.leftTrigger().whileTrue(new ManualElevatorCommand(elevator, () -> -0.2));
     // controller.rightTrigger().whileTrue(new ManualElevatorCommand(elevator, () -> 0.2));
@@ -295,7 +298,8 @@ public class RobotContainer {
     wrist.setDefaultCommand(
         new ConditionalCommand(
             // if there is a note move the wrist angle to the shooting angle
-            new SetWristTargetAngleCommand(wrist, Constants.Arm.WRIST_STAGE_2_ANGLE),
+            new SetWristTargetAngleCommand(wrist, Constants.Arm.WRIST_STAGE_2_ANGLE)
+                .unless(() -> wrist.getTargetAngle() > Constants.Arm.WRIST_STAGE_2_ANGLE),
             // if there is not a note move the wrist to the target angle 0
             new SetWristTargetAngleCommand(wrist, 0)
                 // unless the elevator is not on the floor
@@ -323,11 +327,33 @@ public class RobotContainer {
     // Switch to X pattern when X button is pressed
     // controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
-    controller.x().whileTrue(new PathfindToClosestDepotCommand(drive, false));
+    controller
+        .x()
+        .whileTrue(
+            new PathfindToClosestDepotCommand(
+                drive,
+                "CoralFeed1 Left",
+                "CoralFeed2 Left",
+                "CoralFeed3 Left",
+                "CoralFeed4 Left",
+                "CoralFeed5 Left",
+                "CoralFeed6 Left"));
     controller.x().onFalse(new PathfindingCommandCancel(drive));
 
-    controller.y().whileTrue(new PathfindToClosestDepotCommand(drive, true));
+    controller
+        .y()
+        .whileTrue(
+            new PathfindToClosestDepotCommand(
+                drive,
+                "CoralFeed1 Right",
+                "CoralFeed2 Right",
+                "CoralFeed3 Right",
+                "CoralFeed4 Right",
+                "CoralFeed5 Right",
+                "CoralFeed6 Right"));
     controller.y().onFalse(new PathfindingCommandCancel(drive));
+
+    controller.povLeft().onTrue(new SetWristRollerSpeedCommand(wrist, 0.05));
 
     // controller.x().whileTrue(new PathfindToClosestDepotCommand(drive, false));
     // controller.x().onFalse(new PathfindingCommandCancel(drive));

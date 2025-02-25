@@ -105,6 +105,11 @@ public class ElevatorModuleTalonFXIO implements ElevatorModuleIO {
   public void PIDVoltage(double targetAngle) {
     final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
 
+    if (Math.abs(targetAngle - getHeightMeters()) < 0.1) {
+      leftMotor.set(0);
+      rightMotor.set(0);
+    }
+
     // set target position to 100 rotations
     leftMotor.setControl(m_request.withPosition(targetAngle));
     rightMotor.setControl(m_request.withPosition(targetAngle));
