@@ -26,8 +26,8 @@ public class WristIOTalonFX implements WristIO {
 
     this.arm = new TalonFX(armID, canbusName);
     this.rollers = new TalonFX(rollerID, canbusName);
-    
-    if(!Arm.IS_ALGAE_ON) { 
+
+    if (!Arm.IS_ALGAE_ON) {
       this.canRange = new CANrange(CanrangeID);
     } else {
       canRange = null;
@@ -143,7 +143,7 @@ public class WristIOTalonFX implements WristIO {
   // gets the distance from the can range
   @Override
   public double getDistance() {
-    if(Arm.IS_ALGAE_ON) return 0;
+    if (Arm.IS_ALGAE_ON) return 0;
 
     return canRange.getDistance().getValueAsDouble();
   }

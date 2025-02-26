@@ -18,6 +18,8 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -185,40 +187,6 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-    // controller.leftTrigger().whileTrue(new PathfindToClosestDepotCommand(drive));
-    // Default command, normal field-relative drive
-
-    // controller.start().whileTrue(new WristSetPosCommand(wrist, 0.25));
-    //  controller.back().whileTrue(new WristSetPosCommand(wrist, -0.25));
-    // controller2.leftBumper().whileTrue(new IntakeSpeedCommand(intake, 0.75, limitSwitch));
-    // controller.b().whileTrue(elevator2.runCurrentZeroing());
-    // controller.rightBumper().whileTrue(new SetElevatorPower(elevator2, 0.1));
-    // controller.leftBumper().whileTrue(new SetElevatorPower(elevator2, -0.1));
-    // controller
-    //     .rightBumper()
-    //     .whileTrue(new SetElevatorCommand(ElevatorLevel.FIRST_LEVEL, elevator2));
-    // controller
-    //     .rightTrigger()
-    //     .whileTrue(new SetElevatorCommand(ElevatorLevel.SECOND_LEVEL, elevator2));
-    // controller
-    //     .leftTrigger()
-    //     .whileTrue(new SetElevatorCommand(ElevatorLevel.THIRD_LEVEL, elevator2));
-
-    // controller
-    //     .a()
-    //     .whileTrue(
-    //         new TellCommand()
-    //             .andThen(
-    //                 new SetWristRollerSpeed(wrist, -0.01)
-    //                     .unless(() -> wrist.isCanCloserThan(0.1))));
-
-    // wrist.setDefaultCommand(
-    //     new ConditionalCommand(
-    //         new SetWristTargetAngleCommand(wrist, WristAngle.STAGE1_ANGLE.getAngle()),
-    //         new SetWristTargetAngleCommand(wrist, 0),
-    //         () - !wrist.isCanCloserThan(0.1)));
-    /* */
-    // resets encoders. THIS WILL BREAK THE ROBOT
     controller
         .start()
         .onTrue(
@@ -239,14 +207,6 @@ public class RobotContainer {
     // moves elevator and wrist to scoring position for level 3
     controller.rightBumper().whileTrue(ScoringCommands.prepForScoring(3, wrist, elevator));
 
-    operatorController.leftTrigger().whileTrue(ScoringCommands.prepForScoring(1, wrist, elevator));
-
-    // moves elevator and wrist to the scoring positions level 2 after the right button is tapped
-    operatorController.leftBumper().whileTrue(ScoringCommands.prepForScoring(2, wrist, elevator));
-
-    // moves elevator and wrist to scoring position for level 3
-    operatorController.rightBumper().whileTrue(ScoringCommands.prepForScoring(3, wrist, elevator));
-
     // intakes then vibrates controlller when in position and has coral
     // y shoots coral out
     controller.a().whileTrue(new SetWristRollerSpeedCommand(wrist, -0.75));
@@ -256,20 +216,6 @@ public class RobotContainer {
         .b()
         .whileTrue(new SetWristTargetAngleCommand(wrist, WristAngle.STAGE2_ANGLE.getAngle()));
 
-    // controller.leftTrigger().whileTrue(new ManualElevatorCommand(elevator, () -> -0.2));
-    // controller.rightTrigger().whileTrue(new ManualElevatorCommand(elevator, () -> 0.2));
-
-    // left trigger sets height to Stage 2
-    /*controller
-        .leftTrigger()
-        .whileTrue(
-            new InstantCommand(() -> elevator.setTargetHeight(Constants.Elevator.STAGE_2_LEVEL)));
-    // right trigger sets height to Stage 3
-    controller
-        .rightTrigger()
-        .whileTrue(
-            new InstantCommand(() -> elevator.setTargetHeight(Constants.Elevator.STAGE_3_LEVEL)));
-            /* */
     // right trigger sets elevator height back down to 0
     controller
         .rightTrigger()
@@ -283,41 +229,27 @@ public class RobotContainer {
                         new WaitCommand(0.5), new ControllerVibrateCommand(0.7, controller))));
 
     // old elevator default command
-    if(!Arm.IS_ALGAE_ON) {
-        elevator.setDefaultCommand(
-            new WaitCommand(2)
-                .andThen(
-                    new SetElevatorPresetCommand(elevator, wrist, 0)
-                        .unless(() -> wrist.isCanCloserThan(0.1))));
+    if (!Arm.IS_ALGAE_ON) {
+      elevator.setDefaultCommand(
+          new WaitCommand(2)
+              .andThen(
+                  new SetElevatorPresetCommand(elevator, wrist, 0)
+                      .unless(() -> wrist.isCanCloserThan(0.1))));
     }
-
-    // if there is no note move the elevator down to zero. If there is a note move elevator to first
-    // level if it is currently below first level
-    // elevator.setDefaultCommand(
-    //     new ConditionalCommand(
-    //         // set the elevator to move up to stage 1 if it's below and has the coral(that way
-    // cycle
-    //         // time is increased if they forgot to do it)
-    //         new SetElevatorPresetCommand(elevator, wrist, Constants.Elevator.STAGE_2_LEVEL)
-    //             .unless(() -> elevator.getTargetHeight() > Constants.Elevator.STAGE_2_LEVEL),
-    //         // sets the the elevator to go zero if it doesn't have a coral
-    //         new SetElevatorPresetCommand(elevator, wrist, 0),
-    //         // conditional that controls the elevator
-    //         () -> wrist.isCanCloserThan(0.1)));
 
     // if there is a note move the wrist to scoring position. If there is not a note move the wrist
     // back to intake position when the elevator is on the floor
-    if(!Arm.IS_ALGAE_ON) {
-        wrist.setDefaultCommand(
-            new ConditionalCommand(
-                // if there is a note move the wrist angle to the shooting angle
-                (new SetWristTargetAngleCommand(wrist, Constants.Arm.WRIST_STAGE_2_ANGLE)),
-                // if there is not a note move the wrist to the target angle 0
-                new SetWristTargetAngleCommand(wrist, 0)
-                    // unless the elevator is not on the floor
-                    .unless(() -> !elevator.isOnFloor()),
-                // controller of the conditional
-                () -> wrist.isCanCloserThan(0.1)));
+    if (!Arm.IS_ALGAE_ON) {
+      wrist.setDefaultCommand(
+          new ConditionalCommand(
+              // if there is a note move the wrist angle to the shooting angle
+              (new SetWristTargetAngleCommand(wrist, Constants.Arm.WRIST_STAGE_2_ANGLE)),
+              // if there is not a note move the wrist to the target angle 0
+              new SetWristTargetAngleCommand(wrist, 0)
+                  // unless the elevator is not on the floor
+                  .unless(() -> !elevator.isOnFloor()),
+              // controller of the conditional
+              () -> wrist.isCanCloserThan(0.1)));
     }
 
     drive.setDefaultCommand(
@@ -329,36 +261,11 @@ public class RobotContainer {
 
     controller.povLeft().whileTrue(new SetWristRollerSpeedCommand(wrist, 0.05));
 
-    // Lock to 0° when A button is held
-    // controller
-    //     .a()
-    //     .whileTrue(
-    //         DriveCommands.joystickDriveAtAngle(
-    //             drive,
-    //             () -> -controller.getLeftY(),
-    //             () -> -controller.getLeftX(),
-    //             () -> new Rotation2d( )));
-
-    // Switch to X pattern when X button is pressed
-    // controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
-
     controller.x().whileTrue(new PathfindToClosestDepotCommand(drive, false));
     controller.x().onFalse(new PathfindingCommandCancel(drive));
 
     controller.y().whileTrue(new PathfindToClosestDepotCommand(drive, true));
     controller.y().onFalse(new PathfindingCommandCancel(drive));
-
-    // controller.x().whileTrue(new PathfindToClosestDepotCommand(drive, false));
-    // controller.x().onFalse(new PathfindingCommandCancel(drive));
-
-    // controller.y().whileTrue(new PathfindToClosestDepotCommand(drive, true));
-    // controller.y().onFalse(new PathfindingCommandCancel(drive));
-
-    // controller
-    //     .leftTrigger()
-    //     .whileTrue(
-    //         PathfindingCommands.pathfindToDepotCommand(
-    //             PathfindingCommands.getClosestDepotPath(drive.getPose())));
 
     // // Reset gyro to 0° when B button is pressed
     controller
@@ -382,14 +289,16 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    // add a free disturbance when pressing the y button to test vision
-    // var disturbance =
-    //     new Transform2d(new Translation2d(1.0, 1.0), new Rotation2d(0.17 * 2 * Math.PI));
-    // controller
-    //     .y()
-    //     .onTrue(
-    //         Commands.runOnce(() -> drive.setPose(drive.getPose().plus(disturbance)))
-    //             .ignoringDisable(true));
+    //operator controls
+    operatorController.leftTrigger().whileTrue(ScoringCommands.prepForScoring(1, wrist, elevator));
+
+    // moves elevator and wrist to the scoring positions level 2 after the right button is tapped
+    operatorController.leftBumper().whileTrue(ScoringCommands.prepForScoring(2, wrist, elevator));
+
+    // moves elevator and wrist to scoring position for level 3
+    operatorController.rightBumper().whileTrue(ScoringCommands.prepForScoring(3, wrist, elevator));
+
+    
   } // end configure bindings
 
   /**
@@ -399,6 +308,17 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     return autoChooser.get();
+  }
+
+  //adds a disturbance to the robot for a future limelight. This was tested in sim
+  public void bindDisturbanceCommand() {
+    // add a free disturbance when pressing the y button to test vision
+    var disturbance =
+        new Transform2d(new Translation2d(1.0, 1.0), new Rotation2d(0.17 * 2 * Math.PI));
+    controller.back()
+        .onTrue(
+            Commands.runOnce(() -> drive.setPose(drive.getPose().plus(disturbance)))
+                .ignoringDisable(true));
   }
 
   // registers pathplanner's named commands
@@ -421,6 +341,7 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Scoring", new WaitCommand(0.2).deadlineFor(new SetWristRollerSpeedCommand(wrist, -0.6)));
   }
+
 
   //   public void sendVisionMeasurement() {
   //     // Correct pose estimate with vision measurements

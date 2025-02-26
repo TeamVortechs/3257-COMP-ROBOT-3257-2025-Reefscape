@@ -63,7 +63,7 @@ public final class Constants {
     public static final double WRIST_HIGHEST_ANGLE = 2.56;
 
     public static final double ALGAE_STAGE_1 = 0;
-    
+
     public static final double ALGAE_STAGE_2 = 0;
 
     public static final boolean IS_ALGAE_ON = false;
