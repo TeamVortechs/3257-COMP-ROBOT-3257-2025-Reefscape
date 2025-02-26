@@ -15,6 +15,7 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.events.EventTrigger;
 import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -31,6 +32,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.Arm;
+import frc.robot.Constants.Mode;
 import frc.robot.commands.autoCommands.DriveCommands;
 import frc.robot.commands.autoCommands.IntakingCommands;
 import frc.robot.commands.autoCommands.ScoringCommands;
@@ -289,7 +291,7 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    //operator controls
+    // operator controls
     operatorController.leftTrigger().whileTrue(ScoringCommands.prepForScoring(1, wrist, elevator));
 
     // moves elevator and wrist to the scoring positions level 2 after the right button is tapped
@@ -297,8 +299,6 @@ public class RobotContainer {
 
     // moves elevator and wrist to scoring position for level 3
     operatorController.rightBumper().whileTrue(ScoringCommands.prepForScoring(3, wrist, elevator));
-
-    
   } // end configure bindings
 
   /**
@@ -310,38 +310,52 @@ public class RobotContainer {
     return autoChooser.get();
   }
 
-  //adds a disturbance to the robot for a future limelight. This was tested in sim
+  // adds a disturbance to the robot for a future limelight. This was tested in sim
   public void bindDisturbanceCommand() {
     // add a free disturbance when pressing the y button to test vision
     var disturbance =
         new Transform2d(new Translation2d(1.0, 1.0), new Rotation2d(0.17 * 2 * Math.PI));
-    controller.back()
+    controller
+        .back()
         .onTrue(
             Commands.runOnce(() -> drive.setPose(drive.getPose().plus(disturbance)))
                 .ignoringDisable(true));
   }
 
-  // registers pathplanner's named commands
-  public void registerNamedCommandsAuto() {
+  // registers pathplanner's named commands. This was tested in sim but on the robot yet.
+  private void registerNamedCommandsAuto() {
+    // controls wether or not the robot actually does the commands or just prints out that it's
+    // doing the commands
 
-    // if ur simulating it's better to just print everything
-    //  if (Constants.simulatingAuto) {
-    /*   NamedCommands.registerCommand("test", new TellCommand("test"));
-    NamedCommands.registerCommand("intake", new TellCommand("intake auto command"));
-    NamedCommands.registerCommand("prepStage1", new TellCommand("prep stage 1 auto command"));
-    NamedCommands.registerCommand("prepStage2", new TellCommand("prep stage 2 auto command"));
-    NamedCommands.registerCommand("Scoring", new TellCommand("Scoring auto command"));
-    // if ur not simulating register commands as normal
-    /* */
-    //  } else {
-    NamedCommands.registerCommand("test", new TellCommand("test"));
-    NamedCommands.registerCommand("intake", IntakingCommands.intakeCommand(wrist, elevator));
-    NamedCommands.registerCommand("prepStage1", ScoringCommands.prepForScoring(1, wrist, elevator));
-    NamedCommands.registerCommand("prepStage2", ScoringCommands.prepForScoring(2, wrist, elevator));
-    NamedCommands.registerCommand(
-        "Scoring", new WaitCommand(0.2).deadlineFor(new SetWristRollerSpeedCommand(wrist, -0.6)));
+    // stuff to check wether or not it was a sim
+    boolean isReal = true;
+    if (Constants.currentMode == Mode.SIM) isReal = false;
+
+    // comm
+    addNamedCommand("intake prep", IntakingCommands.prepForIntakeCommand(wrist, elevator), isReal);
+    addNamedCommand("intake", IntakingCommands.intakeCommand(wrist, elevator), isReal);
+    addNamedCommand("prepStage1", ScoringCommands.prepForScoring(1, wrist, elevator), isReal);
+    addNamedCommand("prepStage2", ScoringCommands.prepForScoring(2, wrist, elevator), isReal);
+    addNamedCommand(
+        "Scoring",
+        new WaitCommand(0.2).deadlineFor(new SetWristRollerSpeedCommand(wrist, -0.4)),
+        isReal);
   }
 
+  // function to add named commands because we need to add is an an event too and not just as a
+  // command. This also handles simulation logging
+  public void addNamedCommand(String commandName, Command command, boolean isReal) {
+
+    if (isReal) {
+      NamedCommands.registerCommand(commandName, command);
+      new EventTrigger(commandName).onTrue(command);
+    } else {
+      // registers the named commands to print something out instead of actually running anything
+      NamedCommands.registerCommand(commandName, new TellCommand(commandName + " auto command"));
+      new EventTrigger(commandName)
+          .onTrue(new TellCommand(commandName + " auto event trigger command"));
+    }
+  }
 
   //   public void sendVisionMeasurement() {
   //     // Correct pose estimate with vision measurements
