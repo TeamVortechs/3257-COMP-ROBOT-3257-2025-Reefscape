@@ -11,6 +11,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants.Arm;
 import frc.robot.KDoublePreferences.PWrist;
 import org.littletonrobotics.junction.AutoLogOutput;
 
@@ -26,8 +27,11 @@ public class WristIOTalonFX implements WristIO {
     this.arm = new TalonFX(armID, canbusName);
     this.rollers = new TalonFX(rollerID, canbusName);
     
-    this.canRange = new CANrange(CanrangeID);
-
+    if(!Arm.IS_ALGAE_ON) { 
+      this.canRange = new CANrange(CanrangeID);
+    } else {
+      canRange = null;
+    }
     TalonFXConfiguration armMotorConfigs =
         new TalonFXConfiguration()
             .withCurrentLimits(
@@ -130,15 +134,17 @@ public class WristIOTalonFX implements WristIO {
     }
   }
 
-  // returns wether or not the can range is detected
-  @Override
-  public boolean isDetected() {
-    return canRange.getIsDetected().getValue();
-  }
+  // // returns wether or not the can range is detected
+  // @Override
+  // public boolean isDetected() {
+  //   return canRange.getIsDetected().getValue();
+  // }
 
   // gets the distance from the can range
   @Override
   public double getDistance() {
+    if(Arm.IS_ALGAE_ON) return 0;
+
     return canRange.getDistance().getValueAsDouble();
   }
 
