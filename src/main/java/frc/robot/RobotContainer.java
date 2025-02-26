@@ -303,12 +303,12 @@ public class RobotContainer {
     operatorController.rightBumper().whileTrue(ScoringCommands.prepForScoring(3, wrist, elevator));
 
     operatorController
-    .start()
-    .onTrue(
-        new InstantCommand(() -> elevator.resetEncoders())
-            .ignoringDisable(true)
-            .alongWith(new InstantCommand(() -> wrist.resetWristEncoder()))
-            .ignoringDisable(true));
+        .start()
+        .onTrue(
+            new InstantCommand(() -> elevator.resetEncoders())
+                .ignoringDisable(true)
+                .alongWith(new InstantCommand(() -> wrist.resetWristEncoder()))
+                .ignoringDisable(true));
   } // end configure bindings
 
   public void addExperimentalOperatorCommands() {
