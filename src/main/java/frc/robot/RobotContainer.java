@@ -38,9 +38,11 @@ import frc.robot.commands.autoCommands.IntakingCommands;
 import frc.robot.commands.autoCommands.ScoringCommands;
 import frc.robot.commands.communication.ControllerVibrateCommand;
 import frc.robot.commands.communication.TellCommand;
+import frc.robot.commands.elevator.ManualElevatorCommand;
 import frc.robot.commands.elevator.SetElevatorPresetCommand;
 import frc.robot.commands.pathfindingCommands.PathfindToClosestDepotCommand;
 import frc.robot.commands.pathfindingCommands.PathfindingCommandCancel;
+import frc.robot.commands.wrist.ManualSetWristSpeedCommand;
 import frc.robot.commands.wrist.SetWristRollerSpeedCommand;
 import frc.robot.commands.wrist.SetWristTargetAngleCommand;
 // import frc.robot.commands.SetWristRollerSpeed;
@@ -189,13 +191,13 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-    controller
-        .start()
-        .onTrue(
-            new InstantCommand(() -> elevator.resetEncoders())
-                .ignoringDisable(true)
-                .alongWith(new InstantCommand(() -> wrist.resetWristEncoder()))
-                .ignoringDisable(true));
+    // controller
+    //     .start()
+    //     .onTrue(
+    //         new InstantCommand(() -> elevator.resetEncoders())
+    //             .ignoringDisable(true)
+    //             .alongWith(new InstantCommand(() -> wrist.resetWristEncoder()))
+    //             .ignoringDisable(true));
 
     // eject note as long as button as help
     // controller.rightBumper().whileTrue(new SetWristRollerSpeedCommand(wrist, -0.3));
@@ -299,7 +301,26 @@ public class RobotContainer {
 
     // moves elevator and wrist to scoring position for level 3
     operatorController.rightBumper().whileTrue(ScoringCommands.prepForScoring(3, wrist, elevator));
+
+    operatorController
+    .start()
+    .onTrue(
+        new InstantCommand(() -> elevator.resetEncoders())
+            .ignoringDisable(true)
+            .alongWith(new InstantCommand(() -> wrist.resetWristEncoder()))
+            .ignoringDisable(true));
   } // end configure bindings
+
+  public void addExperimentalOperatorCommands() {
+    operatorController.povUp().whileTrue(new ManualSetWristSpeedCommand(wrist, () -> 0.1));
+    operatorController.povDown().whileTrue(new ManualSetWristSpeedCommand(wrist, () -> -0.1));
+
+    operatorController.povRight().whileTrue(new ManualElevatorCommand(elevator, () -> 0.1));
+    operatorController.povLeft().whileTrue(new ManualElevatorCommand(elevator, () -> -0.1));
+
+    operatorController.x().whileTrue(new SetWristRollerSpeedCommand(wrist, 0.5));
+    operatorController.y().whileTrue(new SetWristRollerSpeedCommand(wrist, -0.5));
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
