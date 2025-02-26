@@ -14,7 +14,7 @@ public class IntakingCommands {
   public static Command intakeCommand(Wrist wrist, Elevator elevator) {
     return new SetElevatorPresetCommand(elevator, wrist, Constants.Elevator.MIN_HEIGHT)
         .andThen(new SetWristTargetAngleCommand(wrist, WristAngle.INTAKE_ANGLE.getAngle()))
-        .alongWith(new IntakeWristCommand(wrist, -0.3));
+        .alongWith(new IntakeWristCommand(wrist, -0.6));
   }
 
   public static Command prepForIntakeCommand(Wrist wrist, Elevator elevator) {

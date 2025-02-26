@@ -25,6 +25,7 @@ public class WristIOTalonFX implements WristIO {
 
     this.arm = new TalonFX(armID, canbusName);
     this.rollers = new TalonFX(rollerID, canbusName);
+    
     this.canRange = new CANrange(CanrangeID);
 
     TalonFXConfiguration armMotorConfigs =
@@ -35,7 +36,7 @@ public class WristIOTalonFX implements WristIO {
                     // relatively
                     // low
                     // stator current limit to help avoid brownouts without impacting performance.
-                    .withStatorCurrentLimit(Amps.of(40))
+                    .withStatorCurrentLimit(Amps.of(65))
                     .withStatorCurrentLimitEnable(true))
             .withMotorOutput(
                 new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive));

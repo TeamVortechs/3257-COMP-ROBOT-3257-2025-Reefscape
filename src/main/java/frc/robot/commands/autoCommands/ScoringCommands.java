@@ -20,7 +20,8 @@ public class ScoringCommands {
             .alongWith(new SetWristTargetAngleCommand(wrist, WristAngle.STAGE2_ANGLE.getAngle()));
 
       case 3:
-        return new SetElevatorPresetCommand(elevator, wrist, Constants.Elevator.STAGE_4_LEVEL)
+        return new SetElevatorPresetCommand(
+                elevator, wrist, Constants.Elevator.MAX_HEIGHT - 0.1) // just a bit less than max
             .alongWith(new SetWristTargetAngleCommand(wrist, WristAngle.STAGE2_ANGLE.getAngle()));
 
       default:

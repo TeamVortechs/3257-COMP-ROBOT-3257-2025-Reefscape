@@ -100,7 +100,7 @@ public class RobotContainer {
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
-  private final CommandXboxController controller2 = new CommandXboxController(1);
+  private final CommandXboxController operatorController = new CommandXboxController(1);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -238,9 +238,17 @@ public class RobotContainer {
     // moves elevator and wrist to scoring position for level 3
     controller.rightBumper().whileTrue(ScoringCommands.prepForScoring(3, wrist, elevator));
 
+    operatorController.leftTrigger().whileTrue(ScoringCommands.prepForScoring(1, wrist, elevator));
+
+    // moves elevator and wrist to the scoring positions level 2 after the right button is tapped
+    operatorController.leftBumper().whileTrue(ScoringCommands.prepForScoring(2, wrist, elevator));
+
+    // moves elevator and wrist to scoring position for level 3
+    operatorController.rightBumper().whileTrue(ScoringCommands.prepForScoring(3, wrist, elevator));
+
     // intakes then vibrates controlller when in position and has coral
     // y shoots coral out
-    controller.a().whileTrue(new SetWristRollerSpeedCommand(wrist, -0.5));
+    controller.a().whileTrue(new SetWristRollerSpeedCommand(wrist, -0.75));
 
     // left bumper sets the wrist outwards manually
     controller
@@ -274,28 +282,32 @@ public class RobotContainer {
                         new WaitCommand(0.5), new ControllerVibrateCommand(0.7, controller))));
 
     // old elevator default command
-    // elevator.setDefaultCommand(
-    // new SetElevatorPresetCommand(elevator, wrist, 0).unless(() -> wrist.isCanCloserThan(0.1)));
+    elevator.setDefaultCommand(
+        new WaitCommand(2)
+            .andThen(
+                new SetElevatorPresetCommand(elevator, wrist, 0)
+                    .unless(() -> wrist.isCanCloserThan(0.1))));
 
     // if there is no note move the elevator down to zero. If there is a note move elevator to first
     // level if it is currently below first level
-    elevator.setDefaultCommand(
-        new ConditionalCommand(
-            // set the elevator to move up to stage 1 if it's below and has the coral(that way cycle
-            // time is increased if they forgot to do it)
-            new SetElevatorPresetCommand(elevator, wrist, Constants.Elevator.STAGE_2_LEVEL)
-                .unless(() -> elevator.getTargetHeight() > Constants.Elevator.STAGE_2_LEVEL),
-            // sets the the elevator to go zero if it doesn't have a coral
-            new SetElevatorPresetCommand(elevator, wrist, 0),
-            // conditional that controls the elevator
-            () -> wrist.isCanCloserThan(0.1)));
+    // elevator.setDefaultCommand(
+    //     new ConditionalCommand(
+    //         // set the elevator to move up to stage 1 if it's below and has the coral(that way
+    // cycle
+    //         // time is increased if they forgot to do it)
+    //         new SetElevatorPresetCommand(elevator, wrist, Constants.Elevator.STAGE_2_LEVEL)
+    //             .unless(() -> elevator.getTargetHeight() > Constants.Elevator.STAGE_2_LEVEL),
+    //         // sets the the elevator to go zero if it doesn't have a coral
+    //         new SetElevatorPresetCommand(elevator, wrist, 0),
+    //         // conditional that controls the elevator
+    //         () -> wrist.isCanCloserThan(0.1)));
 
     // if there is a note move the wrist to scoring position. If there is not a note move the wrist
     // back to intake position when the elevator is on the floor
     wrist.setDefaultCommand(
         new ConditionalCommand(
             // if there is a note move the wrist angle to the shooting angle
-            new SetWristTargetAngleCommand(wrist, Constants.Arm.WRIST_STAGE_2_ANGLE),
+            (new SetWristTargetAngleCommand(wrist, Constants.Arm.WRIST_STAGE_2_ANGLE)),
             // if there is not a note move the wrist to the target angle 0
             new SetWristTargetAngleCommand(wrist, 0)
                 // unless the elevator is not on the floor
@@ -309,6 +321,8 @@ public class RobotContainer {
             () -> -controller.getLeftY(),
             () -> -controller.getLeftX(),
             () -> -controller.getRightX()));
+
+    controller.povLeft().whileTrue(new SetWristRollerSpeedCommand(wrist, 0.05));
 
     // Lock to 0° when A button is held
     // controller
