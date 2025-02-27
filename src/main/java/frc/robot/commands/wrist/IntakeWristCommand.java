@@ -1,5 +1,6 @@
 package frc.robot.commands.wrist;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.wrist.Wrist;
 
@@ -19,20 +20,36 @@ public class IntakeWristCommand extends Command {
 
   private Wrist wrist;
 
+  private double lastDetectedTimeStamp = 0;
+  private double totalDetectedTime = 0.25;
+
   public IntakeWristCommand(Wrist wrist, double speed) {
     // addRequirements(null);
     this.wrist = wrist;
     this.speed = speed;
+
     // addRequirements(wrist);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    lastDetectedTimeStamp = -1;
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    
+    if(lastDetectedTimeStamp != -1) {
+      if(Timer.getFPGATimestamp() - lastDetectedTimeStamp > totalDetectedTime) {
+        wrist.setRollerSpeed(0);
+        return;
+      }
+
+      return;
+    }
+
     if (wrist.isCanCloserThan(0.1)) {
       wrist.setRollerSpeed(0);
       return;
