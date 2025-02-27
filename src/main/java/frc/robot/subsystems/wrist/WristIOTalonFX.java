@@ -25,7 +25,7 @@ public class WristIOTalonFX implements WristIO {
 
     this.arm = new TalonFX(armID, canbusName);
     this.rollers = new TalonFX(rollerID, canbusName);
-    
+
     this.canRange = new CANrange(CanrangeID);
 
     TalonFXConfiguration armMotorConfigs =
