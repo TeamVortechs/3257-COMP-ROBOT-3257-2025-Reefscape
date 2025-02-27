@@ -18,6 +18,9 @@ import static frc.robot.subsystems.vision.VisionConstants.*;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -99,18 +102,23 @@ public class VisionIOPhotonVision implements VisionIO {
           Transform3d fieldToRobot = fieldToCamera.plus(robotToCamera.inverse());
           Pose3d robotPose = new Pose3d(fieldToRobot.getTranslation(), fieldToRobot.getRotation());
 
+
+          SmartDashboard.putNumberArray("camera pose",  new Double[] {cameraToTarget.getX(), cameraToTarget.getY(), cameraToTarget.getZ(), cameraToTarget.getRotation().getAngle()});
+          SmartDashboard.putNumberArray("calculated robot pose", new double[] {fieldToRobot.getX(), fieldToRobot.getY(), fieldToRobot.getZ(), fieldToRobot.getRotation().getAngle()});
+
           // Add tag ID
           tagIds.add((short) target.fiducialId);
 
           // Add observation
-          poseObservations.add(
-              new PoseObservation(
-                  result.getTimestampSeconds(), // Timestamp
-                  robotPose, // 3D pose estimate
-                  target.poseAmbiguity, // Ambiguity
-                  1, // Tag count
-                  cameraToTarget.getTranslation().getNorm(), // Average tag distance
-                  PoseObservationType.PHOTONVISION)); // Observation type
+          //note adding the pose observation bc it's doing testing
+          // poseObservations.add(
+          //     new PoseObservation(
+          //         result.getTimestampSeconds(), // Timestamp
+          //         robotPose, // 3D pose estimate
+          //         target.poseAmbiguity, // Ambiguity
+          //         1, // Tag count
+          //         cameraToTarget.getTranslation().getNorm(), // Average tag distance
+          //         PoseObservationType.PHOTONVISION)); // Observation type
         }
       }
     }
