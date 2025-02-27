@@ -76,4 +76,13 @@ public class KDoublePreferences {
 
     public static KDoublePref manualSpeedLimit = new KDoublePref("wrist MANUAL speed limit", 0.3);
   }
+
+  public static class Limelight {
+    public static KDoublePref xOffset = new KDoublePref("Limelight X offset", 0);
+    public static KDoublePref yOffset = new KDoublePref("Limelight Y offset", 0);
+    public static KDoublePref zOffset = new KDoublePref("Limelight Z offset", 0);
+    public static KDoublePref rotationRoll = new KDoublePref("Limelight rotation roll offset", 0);
+    public static KDoublePref rotationPitch = new KDoublePref("Limelight rotation pitch offset", 0);
+    public static KDoublePref rotationYaw = new KDoublePref("Limelight rotation yaw offset", 0);
+  }
 }
