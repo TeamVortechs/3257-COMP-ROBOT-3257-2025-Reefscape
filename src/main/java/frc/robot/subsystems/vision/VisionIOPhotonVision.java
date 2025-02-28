@@ -35,7 +35,7 @@ public class VisionIOPhotonVision implements VisionIO {
   protected Transform3d robotToCamera;
 
   // wehter or not eh offset will be updated every tick with preferences
-  private boolean usePreferences = true;
+  private boolean usePreferences = false;
 
   /**
    * Creates a new VisionIOPhotonVision.
@@ -52,6 +52,7 @@ public class VisionIOPhotonVision implements VisionIO {
   public void updateInputs(VisionIOInputs inputs) {
 
     if (usePreferences) {
+      //set the offrset to the given  preferences
       robotToCamera =
           new Transform3d(
               Limelight.xOffset.getValue(),
