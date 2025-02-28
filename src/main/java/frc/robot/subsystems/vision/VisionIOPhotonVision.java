@@ -20,7 +20,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.KDoublePreferences.Limelight;
+import frc.robot.KDoublePreferences.PCamera;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -52,16 +52,16 @@ public class VisionIOPhotonVision implements VisionIO {
   public void updateInputs(VisionIOInputs inputs) {
 
     if (usePreferences) {
-      //set the offrset to the given  preferences
+      // set the offrset to the given  preferences
       robotToCamera =
           new Transform3d(
-              Limelight.xOffset.getValue(),
-              Limelight.yOffset.getValue(),
-              Limelight.zOffset.getValue(),
+              PCamera.xOffset.getValue(),
+              PCamera.yOffset.getValue(),
+              PCamera.zOffset.getValue(),
               new Rotation3d(
-                  Limelight.rotationRoll.getValue(),
-                  Limelight.rotationPitch.getValue(),
-                  Limelight.rotationYaw.getValue()));
+                  PCamera.rotationRoll.getValue(),
+                  PCamera.rotationPitch.getValue(),
+                  PCamera.rotationYaw.getValue()));
     }
 
     inputs.connected = camera.isConnected();
