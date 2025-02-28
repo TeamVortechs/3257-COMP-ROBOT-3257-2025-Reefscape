@@ -27,11 +27,8 @@ public class WristIOTalonFX implements WristIO {
     this.arm = new TalonFX(armID, canbusName);
     this.rollers = new TalonFX(rollerID, canbusName);
 
-    if (!Arm.IS_ALGAE_ON) {
-      this.canRange = new CANrange(CanrangeID);
-    } else {
-      canRange = null;
-    }
+    this.canRange = new CANrange(CanrangeID);
+
     TalonFXConfiguration armMotorConfigs =
         new TalonFXConfiguration()
             .withCurrentLimits(
