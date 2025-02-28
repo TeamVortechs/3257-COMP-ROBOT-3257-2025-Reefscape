@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.05069633152174,
-        "y": 3.8789487092391295
+        "x": 6.130154220779221,
+        "y": 3.8493100649350653
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.30059993668492,
-        "y": 3.8720069424290418
+        "x": 6.380057825942401,
+        "y": 3.8423682981249776
       },
       "isLocked": false,
-      "linkedName": "midcoralscoretop"
+      "linkedName": "CoralScore4 left"
     },
     {
       "anchor": {
