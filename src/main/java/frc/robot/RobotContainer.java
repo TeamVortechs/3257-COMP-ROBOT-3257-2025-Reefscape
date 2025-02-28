@@ -424,6 +424,7 @@ public class RobotContainer {
     addNamedCommand("intake", new IntakeWristCommand(wrist, -0.6), isReal);
     addNamedCommand("prepStage1", ScoringCommands.prepForScoringAuto(1, wrist, elevator), isReal);
     addNamedCommand("prepStage2", ScoringCommands.prepForScoringAuto(2, wrist, elevator), isReal);
+    addNamedCommand("prepStage3", ScoringCommands.prepForScoringAuto(3, wrist, elevator), isReal);
     addNamedCommand(
         "Scoring",
         new WaitCommand(0.2).deadlineFor(new SetWristRollerSpeedCommand(wrist, -0.4)),
