@@ -1,6 +1,5 @@
 package frc.robot.commands;
 
-import com.google.flatbuffers.Constants;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -23,8 +22,9 @@ public class PathfindingCommands {
     // if it is not initailized initialize it
     if (initialized) return;
 
-    if(frc.robot.Constants.increasedPathfindingSpeed) {
-      pathConstraints =  new PathConstraints(3.5, 3, Units.degreesToRadians(540), Units.degreesToRadians(720));
+    if (frc.robot.Constants.increasedPathfindingSpeed) {
+      pathConstraints =
+          new PathConstraints(3.5, 3, Units.degreesToRadians(540), Units.degreesToRadians(720));
     }
 
     initialized = true;

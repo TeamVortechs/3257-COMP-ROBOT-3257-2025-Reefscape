@@ -38,6 +38,7 @@ import frc.robot.commands.elevator.SetElevatorPresetCommand;
 import frc.robot.commands.pathfindingCommands.PathfindToClosestDepotCommand;
 import frc.robot.commands.pathfindingCommands.PathfindingCommandCancel;
 import frc.robot.commands.wrist.IntakeWristCommand;
+import frc.robot.commands.wrist.ManualSetWristSpeedCommand;
 import frc.robot.commands.wrist.SetWristRollerSpeedCommand;
 import frc.robot.commands.wrist.SetWristTargetAngleCommand;
 // import frc.robot.commands.SetWristRollerSpeed;
@@ -355,6 +356,9 @@ public class RobotContainer {
 
     controller.y().whileTrue(new PathfindToClosestDepotCommand(drive, true));
     controller.y().onFalse(new PathfindingCommandCancel(drive));
+
+    operatorController.povDown().whileTrue(new ManualSetWristSpeedCommand(wrist, () -> -0.1));
+    operatorController.povUp().whileTrue(new ManualSetWristSpeedCommand(wrist, () -> 0.1));
 
     // controller.x().whileTrue(new PathfindToClosestDepotCommand(drive, false));
     // controller.x().onFalse(new PathfindingCommandCancel(drive));
