@@ -15,6 +15,7 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.events.EventTrigger;
 import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -37,6 +38,7 @@ import frc.robot.commands.communication.TellCommand;
 import frc.robot.commands.elevator.SetElevatorPresetCommand;
 import frc.robot.commands.pathfindingCommands.PathfindToClosestDepotCommand;
 import frc.robot.commands.pathfindingCommands.PathfindingCommandCancel;
+import frc.robot.commands.wrist.IntakeWristCommand;
 import frc.robot.commands.wrist.SetWristRollerSpeedCommand;
 import frc.robot.commands.wrist.SetWristTargetAngleCommand;
 // import frc.robot.commands.SetWristRollerSpeed;
@@ -402,24 +404,39 @@ public class RobotContainer {
   }
 
   // registers pathplanner's named commands
-  public void registerNamedCommandsAuto() {
+  private void registerNamedCommandsAuto() {
+    // controls wether or not the robot actually does the commands or just prints out that it's
+    // doing the commands
 
-    // if ur simulating it's better to just print everything
-    //  if (Constants.simulatingAuto) {
-    /*   NamedCommands.registerCommand("test", new TellCommand("test"));
-    NamedCommands.registerCommand("intake", new TellCommand("intake auto command"));
-    NamedCommands.registerCommand("prepStage1", new TellCommand("prep stage 1 auto command"));
-    NamedCommands.registerCommand("prepStage2", new TellCommand("prep stage 2 auto command"));
-    NamedCommands.registerCommand("Scoring", new TellCommand("Scoring auto command"));
-    // if ur not simulating register commands as normal
-    /* */
-    //  } else {
-    NamedCommands.registerCommand("test", new TellCommand("test"));
-    NamedCommands.registerCommand("intake", IntakingCommands.intakeCommand(wrist, elevator));
-    NamedCommands.registerCommand("prepStage1", ScoringCommands.prepForScoring(1, wrist, elevator));
-    NamedCommands.registerCommand("prepStage2", ScoringCommands.prepForScoring(2, wrist, elevator));
-    NamedCommands.registerCommand(
-        "Scoring", new WaitCommand(0.2).deadlineFor(new SetWristRollerSpeedCommand(wrist, -0.6)));
+    // stuff to check wether or not it was a sim
+    boolean isReal = true;
+    // if (Constants.currentMode == Mode.SIM) isReal = false;
+
+    // comm
+    addNamedCommand(
+        "intake prep", IntakingCommands.prepForIntakeCommandAuto(wrist, elevator), isReal);
+    addNamedCommand("intake", new IntakeWristCommand(wrist, -0.6), isReal);
+    addNamedCommand("prepStage1", ScoringCommands.prepForScoringAuto(1, wrist, elevator), isReal);
+    addNamedCommand("prepStage2", ScoringCommands.prepForScoringAuto(2, wrist, elevator), isReal);
+    addNamedCommand(
+        "Scoring",
+        new WaitCommand(0.2).deadlineFor(new SetWristRollerSpeedCommand(wrist, -0.4)),
+        isReal);
+  }
+
+  // function to add named commands because we need to add is an an event too and not just as a
+  // command. This also handles simulation logging
+  public void addNamedCommand(String commandName, Command command, boolean isReal) {
+
+    if (isReal) {
+      NamedCommands.registerCommand(commandName, command);
+      new EventTrigger(commandName).onTrue(command);
+    } else {
+      // registers the named commands to print something out instead of actually running anything
+      NamedCommands.registerCommand(commandName, new TellCommand(commandName + " auto command"));
+      new EventTrigger(commandName)
+          .onTrue(new TellCommand(commandName + " auto event trigger command"));
+    }
   }
 
   //   public void sendVisionMeasurement() {

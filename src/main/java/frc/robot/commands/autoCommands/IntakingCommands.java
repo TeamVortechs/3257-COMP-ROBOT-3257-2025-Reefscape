@@ -1,6 +1,7 @@
 package frc.robot.commands.autoCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants;
 import frc.robot.commands.elevator.SetElevatorPresetCommand;
 import frc.robot.commands.wrist.IntakeWristCommand;
@@ -20,6 +21,13 @@ public class IntakingCommands {
   public static Command prepForIntakeCommand(Wrist wrist, Elevator elevator) {
     return new SetElevatorPresetCommand(elevator, wrist, Constants.Elevator.MIN_HEIGHT)
         .andThen(new SetWristTargetAngleCommand(wrist, WristAngle.INTAKE_ANGLE.getAngle()));
+  }
+
+  public static Command prepForIntakeCommandAuto(Wrist wrist, Elevator elevator) {
+    return new InstantCommand(
+            () -> elevator.setTargetHeight(frc.robot.Constants.Elevator.MIN_HEIGHT))
+        .andThen(
+            new InstantCommand(() -> wrist.setTargetAngle(WristAngle.INTAKE_ANGLE.getAngle())));
   }
 
   // does the intake command but automatically aligns at the same time

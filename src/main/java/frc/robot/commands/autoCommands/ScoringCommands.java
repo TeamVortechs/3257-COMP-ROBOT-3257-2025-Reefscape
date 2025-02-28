@@ -11,6 +11,28 @@ import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.Wrist.WristAngle;
 
 public class ScoringCommands {
+
+  public static Command prepForScoringAuto(int level, Wrist wrist, Elevator elevator) {
+    switch (level) { // bit of a misnomer here
+      case 1:
+        return new InstantCommand(() -> elevator.setTargetHeight(Constants.Elevator.STAGE_2_LEVEL))
+            .alongWith(
+                new InstantCommand(() -> wrist.setTargetAngle(WristAngle.STAGE2_ANGLE.getAngle())));
+      case 2:
+        return new InstantCommand(() -> elevator.setTargetHeight(Constants.Elevator.STAGE_3_LEVEL))
+            .alongWith(
+                new InstantCommand(() -> wrist.setTargetAngle(WristAngle.STAGE2_ANGLE.getAngle())));
+
+      case 3:
+        return new InstantCommand(() -> elevator.setTargetHeight(Constants.Elevator.STAGE_4_LEVEL))
+            .alongWith(
+                new InstantCommand(() -> wrist.setTargetAngle(WristAngle.STAGE2_ANGLE.getAngle())));
+
+      default:
+        return null;
+    }
+  }
+
   public static Command prepForScoring(int level, Wrist wrist, Elevator elevator) {
     if(Arm.IS_ALGAE_ON) {
 
