@@ -140,7 +140,6 @@ public class WristIOTalonFX implements WristIO {
   // gets the distance from the can range
   @Override
   public double getDistance() {
-    if (Arm.IS_ALGAE_ON) return 0;
 
     return canRange.getDistance().getValueAsDouble();
   }

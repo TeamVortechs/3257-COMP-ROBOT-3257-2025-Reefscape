@@ -41,7 +41,6 @@ import frc.robot.commands.elevator.ManualElevatorCommand;
 import frc.robot.commands.elevator.SetElevatorPresetCommand;
 import frc.robot.commands.pathfindingCommands.PathfindToClosestDepotCommand;
 import frc.robot.commands.pathfindingCommands.PathfindingCommandCancel;
-import frc.robot.commands.wrist.IntakeWristCommand;
 import frc.robot.commands.wrist.ManualSetWristSpeedCommand;
 import frc.robot.commands.wrist.SetWristRollerSpeedCommand;
 import frc.robot.commands.wrist.SetWristTargetAngleCommand;
@@ -233,17 +232,15 @@ public class RobotContainer {
                         new WaitCommand(0.5), new ControllerVibrateCommand(0.7, controller))));
 
     // old elevator default command
-    if (!Arm.IS_ALGAE_ON) {
       elevator.setDefaultCommand(
           new WaitCommand(2)
               .andThen(
                   new SetElevatorPresetCommand(elevator, wrist, 0)
                       .unless(() -> wrist.isCanCloserThan(0.1))));
-    }
+    
 
     // if there is a note move the wrist to scoring position. If there is not a note move the wrist
     // back to intake position when the elevator is on the floor
-    if (!Arm.IS_ALGAE_ON) {
       wrist.setDefaultCommand(
           new ConditionalCommand(
               // if there is a note move the wrist angle to the shooting angle
@@ -254,7 +251,7 @@ public class RobotContainer {
                   .unless(() -> !elevator.isOnFloor()),
               // controller of the conditional
               () -> wrist.isCanCloserThan(0.1)));
-    }
+
 
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(

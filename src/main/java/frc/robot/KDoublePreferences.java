@@ -78,11 +78,12 @@ public class KDoublePreferences {
   }
 
   public static class PCamera {
-    public static KDoublePref xOffset = new KDoublePref("Camera X offset", 0);
-    public static KDoublePref yOffset = new KDoublePref("Camera Y offset", 0);
-    public static KDoublePref zOffset = new KDoublePref("Camera Z offset", 0);
+    public static KDoublePref xOffset = new KDoublePref("Camera X offset", 0.2286);
+    public static KDoublePref yOffset = new KDoublePref("Camera Y offset", -0.2002028);
+    public static KDoublePref zOffset = new KDoublePref("Camera Z offset", 0.739902);
     public static KDoublePref rotationRoll = new KDoublePref("Camera rotation roll offset", 0);
-    public static KDoublePref rotationPitch = new KDoublePref("Camera rotation pitch offset", 0);
-    public static KDoublePref rotationYaw = new KDoublePref("Camera rotation yaw offset", 0);
+    public static KDoublePref rotationPitch =
+        new KDoublePref("Camera rotation pitch offset", 0.174533);
+    public static KDoublePref rotationYaw = new KDoublePref("Camera rotation yaw offset", 0.349066);
   }
 }
