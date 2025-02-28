@@ -37,6 +37,7 @@ import frc.robot.commands.communication.TellCommand;
 import frc.robot.commands.elevator.SetElevatorPresetCommand;
 import frc.robot.commands.pathfindingCommands.PathfindToClosestDepotCommand;
 import frc.robot.commands.pathfindingCommands.PathfindingCommandCancel;
+import frc.robot.commands.wrist.IntakeWristCommand;
 import frc.robot.commands.wrist.SetWristRollerSpeedCommand;
 import frc.robot.commands.wrist.SetWristTargetAngleCommand;
 // import frc.robot.commands.SetWristRollerSpeed;
@@ -407,10 +408,11 @@ public class RobotContainer {
     // if (Constants.currentMode == Mode.SIM) isReal = false;
 
     // comm
-    addNamedCommand("intake prep", IntakingCommands.prepForIntakeCommand(wrist, elevator), isReal);
-    addNamedCommand("intake", IntakingCommands.intakeCommand(wrist, elevator), isReal);
-    addNamedCommand("prepStage1", ScoringCommands.prepForScoring(1, wrist, elevator), isReal);
-    addNamedCommand("prepStage2", ScoringCommands.prepForScoring(2, wrist, elevator), isReal);
+    addNamedCommand(
+        "intake prep", IntakingCommands.prepForIntakeCommandAuto(wrist, elevator), isReal);
+    addNamedCommand("intake", new IntakeWristCommand(wrist, -0.6), isReal);
+    addNamedCommand("prepStage1", ScoringCommands.prepForScoringAuto(1, wrist, elevator), isReal);
+    addNamedCommand("prepStage2", ScoringCommands.prepForScoringAuto(2, wrist, elevator), isReal);
     addNamedCommand(
         "Scoring",
         new WaitCommand(0.2).deadlineFor(new SetWristRollerSpeedCommand(wrist, -0.4)),
