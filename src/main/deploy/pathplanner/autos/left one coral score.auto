@@ -21,6 +21,12 @@
           "data": {
             "name": "Scoring"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "weave back left"
+          }
         }
       ]
     }
