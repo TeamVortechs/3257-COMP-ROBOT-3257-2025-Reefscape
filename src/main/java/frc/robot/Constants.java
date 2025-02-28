@@ -14,7 +14,6 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.XboxController;
 
 /**
  * This class defines the runtime mode used by AdvantageKit. The mode is always "real" when running
@@ -27,20 +26,6 @@ public final class Constants {
 
   public static final int CANdleID = 10;
   public static final String CANdleCANbus = "rio";
-
-  // the rest of these are essentially unused but are part of the example code
-  public static final int JoystickId = 0;
-  public static final int IncrementAnimButton = XboxController.Button.kRightBumper.value;
-  public static final int DecrementAnimButton = XboxController.Button.kLeftBumper.value;
-  public static final int BlockButton = XboxController.Button.kStart.value;
-  public static final int MaxBrightnessAngle = 90;
-  public static final int MidBrightnessAngle = 180;
-  public static final int ZeroBrightnessAngle = 270;
-  public static final int ChangeDirectionAngle = 0;
-  public static final int VbatButton = XboxController.Button.kA.value;
-  public static final int V5Button = XboxController.Button.kB.value;
-  public static final int CurrentButton = XboxController.Button.kX.value;
-  public static final int TemperatureButton = XboxController.Button.kY.value;
 
   public static enum Mode {
     /** Running on a real robot. */

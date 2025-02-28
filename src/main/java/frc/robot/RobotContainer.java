@@ -49,6 +49,8 @@ import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorModuleTalonFXIO;
+import frc.robot.subsystems.led.CANdleSystem;
+import frc.robot.subsystems.led.CANdleSystem.AnimationTypes;
 // import frc.robot.subsystems.elevator.Elevator2;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
@@ -102,6 +104,8 @@ public class RobotContainer {
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
   private final CommandXboxController operatorController = new CommandXboxController(1);
+
+  private final CANdleSystem m_candleSubsystem = new CANdleSystem();
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -277,6 +281,10 @@ public class RobotContainer {
             // new InstantCommand(() ->
             // elevator.setTargetHeight(Constants.Elevator.INTAKE_HEIGHT)));
             IntakingCommands.intakeCommand(wrist, elevator)
+                .alongWith(
+                    new InstantCommand(
+                        () -> m_candleSubsystem.changeAnimation(AnimationTypes.INTAKING),
+                        m_candleSubsystem)) // set LEDs to blue while intaking
                 // vibrates the controller for half a second after intake
                 .andThen(
                     Commands.deadline(
@@ -315,6 +323,24 @@ public class RobotContainer {
                 .unless(() -> !elevator.isOnFloor()),
             // controller of the conditional
             () -> wrist.isCanCloserThan(0.1)));
+
+    // if there is a coral detected, if the elevator is ready, set the LEDs to READY state; if
+    // elevator not ready, set LEDs to WORKING state; if neither, set LEDs to UNREADY state
+    m_candleSubsystem.setDefaultCommand(
+        new ConditionalCommand(
+            new ConditionalCommand(
+                new InstantCommand(
+                    () -> m_candleSubsystem.changeAnimation(AnimationTypes.READY),
+                    m_candleSubsystem), // if on target, set to READY
+                new InstantCommand(
+                    () -> m_candleSubsystem.changeAnimation(AnimationTypes.WORKING),
+                    m_candleSubsystem), // if not on target, set to WORKING
+                () -> elevator.isOnTarget()), // if coral AND elevator is on target
+            new InstantCommand(
+                () -> m_candleSubsystem.changeAnimation(AnimationTypes.UNREADY),
+                m_candleSubsystem), // if no coral, set to UNREADY
+            () -> wrist.isCanCloserThan(0.1) // if coral detected
+            ));
 
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
