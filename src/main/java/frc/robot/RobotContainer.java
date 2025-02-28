@@ -31,7 +31,6 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants.Arm;
 import frc.robot.commands.autoCommands.DriveCommands;
 import frc.robot.commands.autoCommands.IntakingCommands;
 import frc.robot.commands.autoCommands.ScoringCommands;
@@ -232,26 +231,24 @@ public class RobotContainer {
                         new WaitCommand(0.5), new ControllerVibrateCommand(0.7, controller))));
 
     // old elevator default command
-      elevator.setDefaultCommand(
-          new WaitCommand(2)
-              .andThen(
-                  new SetElevatorPresetCommand(elevator, wrist, 0)
-                      .unless(() -> wrist.isCanCloserThan(0.1))));
-    
+    elevator.setDefaultCommand(
+        new WaitCommand(2)
+            .andThen(
+                new SetElevatorPresetCommand(elevator, wrist, 0)
+                    .unless(() -> wrist.isCanCloserThan(0.1))));
 
     // if there is a note move the wrist to scoring position. If there is not a note move the wrist
     // back to intake position when the elevator is on the floor
-      wrist.setDefaultCommand(
-          new ConditionalCommand(
-              // if there is a note move the wrist angle to the shooting angle
-              (new SetWristTargetAngleCommand(wrist, Constants.Arm.WRIST_STAGE_2_ANGLE)),
-              // if there is not a note move the wrist to the target angle 0
-              new SetWristTargetAngleCommand(wrist, 0)
-                  // unless the elevator is not on the floor
-                  .unless(() -> !elevator.isOnFloor()),
-              // controller of the conditional
-              () -> wrist.isCanCloserThan(0.1)));
-
+    wrist.setDefaultCommand(
+        new ConditionalCommand(
+            // if there is a note move the wrist angle to the shooting angle
+            (new SetWristTargetAngleCommand(wrist, Constants.Arm.WRIST_STAGE_2_ANGLE)),
+            // if there is not a note move the wrist to the target angle 0
+            new SetWristTargetAngleCommand(wrist, 0)
+                // unless the elevator is not on the floor
+                .unless(() -> !elevator.isOnFloor()),
+            // controller of the conditional
+            () -> wrist.isCanCloserThan(0.1)));
 
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(

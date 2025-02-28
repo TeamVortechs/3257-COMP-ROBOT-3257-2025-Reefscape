@@ -35,7 +35,7 @@ public class VisionIOPhotonVision implements VisionIO {
   protected Transform3d robotToCamera;
 
   // wehter or not eh offset will be updated every tick with preferences
-  private boolean usePreferences = false;
+  private boolean usePreferences = true;
 
   /**
    * Creates a new VisionIOPhotonVision.
