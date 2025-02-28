@@ -248,6 +248,17 @@ public class RobotContainer {
     // moves elevator and wrist to scoring position for level 3
     operatorController.rightBumper().whileTrue(ScoringCommands.prepForScoring(3, wrist, elevator));
 
+    operatorController
+        .rightTrigger()
+        .whileTrue(
+            // new InstantCommand(() ->
+            // elevator.setTargetHeight(Constants.Elevator.INTAKE_HEIGHT)));
+            IntakingCommands.intakeCommand(wrist, elevator)
+                // vibrates the controller for half a second after intake
+                .andThen(
+                    Commands.deadline(
+                        new WaitCommand(0.5), new ControllerVibrateCommand(0.7, controller))));
+
     // intakes then vibrates controlller when in position and has coral
     // y shoots coral out
     controller.a().whileTrue(new SetWristRollerSpeedCommand(wrist, -0.75));
