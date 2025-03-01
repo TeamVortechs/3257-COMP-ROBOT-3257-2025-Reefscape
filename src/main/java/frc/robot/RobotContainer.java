@@ -117,13 +117,13 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.FrontRight),
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight));
-        vision =
-            new Vision(
-                drive::addVisionMeasurement,
-                // new VisionIOPhotonVision(
-                //     VisionConstants.ARDUCAM_LEFT_NAME, VisionConstants.ROBOT_TO_ARDUCAM_LEFT),
-                new VisionIOPhotonVision(
-                    VisionConstants.ARDUCAM_RIGHT_NAME, VisionConstants.ROBOT_TO_ARDUCAM_RIGHT));
+        vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {}); // disable vision in match
+            // new Vision(
+            //     drive::addVisionMeasurement,
+            //     // new VisionIOPhotonVision(
+            //     //     VisionConstants.ARDUCAM_LEFT_NAME, VisionConstants.ROBOT_TO_ARDUCAM_LEFT),
+            //     new VisionIOPhotonVision(
+            //         VisionConstants.ARDUCAM_RIGHT_NAME, VisionConstants.ROBOT_TO_ARDUCAM_RIGHT));
         break;
 
       case SIM:
