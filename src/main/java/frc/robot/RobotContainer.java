@@ -17,6 +17,8 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.events.EventTrigger;
 import com.pathplanner.lib.path.PathConstraints;
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
@@ -114,6 +116,12 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+
+    // start webcam server
+    UsbCamera webcam = CameraServer.startAutomaticCapture();
+    webcam.setResolution(640, 480);
+    webcam.setFPS(24);
+
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
@@ -221,7 +229,7 @@ public class RobotContainer {
     //         () - !wrist.isCanCloserThan(0.1)));
     /* */
     // resets encoders. THIS WILL BREAK THE ROBOT
-    controller
+    operatorController
         .start()
         .onTrue(
             new InstantCommand(() -> elevator.resetEncoders())
