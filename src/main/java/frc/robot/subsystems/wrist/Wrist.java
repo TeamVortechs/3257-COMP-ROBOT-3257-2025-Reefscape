@@ -74,7 +74,7 @@ public class Wrist extends SubsystemBase {
 
   // returns wether or not the arm is clear from the elevator
   public boolean isClearFromElevator() {
-    return wristIO.getAngleRotations() > 1.5;
+    return wristIO.getAngleRotations() > Constants.Arm.WRIST_STAGE_2_ANGLE - 0.2;
   }
 
   // turns manual override and sets the manual speeed

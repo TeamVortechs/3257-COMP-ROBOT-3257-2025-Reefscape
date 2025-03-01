@@ -49,8 +49,8 @@ public final class Constants {
     public static final double MIN_HEIGHT = 0;
     public static final double INTAKE_HEIGHT = 0;
     // public static final double STAGE_1_LEVEL = 0; // currently unimplemented
-    public static final double STAGE_2_LEVEL = 10.81066;
-    public static final double STAGE_3_LEVEL = 19.5383;
+    public static final double STAGE_2_LEVEL = 3.86;
+    public static final double STAGE_3_LEVEL = 14.04;
     public static final double STAGE_4_LEVEL = 36.435; // currently impossible to achieve
   }
 
@@ -61,7 +61,7 @@ public final class Constants {
     public static final int CANRANGE_ID = 60;
     public static final String CANBUS = "rio";
 
-    public static final double WRIST_STAGE_2_ANGLE = 2.251;
+    public static final double WRIST_STAGE_2_ANGLE = 1.009;
     // public static final double WRIST_STAGE_4_ANGLE = 0; // currently impossible to achieve
     public static final double WRIST_HIGHEST_ANGLE = 2.56;
   }
