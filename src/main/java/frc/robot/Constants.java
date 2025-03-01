@@ -49,8 +49,8 @@ public final class Constants {
     public static final double MIN_HEIGHT = 0;
     public static final double INTAKE_HEIGHT = 0;
     // public static final double STAGE_1_LEVEL = 0; // currently unimplemented
-    public static final double STAGE_2_LEVEL = 6.638;
-    public static final double STAGE_3_LEVEL = 18.436;
+    public static final double STAGE_2_LEVEL = 10.81066;
+    public static final double STAGE_3_LEVEL = 19.5383;
     public static final double STAGE_4_LEVEL = 36.435; // currently impossible to achieve
   }
 
