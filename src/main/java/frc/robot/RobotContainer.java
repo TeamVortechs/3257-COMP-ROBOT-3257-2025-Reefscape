@@ -262,12 +262,12 @@ public class RobotContainer {
 
     // intakes then vibrates controlller when in position and has coral
     // y shoots coral out
-    controller.a().whileTrue(new SetWristRollerSpeedCommand(wrist, -0.75));
+    controller.a().whileTrue(new SetWristRollerSpeedCommand(wrist, -0.7));
 
     // left bumper sets the wrist outwards manually
     controller
         .b()
-        .whileTrue(new SetWristTargetAngleCommand(wrist, WristAngle.STAGE2_ANGLE.getAngle()));
+        .whileTrue(new SetWristTargetAngleCommand(wrist, () -> WristAngle.STAGE2_ANGLE.getAngle()));
 
     // controller.leftTrigger().whileTrue(new ManualElevatorCommand(elevator, () -> -0.2));
     // controller.rightTrigger().whileTrue(new ManualElevatorCommand(elevator, () -> 0.2));
@@ -297,10 +297,10 @@ public class RobotContainer {
 
     // old elevator default command
     elevator.setDefaultCommand(
-        new WaitCommand(2)
+        new WaitCommand(2) // wait two seconds, then
             .andThen(
-                new SetElevatorPresetCommand(elevator, wrist, 0)
-                    .unless(() -> wrist.isCanCloserThan(0.1))));
+                new SetElevatorPresetCommand(elevator, wrist, 0) // set elevator to minimum height
+                    .unless(() -> wrist.isCanCloserThan(0.1)))); // unless there is a coral
 
     // if there is no note move the elevator down to zero. If there is a note move elevator to first
     // level if it is currently below first level
@@ -321,9 +321,9 @@ public class RobotContainer {
     wrist.setDefaultCommand(
         new ConditionalCommand(
             // if there is a note move the wrist angle to the shooting angle
-            (new SetWristTargetAngleCommand(wrist, Constants.Arm.WRIST_STAGE_2_ANGLE)),
+            (new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.WRIST_STAGE_2_ANGLE)),
             // if there is not a note move the wrist to the target angle 0
-            new SetWristTargetAngleCommand(wrist, 0)
+            new SetWristTargetAngleCommand(wrist, () -> 0)
                 // unless the elevator is not on the floor
                 .unless(() -> !elevator.isOnFloor()),
             // controller of the conditional
@@ -358,7 +358,10 @@ public class RobotContainer {
     controller.y().onFalse(new PathfindingCommandCancel(drive));
 
     operatorController.povDown().whileTrue(new ManualSetWristSpeedCommand(wrist, () -> -0.1));
-    operatorController.povUp().whileTrue(new ManualSetWristSpeedCommand(wrist, () -> 0.1));
+    operatorController.povUp().whileTrue(new ManualSetWristSpeedCommand(wrist, () -> 0.15));
+    operatorController
+        .a()
+        .onTrue(new SetWristTargetAngleCommand(wrist, () -> wrist.getTargetAngle()));
 
     // controller.x().whileTrue(new PathfindToClosestDepotCommand(drive, false));
     // controller.x().onFalse(new PathfindingCommandCancel(drive));

@@ -14,13 +14,13 @@ public class IntakingCommands {
   // moves wrist and elevator into position then rolls the wrist until object is detected
   public static Command intakeCommand(Wrist wrist, Elevator elevator) {
     return new SetElevatorPresetCommand(elevator, wrist, Constants.Elevator.MIN_HEIGHT)
-        .andThen(new SetWristTargetAngleCommand(wrist, WristAngle.INTAKE_ANGLE.getAngle()))
+        .andThen(new SetWristTargetAngleCommand(wrist, () -> WristAngle.INTAKE_ANGLE.getAngle()))
         .alongWith(new IntakeWristCommand(wrist, -0.6));
   }
 
   public static Command prepForIntakeCommand(Wrist wrist, Elevator elevator) {
     return new SetElevatorPresetCommand(elevator, wrist, Constants.Elevator.MIN_HEIGHT)
-        .andThen(new SetWristTargetAngleCommand(wrist, WristAngle.INTAKE_ANGLE.getAngle()));
+        .andThen(new SetWristTargetAngleCommand(wrist, () -> WristAngle.INTAKE_ANGLE.getAngle()));
   }
 
   public static Command prepForIntakeCommandAuto(Wrist wrist, Elevator elevator) {

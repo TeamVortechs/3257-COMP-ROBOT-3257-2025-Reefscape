@@ -36,16 +36,19 @@ public class ScoringCommands {
     switch (level) { // bit of a misnomer here
       case 1:
         return new SetElevatorPresetCommand(elevator, wrist, Constants.Elevator.STAGE_2_LEVEL)
-            .alongWith(new SetWristTargetAngleCommand(wrist, WristAngle.STAGE2_ANGLE.getAngle()));
+            .alongWith(
+                new SetWristTargetAngleCommand(wrist, () -> WristAngle.STAGE2_ANGLE.getAngle()));
 
       case 2:
         return new SetElevatorPresetCommand(elevator, wrist, Constants.Elevator.STAGE_3_LEVEL)
-            .alongWith(new SetWristTargetAngleCommand(wrist, WristAngle.STAGE2_ANGLE.getAngle()));
+            .alongWith(
+                new SetWristTargetAngleCommand(wrist, () -> WristAngle.STAGE2_ANGLE.getAngle()));
 
       case 3:
         return new SetElevatorPresetCommand(
                 elevator, wrist, Constants.Elevator.MAX_HEIGHT - 0.1) // just a bit less than max
-            .alongWith(new SetWristTargetAngleCommand(wrist, WristAngle.STAGE2_ANGLE.getAngle()));
+            .alongWith(
+                new SetWristTargetAngleCommand(wrist, () -> WristAngle.STAGE2_ANGLE.getAngle()));
 
       default:
         return null;
