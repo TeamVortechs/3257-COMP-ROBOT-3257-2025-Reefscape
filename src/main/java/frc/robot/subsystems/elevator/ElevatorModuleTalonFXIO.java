@@ -26,17 +26,26 @@ public class ElevatorModuleTalonFXIO implements ElevatorModuleIO {
     this.leftMotor = new TalonFX(motorIDLeft, canbusName);
     this.rightMotor = new TalonFX(motorIDRight, canbusName);
 
-    TalonFXConfiguration elevatorConfigs =
-        new TalonFXConfiguration()
-            .withCurrentLimits(
-                new CurrentLimitsConfigs()
-                    // Swerve azimuth does not require much torque output, so we can set a
-                    // relatively
-                    // low
-                    // stator current limit to help avoid brownouts without impacting performance.
-                    .withStatorCurrentLimit(Amps.of(80))
-                    .withStatorCurrentLimitEnable(true));
+    tuneElevatorPID();
 
+    // Set both motors to Brake mode by default.
+    leftMotor.setNeutralMode(NeutralModeValue.Brake);
+    rightMotor.setNeutralMode(NeutralModeValue.Brake);
+  }
+
+  private void tuneElevatorPID() {
+
+    TalonFXConfiguration elevatorConfigs =
+    new TalonFXConfiguration()
+        .withCurrentLimits(
+            new CurrentLimitsConfigs()
+                // Swerve azimuth does not require much torque output, so we can set a
+                // relatively
+                // low
+                // stator current limit to help avoid brownouts without impacting performance.
+                .withStatorCurrentLimit(Amps.of(80))
+                .withStatorCurrentLimitEnable(true));
+    
     var slot0Configs = elevatorConfigs.Slot0;
     slot0Configs.kG = PElevator.kG.getValue();
     slot0Configs.kS = PElevator.kS.getValue();
@@ -56,10 +65,6 @@ public class ElevatorModuleTalonFXIO implements ElevatorModuleIO {
 
     leftMotor.getConfigurator().apply(elevatorConfigs);
     rightMotor.getConfigurator().apply(elevatorConfigs);
-
-    // Set both motors to Brake mode by default.
-    leftMotor.setNeutralMode(NeutralModeValue.Brake);
-    rightMotor.setNeutralMode(NeutralModeValue.Brake);
   }
 
   // advantage kit logging stuff(everything in here gets logged every tick)
@@ -103,6 +108,9 @@ public class ElevatorModuleTalonFXIO implements ElevatorModuleIO {
 
   @Override
   public void PIDVoltage(double targetAngle) {
+
+    tuneElevatorPID();
+
     final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
 
     // set target position to 100 rotations
