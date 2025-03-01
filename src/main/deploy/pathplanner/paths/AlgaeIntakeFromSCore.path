@@ -3,35 +3,42 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.509050324675324,
-        "y": 5.349797077922078
+        "x": 7.588409090909089,
+        "y": 4.652272727272727
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.634050324675324,
-        "y": 5.133290726975969
+        "x": 8.493338163073176,
+        "y": 4.600362172316462
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "AlgaeScoreSpot"
     },
     {
       "anchor": {
-        "x": 3.509050324675324,
-        "y": 5.349797077922078
+        "x": 6.0627272727272725,
+        "y": 4.059900568181818
       },
       "prevControl": {
-        "x": 3.384050324675324,
-        "y": 5.566303428868188
+        "x": 5.589913504527602,
+        "y": 4.120319886836731
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "CoralScore2 right"
+      "linkedName": "AlgaeIntake6"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "intake prep",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 1.5,
     "maxAcceleration": 1.25,
@@ -42,13 +49,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -59.99999999999999
+    "rotation": 180.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "algae paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -59.99999999999999
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

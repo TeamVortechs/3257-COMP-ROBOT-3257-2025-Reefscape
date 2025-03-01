@@ -7,31 +7,43 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Coral Score Mid"
+            "pathName": "Algae Score from mid"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Scoring"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 8.0
+            "name": "score"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Mid Coral Score to Bottom Intake"
+            "pathName": "AlgaeIntakeFromSCore"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "AlgaeScoreFrom6"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "score"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "AlgaeClear"
           }
         }
       ]

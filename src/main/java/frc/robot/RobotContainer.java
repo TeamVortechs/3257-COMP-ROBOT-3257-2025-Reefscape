@@ -25,7 +25,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -34,9 +33,6 @@ import frc.robot.commands.autoCommands.IntakingCommands;
 import frc.robot.commands.autoCommands.ScoringCommands;
 import frc.robot.commands.communication.ControllerVibrateCommand;
 import frc.robot.commands.communication.TellCommand;
-import frc.robot.commands.elevator.SetElevatorPresetCommand;
-import frc.robot.commands.pathfindingCommands.PathfindToClosestDepotCommand;
-import frc.robot.commands.pathfindingCommands.PathfindingCommandCancel;
 import frc.robot.commands.wrist.IntakeWristCommand;
 import frc.robot.commands.wrist.ManualSetWristSpeedCommand;
 import frc.robot.commands.wrist.SetWristRollerSpeedCommand;
@@ -79,10 +75,8 @@ public class RobotContainer {
   private final Wrist wrist =
       new Wrist(
           new WristIOTalonFX(
-              Constants.Arm.ARM_MOTOR_ID,
-              Constants.Arm.ROLLER_MOTOR_ID,
-              Constants.Arm.CANBUS
-            //   Constants.Arm.CANRANGE_ID
+              Constants.Arm.ARM_MOTOR_ID, Constants.Arm.ROLLER_MOTOR_ID, Constants.Arm.CANBUS
+              //   Constants.Arm.CANRANGE_ID
               ));
 
   // DigitalInput limitSwitch =
@@ -270,7 +264,9 @@ public class RobotContainer {
         .b()
         .whileTrue(new SetWristTargetAngleCommand(wrist, () -> WristAngle.STAGE2_ANGLE.getAngle()));
 
-     operatorController.x().whileTrue(new SetWristTargetAngleCommand(wrist, () -> WristAngle.INTAKE_ANGLE.getAngle()));
+    operatorController
+        .x()
+        .whileTrue(new SetWristTargetAngleCommand(wrist, () -> WristAngle.INTAKE_ANGLE.getAngle()));
 
     // controller.leftTrigger().whileTrue(new ManualElevatorCommand(elevator, () -> -0.2));
     // controller.rightTrigger().whileTrue(new ManualElevatorCommand(elevator, () -> 0.2));
@@ -288,7 +284,7 @@ public class RobotContainer {
             /* */
     // right trigger intakes algae
     controller.rightTrigger().whileTrue(new SetWristRollerSpeedCommand(wrist, 0.6));
-   //a intakes algae
+    // a intakes algae
     operatorController.a().whileTrue(new SetWristRollerSpeedCommand(wrist, 0.6));
 
     /*controller
@@ -306,7 +302,8 @@ public class RobotContainer {
     // elevator.setDefaultCommand(
     //     new WaitCommand(2) // wait two seconds, then
     //         .andThen(
-    //             new SetElevatorPresetCommand(elevator, wrist, 0) // set elevator to minimum height
+    //             new SetElevatorPresetCommand(elevator, wrist, 0) // set elevator to minimum
+    // height
     //                 .unless(() -> wrist.isCanCloserThan(0.1)))); // unless there is a coral
 
     // if there is no note move the elevator down to zero. If there is a note move elevator to first
@@ -429,18 +426,16 @@ public class RobotContainer {
     // doing the commands
 
     // stuff to check wether or not it was a sim
-    boolean isReal = true;
+    boolean isReal = false;
     // if (Constants.currentMode == Mode.SIM) isReal = false;
 
     // comm
     addNamedCommand(
         "intake prep", IntakingCommands.prepForIntakeCommandAuto(wrist, elevator), isReal);
     addNamedCommand("intake", new IntakeWristCommand(wrist, -0.6), isReal);
-    addNamedCommand("prepStage1", ScoringCommands.prepForScoringAuto(1, wrist, elevator), isReal);
-    addNamedCommand("prepStage2", ScoringCommands.prepForScoringAuto(2, wrist, elevator), isReal);
-    addNamedCommand("prepStage3", ScoringCommands.prepForScoringAuto(3, wrist, elevator), isReal);
+    addNamedCommand("prepScore", ScoringCommands.prepForScoringAuto(1, wrist, elevator), isReal);
     addNamedCommand(
-        "Scoring",
+        "score",
         new WaitCommand(0.2).deadlineFor(new SetWristRollerSpeedCommand(wrist, -0.4)),
         isReal);
   }
