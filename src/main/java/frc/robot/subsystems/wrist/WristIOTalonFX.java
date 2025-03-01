@@ -68,7 +68,7 @@ public class WristIOTalonFX implements WristIO {
                     // relatively
                     // low
                     // stator current limit to help avoid brownouts without impacting performance.
-                    .withStatorCurrentLimit(Amps.of(40))
+                    .withStatorCurrentLimit(Amps.of(100))
                     .withStatorCurrentLimitEnable(true));
     rollers.getConfigurator().apply(rollerMotorConfigs);
 
