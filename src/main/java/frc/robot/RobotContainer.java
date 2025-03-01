@@ -81,8 +81,9 @@ public class RobotContainer {
           new WristIOTalonFX(
               Constants.Arm.ARM_MOTOR_ID,
               Constants.Arm.ROLLER_MOTOR_ID,
-              Constants.Arm.CANBUS,
-              Constants.Arm.CANRANGE_ID));
+              Constants.Arm.CANBUS
+            //   Constants.Arm.CANRANGE_ID
+              ));
 
   // DigitalInput limitSwitch =
   // new DigitalInput(20); // !!!!! FAKE CHANNEL! CHANGE WHEN PROPERLY IMPLEMENTED !!!!!!
@@ -261,13 +262,15 @@ public class RobotContainer {
                         new WaitCommand(0.5), new ControllerVibrateCommand(0.7, controller))));
 
     // intakes then vibrates controlller when in position and has coral
-    // y shoots coral out
+    // driver A shoots algae
     controller.a().whileTrue(new SetWristRollerSpeedCommand(wrist, -0.7));
 
     // left bumper sets the wrist outwards manually
-    controller
+    operatorController
         .b()
         .whileTrue(new SetWristTargetAngleCommand(wrist, () -> WristAngle.STAGE2_ANGLE.getAngle()));
+
+     operatorController.x().whileTrue(new SetWristTargetAngleCommand(wrist, () -> WristAngle.INTAKE_ANGLE.getAngle()));
 
     // controller.leftTrigger().whileTrue(new ManualElevatorCommand(elevator, () -> -0.2));
     // controller.rightTrigger().whileTrue(new ManualElevatorCommand(elevator, () -> 0.2));
@@ -283,24 +286,28 @@ public class RobotContainer {
         .whileTrue(
             new InstantCommand(() -> elevator.setTargetHeight(Constants.Elevator.STAGE_3_LEVEL)));
             /* */
-    // right trigger sets elevator height back down to 0
-    controller
-        .rightTrigger()
-        .whileTrue(
-            // new InstantCommand(() ->
-            // elevator.setTargetHeight(Constants.Elevator.INTAKE_HEIGHT)));
-            IntakingCommands.intakeCommand(wrist, elevator)
-                // vibrates the controller for half a second after intake
-                .andThen(
-                    Commands.deadline(
-                        new WaitCommand(0.5), new ControllerVibrateCommand(0.7, controller))));
+    // right trigger intakes algae
+    controller.rightTrigger().whileTrue(new SetWristRollerSpeedCommand(wrist, 0.6));
+   //a intakes algae
+    operatorController.a().whileTrue(new SetWristRollerSpeedCommand(wrist, 0.6));
 
+    /*controller
+            .rightTrigger()
+            .whileTrue(
+                // new InstantCommand(() ->
+                // elevator.setTargetHeight(Constants.Elevator.INTAKE_HEIGHT)));
+                IntakingCommands.intakeCommand(wrist, elevator)
+                    // vibrates the controller for half a second after intake
+                    .andThen(
+                        Commands.deadline(
+                            new WaitCommand(0.5), new ControllerVibrateCommand(0.7, controller))));
+    /* */
     // old elevator default command
-    elevator.setDefaultCommand(
-        new WaitCommand(2) // wait two seconds, then
-            .andThen(
-                new SetElevatorPresetCommand(elevator, wrist, 0) // set elevator to minimum height
-                    .unless(() -> wrist.isCanCloserThan(0.1)))); // unless there is a coral
+    // elevator.setDefaultCommand(
+    //     new WaitCommand(2) // wait two seconds, then
+    //         .andThen(
+    //             new SetElevatorPresetCommand(elevator, wrist, 0) // set elevator to minimum height
+    //                 .unless(() -> wrist.isCanCloserThan(0.1)))); // unless there is a coral
 
     // if there is no note move the elevator down to zero. If there is a note move elevator to first
     // level if it is currently below first level
@@ -318,16 +325,16 @@ public class RobotContainer {
 
     // if there is a note move the wrist to scoring position. If there is not a note move the wrist
     // back to intake position when the elevator is on the floor
-    wrist.setDefaultCommand(
-        new ConditionalCommand(
-            // if there is a note move the wrist angle to the shooting angle
-            (new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.WRIST_STAGE_2_ANGLE)),
-            // if there is not a note move the wrist to the target angle 0
-            new SetWristTargetAngleCommand(wrist, () -> 0)
-                // unless the elevator is not on the floor
-                .unless(() -> !elevator.isOnFloor()),
-            // controller of the conditional
-            () -> wrist.isCanCloserThan(0.1)));
+    // wrist.setDefaultCommand(
+    //     new ConditionalCommand(
+    //         // if there is a note move the wrist angle to the shooting angle
+    //         (new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.WRIST_STAGE_2_ANGLE)),
+    //         // if there is not a note move the wrist to the target angle 0
+    //         new SetWristTargetAngleCommand(wrist, () -> 0)
+    //             // unless the elevator is not on the floor
+    //             .unless(() -> !elevator.isOnFloor()),
+    //         // controller of the conditional
+    //         () -> wrist.isCanCloserThan(0.1)));
 
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
@@ -351,11 +358,11 @@ public class RobotContainer {
     // Switch to X pattern when X button is pressed
     // controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
-    controller.x().whileTrue(new PathfindToClosestDepotCommand(drive, false));
-    controller.x().onFalse(new PathfindingCommandCancel(drive));
+    // controller.x().whileTrue(new PathfindToClosestDepotCommand(drive, false));
+    // controller.x().onFalse(new PathfindingCommandCancel(drive));
 
-    controller.y().whileTrue(new PathfindToClosestDepotCommand(drive, true));
-    controller.y().onFalse(new PathfindingCommandCancel(drive));
+    // controller.y().whileTrue(new PathfindToClosestDepotCommand(drive, true));
+    // controller.y().onFalse(new PathfindingCommandCancel(drive));
 
     operatorController.povDown().whileTrue(new ManualSetWristSpeedCommand(wrist, () -> -0.1));
     operatorController.povUp().whileTrue(new ManualSetWristSpeedCommand(wrist, () -> 0.15));

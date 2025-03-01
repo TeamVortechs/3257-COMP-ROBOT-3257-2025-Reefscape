@@ -21,12 +21,12 @@ public class WristIOTalonFX implements WristIO {
 
   @AutoLogOutput private double angle;
 
-  public WristIOTalonFX(int armID, int rollerID, String canbusName, int CanrangeID) {
+  public WristIOTalonFX(int armID, int rollerID, String canbusName) {
 
     this.arm = new TalonFX(armID, canbusName);
     this.rollers = new TalonFX(rollerID, canbusName);
 
-    this.canRange = new CANrange(CanrangeID);
+    // this.canRange = new CANrange(CanrangeID);
 
     TalonFXConfiguration armMotorConfigs =
         new TalonFXConfiguration()
@@ -113,7 +113,7 @@ public class WristIOTalonFX implements WristIO {
     inputs.wristSpeedRotations = arm.get();
     inputs.wristLocationRotations = getAngleRotations();
 
-    inputs.canRangeDistance = canRange.getDistance().getValueAsDouble();
+    // inputs.canRangeDistance = canRange.getDistance().getValueAsDouble();
 
     inputs.rollersCurrent = rollers.getStatorCurrent().getValueAsDouble();
     inputs.rollersEncoder = rollers.getPosition().getValueAsDouble();
@@ -131,16 +131,16 @@ public class WristIOTalonFX implements WristIO {
   }
 
   // returns wether or not the can range is detected
-  @Override
-  public boolean isDetected() {
-    return canRange.getIsDetected().getValue();
-  }
+  // @Override
+  // public boolean isDetected() {
+  //   return canRange.getIsDetected().getValue();
+  // }
 
   // gets the distance from the can range
-  @Override
-  public double getDistance() {
-    return canRange.getDistance().getValueAsDouble();
-  }
+  // @Override
+  // public double getDistance() {
+  //   return canRange.getDistance().getValueAsDouble();
+  // }
 
   // sets the voltage of the arm
   @Override

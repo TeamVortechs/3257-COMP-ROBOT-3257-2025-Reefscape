@@ -23,7 +23,7 @@ public class ScoringCommands {
                 new InstantCommand(() -> wrist.setTargetAngle(WristAngle.STAGE2_ANGLE.getAngle())));
 
       case 3:
-        return new InstantCommand(() -> elevator.setTargetHeight(Constants.Elevator.STAGE_4_LEVEL))
+        return new InstantCommand(() -> elevator.setTargetHeight(Constants.Elevator.BARGE_LEVEL))
             .alongWith(
                 new InstantCommand(() -> wrist.setTargetAngle(WristAngle.STAGE2_ANGLE.getAngle())));
 
