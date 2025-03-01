@@ -49,7 +49,6 @@ import frc.robot.subsystems.elevator.ElevatorModuleTalonFXIO;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
-import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.Wrist.WristAngle;
@@ -117,13 +116,17 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.FrontRight),
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight));
-        vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {}); // disable vision in match
-            // new Vision(
-            //     drive::addVisionMeasurement,
-            //     // new VisionIOPhotonVision(
-            //     //     VisionConstants.ARDUCAM_LEFT_NAME, VisionConstants.ROBOT_TO_ARDUCAM_LEFT),
-            //     new VisionIOPhotonVision(
-            //         VisionConstants.ARDUCAM_RIGHT_NAME, VisionConstants.ROBOT_TO_ARDUCAM_RIGHT));
+        vision =
+            new Vision(
+                drive::addVisionMeasurement,
+                new VisionIO() {},
+                new VisionIO() {}); // disable vision in match
+        // new Vision(
+        //     drive::addVisionMeasurement,
+        //     // new VisionIOPhotonVision(
+        //     //     VisionConstants.ARDUCAM_LEFT_NAME, VisionConstants.ROBOT_TO_ARDUCAM_LEFT),
+        //     new VisionIOPhotonVision(
+        //         VisionConstants.ARDUCAM_RIGHT_NAME, VisionConstants.ROBOT_TO_ARDUCAM_RIGHT));
         break;
 
       case SIM:
@@ -164,6 +167,7 @@ public class RobotContainer {
     registerNamedCommandsAuto();
 
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
+    autoChooser.addDefaultOption("Clear", getAutonomousCommand());
 
     // registerAutoChooser();
     // configure the autonomous named commands
@@ -368,6 +372,10 @@ public class RobotContainer {
     // controller.x().whileTrue(new PathfindToClosestDepotCommand(drive, false));
     // controller.x().onFalse(new PathfindingCommandCancel(drive));
 
+    controller
+        .x()
+        .onTrue(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.WRIST_GROUND_ANGLE));
+
     // controller.y().whileTrue(new PathfindToClosestDepotCommand(drive, true));
     // controller.y().onFalse(new PathfindingCommandCancel(drive));
 
@@ -415,7 +423,18 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return autoChooser.get();
+    // return autoChooser.get();
+    // try {
+    //   final var path = PathPlannerPath.fromPathFile("Clear");
+    //   return AutoBuilder.followPath(path);
+    // } catch (Exception ignored) {
+
+    // }
+    // return null;
+
+    return DriveCommands.joystickDrive(drive, () -> 0.6, () -> 0, () -> 0)
+        .andThen(Commands.waitSeconds(2))
+        .andThen(DriveCommands.joystickDrive(drive, () -> 0, () -> 0, () -> 0));
   }
 
   // registers pathplanner's named commands

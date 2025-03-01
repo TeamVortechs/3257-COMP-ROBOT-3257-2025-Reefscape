@@ -38,16 +38,16 @@ public class Wrist extends SubsystemBase {
 
     CurrentAngle = wristIO.getAngleRotations();
 
-    if (getAngleRotations() > Constants.Arm.WRIST_HIGHEST_ANGLE
-        || getAngleRotations() < -targetBuffer) {
-      setManualSpeed(-0.05);
-      System.out.println("WRIST OUT OF BOUNDS");
-    }
+    // if (getAngleRotations() > Constants.Arm.WRIST_HIGHEST_ANGLE
+    //     || getAngleRotations() < -targetBuffer) {
+    //   setManualSpeed(-0.05);
+    //   System.out.println("WRIST OUT OF BOUNDS");
+    // }
 
-    if (manualOverride) {
-      System.out.println("Wrist MANUAL OVERRIDE WRIST ENGAGED");
-      return;
-    }
+    // if (manualOverride) {
+    //   System.out.println("Wrist MANUAL OVERRIDE WRIST ENGAGED");
+    //   return;
+    // }
     // set target position to 100 rotations
     wristIO.PIDVoltage(targetAngle);
   }
