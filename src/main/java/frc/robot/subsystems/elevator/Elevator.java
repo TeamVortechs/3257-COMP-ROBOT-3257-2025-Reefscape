@@ -84,11 +84,11 @@ public class Elevator extends SubsystemBase {
       }
     }
 
-    if (!wrist.isClearFromElevator()) {
-      // System.out.println("ELEVATOR IS NOT MOVING! THE WRIST ANGLE IS NOT VALID");
-      moduleIO.setSpeed(0);
-      return;
-    }
+    // if (!wrist.isClearFromElevator()) {
+    //   // System.out.println("ELEVATOR IS NOT MOVING! THE WRIST ANGLE IS NOT VALID");
+    //   moduleIO.setSpeed(0);
+    //   return;
+    // }
 
     if (manualOverride) {
 
@@ -113,7 +113,14 @@ public class Elevator extends SubsystemBase {
 
   /** Sets a new target height for the elevator using PID control. */
   public void setTargetHeight(double height) {
+
     manualOverride = false;
+
+    if (!wrist.isClearFromElevator()) {
+      System.out.println("tried to set elevator target height but wrist is not clear");
+      return;
+    }
+
     targetHeight = Math.max(0.0, Math.min(height, Constants.Elevator.MAX_HEIGHT));
     // pid.setGoal(targetHeight);
   }

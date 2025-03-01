@@ -31,7 +31,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.autoCommands.DriveCommands;
 import frc.robot.commands.autoCommands.IntakingCommands;
 import frc.robot.commands.autoCommands.ScoringCommands;
-import frc.robot.commands.communication.ControllerVibrateCommand;
 import frc.robot.commands.communication.TellCommand;
 import frc.robot.commands.wrist.IntakeWristCommand;
 import frc.robot.commands.wrist.ManualSetWristSpeedCommand;
@@ -244,20 +243,21 @@ public class RobotContainer {
     // moves elevator and wrist to scoring position for level 3
     operatorController.rightBumper().whileTrue(ScoringCommands.prepForScoring(3, wrist, elevator));
 
-    operatorController
-        .rightTrigger()
-        .whileTrue(
-            // new InstantCommand(() ->
-            // elevator.setTargetHeight(Constants.Elevator.INTAKE_HEIGHT)));
-            IntakingCommands.intakeCommand(wrist, elevator)
-                // vibrates the controller for half a second after intake
-                .andThen(
-                    Commands.deadline(
-                        new WaitCommand(0.5), new ControllerVibrateCommand(0.7, controller))));
+    operatorController.y().whileTrue(ScoringCommands.prepForScoring(4, wrist, elevator));
+
+    operatorController.rightTrigger().whileTrue(new SetWristRollerSpeedCommand(wrist, 0.6));
+    // new InstantCommand(() ->
+    // elevator.setTargetHeight(Constants.Elevator.INTAKE_HEIGHT)));
+    // IntakingCommands.intakeCommand(wrist, elevator)
+    // // vibrates the controller for half a second after intake
+    // .andThen(
+    //     Commands.deadline(
+    //         new WaitCommand(0.5), new ControllerVibrateCommand(0.7, controller)))
+    // );
 
     // intakes then vibrates controlller when in position and has coral
     // driver A shoots algae
-    controller.a().whileTrue(new SetWristRollerSpeedCommand(wrist, -0.7));
+    controller.a().whileTrue(new SetWristRollerSpeedCommand(wrist, -1));
 
     // left bumper sets the wrist outwards manually
     operatorController
@@ -282,10 +282,8 @@ public class RobotContainer {
         .whileTrue(
             new InstantCommand(() -> elevator.setTargetHeight(Constants.Elevator.STAGE_3_LEVEL)));
             /* */
-    // right trigger intakes algae
+    // driver right trigger intakes algae
     controller.rightTrigger().whileTrue(new SetWristRollerSpeedCommand(wrist, 0.6));
-    // a intakes algae
-    operatorController.a().whileTrue(new SetWristRollerSpeedCommand(wrist, 0.6));
 
     /*controller
             .rightTrigger()
@@ -332,6 +330,7 @@ public class RobotContainer {
     //             .unless(() -> !elevator.isOnFloor()),
     //         // controller of the conditional
     //         () -> wrist.isCanCloserThan(0.1)));
+    wrist.setDefaultCommand(new SetWristRollerSpeedCommand(wrist, 0.2));
 
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(

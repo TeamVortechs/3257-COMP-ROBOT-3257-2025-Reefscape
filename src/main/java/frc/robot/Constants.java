@@ -62,7 +62,10 @@ public final class Constants {
     public static final String CANBUS = "rio";
 
     public static final double WRIST_STAGE_2_ANGLE = 2.251;
-    // public static final double WRIST_STAGE_4_ANGLE = 0; // currently impossible to achieve
-    public static final double WRIST_HIGHEST_ANGLE = 2.56;
+    public static final double WRIST_GROUND_ANGLE =
+        3; // we do not know this yet; input correct angle later
+    public static final double WRIST_STAGE_4_ANGLE = 1.3007; // currently impossible to achieve
+    public static final double WRIST_HIGHEST_ANGLE =
+        WRIST_GROUND_ANGLE + 0.2; // set highest angle to wrist ground angle plus arbitrary leeway
   }
 }
