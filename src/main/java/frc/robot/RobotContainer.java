@@ -32,7 +32,6 @@ import frc.robot.commands.autoCommands.DriveCommands;
 import frc.robot.commands.autoCommands.IntakingCommands;
 import frc.robot.commands.autoCommands.ScoringCommands;
 import frc.robot.commands.communication.TellCommand;
-import frc.robot.commands.wrist.IntakeWristCommand;
 import frc.robot.commands.wrist.ManualSetWristSpeedCommand;
 import frc.robot.commands.wrist.SetWristRollerSpeedCommand;
 import frc.robot.commands.wrist.SetWristTargetAngleCommand;
@@ -429,10 +428,10 @@ public class RobotContainer {
     // if (Constants.currentMode == Mode.SIM) isReal = false;
 
     // comm
-    addNamedCommand(
-        "intake prep", IntakingCommands.prepForIntakeCommandAuto(wrist, elevator), isReal);
-    addNamedCommand("intake", new IntakeWristCommand(wrist, -0.6), isReal);
-    addNamedCommand("prepScore", ScoringCommands.prepForScoringAuto(1, wrist, elevator), isReal);
+    addNamedCommand("intakeStage2", IntakingCommands.intakeCommandAuto(wrist, elevator, 2), isReal);
+    addNamedCommand("intakeStage1", IntakingCommands.intakeCommandAuto(wrist, elevator, 1), isReal);
+\[]
+
     addNamedCommand(
         "score",
         new WaitCommand(0.2).deadlineFor(new SetWristRollerSpeedCommand(wrist, -0.4)),
