@@ -75,4 +75,8 @@ public class KDoublePreferences {
 
     public static KDoublePref manualSpeedLimit = new KDoublePref("wrist MANUAL speed limit", 0.3);
   }
+
+  public static class PClimber {
+    public static KDoublePref manualSpeedLimit = new KDoublePref("CLIMBER manual speed limit", 0.3);
+  }
 }

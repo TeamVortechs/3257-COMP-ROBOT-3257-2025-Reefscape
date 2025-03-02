@@ -69,4 +69,8 @@ public final class Constants {
     public static final double WRIST_HIGHEST_ANGLE =
         WRIST_GROUND_ANGLE + 0.2; // set highest angle to wrist ground angle plus arbitrary leeway
   }
+
+  public static final class Climber {
+    public static final int CLIMBER_MOTOR_ID = 25; // REASSIGN WHEN READY!!!!!!
+  }
 }
