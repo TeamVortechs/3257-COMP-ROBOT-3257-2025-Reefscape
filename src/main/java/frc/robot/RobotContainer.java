@@ -431,7 +431,16 @@ public class RobotContainer {
 
     // }
     // return null;
-
+    // if (DriverStation.getAlliance().get()
+    //     == DriverStation.Alliance.Red) { // If red, go in reverse (forwards on red side)
+    //   return DriveCommands.joystickDrive(drive, () -> -0.6, () -> 0, () -> 0)
+    //       .andThen(Commands.waitSeconds(2))
+    //       .andThen(DriveCommands.joystickDrive(drive, () -> 0, () -> 0, () -> 0));
+    // } else { // If not, go forwards (forwards on blue side)
+    //   return DriveCommands.joystickDrive(drive, () -> 0.6, () -> 0, () -> 0)
+    //       .andThen(Commands.waitSeconds(2))
+    //       .andThen(DriveCommands.joystickDrive(drive, () -> 0, () -> 0, () -> 0));
+    // }
     return DriveCommands.joystickDrive(drive, () -> 0.6, () -> 0, () -> 0)
         .andThen(Commands.waitSeconds(2))
         .andThen(DriveCommands.joystickDrive(drive, () -> 0, () -> 0, () -> 0));
