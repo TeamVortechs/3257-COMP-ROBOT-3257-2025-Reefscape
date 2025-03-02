@@ -29,7 +29,7 @@ public class KDoublePreferences {
 
   public static class PElevator {
     public static KDoublePref kG =
-        new KDoublePref("elevator kG", 0.2); // Add kG V output to overcome gravity
+        new KDoublePref("elevator kG", 0.15); // Add kG V output to overcome gravity
     public static KDoublePref kS =
         new KDoublePref("elevator kS", 0.25); // Add kS V output to overcome static friction
     public static KDoublePref kV =
@@ -37,8 +37,7 @@ public class KDoublePreferences {
     public static KDoublePref kA =
         new KDoublePref("elevator kA", 0.01); // An acceleration of 1 rps/s requires kA V output
     public static KDoublePref kP =
-        new KDoublePref(
-            "elevator kP", 7.5); // A position error of 1 rotation results in kP V output
+        new KDoublePref("elevator kP", 23); // A position error of 1 rotation results in kP V output
     public static KDoublePref kI =
         new KDoublePref("elevator kI", 0); // no output for error over time
     public static KDoublePref kD =
@@ -64,7 +63,7 @@ public class KDoublePreferences {
     public static KDoublePref kA =
         new KDoublePref("wrist kA", 0.01); // An acceleration of 1 rps/s requires kA V output
     public static KDoublePref kP =
-        new KDoublePref("wrist kP", 4.8); // A position error of 1 rotation results in kP V output
+        new KDoublePref("wrist kP", 7.5); // A position error of 1 rotation results in kP V output
     public static KDoublePref kI = new KDoublePref("wrist kI", 0); // no output for error over time
     public static KDoublePref kD =
         new KDoublePref("wrist kD", 0.1); // A velocity error of 1 rps results in 0.1 V output
