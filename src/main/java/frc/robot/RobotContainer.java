@@ -238,15 +238,16 @@ public class RobotContainer {
     // moves elevator and wrist to scoring position for level 3
     controller.rightBumper().whileTrue(ScoringCommands.prepForScoring(3, wrist, elevator));
 
-    operatorController.leftTrigger().whileTrue(ScoringCommands.prepForScoring(1, wrist, elevator));
+    // operatorController.leftTrigger().whileTrue(ScoringCommands.prepForScoring(1, wrist,
+    // elevator));
+    // op left trigger brings elevator down AT WHATEVER ANGLE THE ARM IS AT
+    operatorController.leftTrigger().whileTrue(ScoringCommands.prepForScoring(4, wrist, elevator));
 
     // moves elevator and wrist to the scoring positions level 2 after the right button is tapped
     operatorController.leftBumper().whileTrue(ScoringCommands.prepForScoring(2, wrist, elevator));
 
     // moves elevator and wrist to scoring position for level 3
     operatorController.rightBumper().whileTrue(ScoringCommands.prepForScoring(3, wrist, elevator));
-
-    operatorController.y().whileTrue(ScoringCommands.prepForScoring(4, wrist, elevator));
 
     operatorController.rightTrigger().whileTrue(new SetWristRollerSpeedCommand(wrist, 0.6));
     // new InstantCommand(() ->
@@ -267,9 +268,18 @@ public class RobotContainer {
         .b()
         .whileTrue(new SetWristTargetAngleCommand(wrist, () -> WristAngle.STAGE2_ANGLE.getAngle()));
 
+    // x sets to inwards angle manually
     operatorController
         .x()
         .whileTrue(new SetWristTargetAngleCommand(wrist, () -> WristAngle.INTAKE_ANGLE.getAngle()));
+
+    // y sets to ground intake manually
+    operatorController
+        .y()
+        .whileTrue(
+            new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
+                .andThen(
+                    new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.WRIST_GROUND_ANGLE)));
 
     // controller.leftTrigger().whileTrue(new ManualElevatorCommand(elevator, () -> -0.2));
     // controller.rightTrigger().whileTrue(new ManualElevatorCommand(elevator, () -> 0.2));

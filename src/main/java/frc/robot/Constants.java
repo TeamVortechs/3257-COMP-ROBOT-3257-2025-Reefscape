@@ -46,13 +46,13 @@ public final class Constants {
     public static final String CANBUS = "rio";
 
     public static final double MAX_HEIGHT =
-        43.66; // ABSOLUTELY NEVER ACHIEVE THIS OR EVERYTHING EXPLODES
+        43.336; // old height 43.66 ABSOLUTELY NEVER ACHIEVE THIS OR EVERYTHING EXPLODES
     public static final double MIN_HEIGHT = 0;
     public static final double INTAKE_HEIGHT = 0;
     // public static final double STAGE_1_LEVEL = 0; // currently unimplemented
     public static final double STAGE_2_LEVEL = 10.81066;
     public static final double STAGE_3_LEVEL = 19.5383;
-    public static final double BARGE_LEVEL = 43.5; // currently impossible to achieve
+    public static final double BARGE_LEVEL = 43.2; // currently impossible to achieve
   }
 
   // constants used for the arm/wrist (naming inconsistency)

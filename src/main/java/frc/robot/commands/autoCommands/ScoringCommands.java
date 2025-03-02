@@ -68,7 +68,7 @@ public class ScoringCommands {
 
       case 4:
         return new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
-            .andThen(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.WRIST_GROUND_ANGLE))
+            .andThen(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.WRIST_STAGE_4_ANGLE))
             .andThen(new WaitUntilCommand(() -> wrist.isClearFromElevator()))
             .andThen(new SetElevatorPresetCommand(elevator, wrist, Constants.Elevator.MIN_HEIGHT));
         // return new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
