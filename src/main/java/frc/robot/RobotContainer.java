@@ -208,17 +208,21 @@ public class RobotContainer {
     // L1/LB sets to processor-scoring position
     // requires a new prepForScoring case; will become real later
     // controller.leftBumper().onTrue(ScoringCommands.prepForScoring([WIP], wrist, elevator));
+    // L2 sets arm to ground-intake position while held; on release, sets arm back to elevator-ready position
+    controller
+        .leftTrigger()
+        .onTrue(
+            new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
+                .andThen(
+                    new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.WRIST_GROUND_ANGLE)))
+        .onFalse(
+            new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
+                .andThen(
+                    new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.WRIST_STAGE_4_ANGLE)));
     // R1/RB sets to barge-scoring position
     controller.rightBumper().onTrue(ScoringCommands.prepForScoring(3, wrist, elevator));
     // R2/RB ejects algae while held
     controller.rightTrigger().whileTrue(new SetWristRollerSpeedCommand(wrist, -1));
-    // A sets arm to ground-intake position
-    controller
-        .a()
-        .onTrue(
-            new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
-                .andThen(
-                    new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.WRIST_GROUND_ANGLE)));
     // B sets elevator to minimum height
     controller.b().onTrue(ScoringCommands.prepForScoring(4, wrist, elevator));
     // X intakes algae while held
