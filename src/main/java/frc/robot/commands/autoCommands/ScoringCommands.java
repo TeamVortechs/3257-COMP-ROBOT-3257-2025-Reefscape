@@ -43,7 +43,9 @@ public class ScoringCommands {
         return new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
           .andThen(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.WRIST_STAGE_4_ANGLE))
           .andThen(new WaitUntilCommand(() -> wrist.isClearFromElevator()))
-          .andThen(new SetElevatorPresetCommand(elevator, wrist, Constants.Elevator.BARGE_LEVEL));
+          .andThen(new SetElevatorPresetCommand(elevator, wrist, Constants.Elevator.BARGE_LEVEL))
+          .andThen(new WaitUntilCommand(() -> elevator.getCurrentHeight() > Constants.Elevator.STAGE_3_LEVEL))
+          .andThen(new SetWristTargetAngleCommand(wrist, () -> 0));
 
       case 4: // minimum height
         return new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
