@@ -5,18 +5,6 @@ import frc.robot.util.KDoublePref;
 // these preferences are able to be changed at runtime. Most likely this stuff will just be used for
 // faster PID loop tuning
 public class KDoublePreferences {
-  public static class PElevator {
-    // should switch this all to a set value when we finish tuning
-    public static KDoublePref proportional = new KDoublePref("elevator proportional", 1.6);
-    public static KDoublePref integral = new KDoublePref("elevator integral", 0.0002);
-    public static KDoublePref derivative =
-        new KDoublePref("elevator derivative", 0.0); // should be tweaked
-
-    public static KDoublePref speedlimit = new KDoublePref("elevator speed limit", 0.01);
-    public static KDoublePref accelerationLimit =
-        new KDoublePref("elevator acceleration limit", 0.01);
-  }
-
   public static class PDrivetrain {
     public static final KDoublePref kPTranslation = new KDoublePref("trans proportional", 0.45);
     public static final KDoublePref kITranslation = new KDoublePref("trans integral", 0.6);
@@ -39,15 +27,52 @@ public class KDoublePreferences {
     // locked in, change to 0
   }
 
+  public static class PElevator {
+    public static KDoublePref kG =
+        new KDoublePref("elevator kG", 0.15); // Add kG V output to overcome gravity
+    public static KDoublePref kS =
+        new KDoublePref("elevator kS", 0.25); // Add kS V output to overcome static friction
+    public static KDoublePref kV =
+        new KDoublePref("elevator kV", 0.12); // A velocity target of 1 rps results in kV V output
+    public static KDoublePref kA =
+        new KDoublePref("elevator kA", 0.01); // An acceleration of 1 rps/s requires kA V output
+    public static KDoublePref kP =
+        new KDoublePref("elevator kP", 23); // A position error of 1 rotation results in kP V output
+    public static KDoublePref kI =
+        new KDoublePref("elevator kI", 0); // no output for error over time
+    public static KDoublePref kD =
+        new KDoublePref("elevator kD", 0.01); // A velocity error of 1 rps results in 0.1 V output
+
+    public static KDoublePref speedLimit =
+        new KDoublePref("elevator velocity limit", 15); // unit is rotation per second
+    public static KDoublePref accelerationLimit =
+        new KDoublePref("elevator accel limit", 13); // unit is rotation/second^2
+    public static KDoublePref jerkLimit =
+        new KDoublePref("elevator jerk limit", 30); // unit is rotation/second^3
+    public static KDoublePref tolerance = new KDoublePref("Elevator Target Tolerance", 0.1);
+
+    public static KDoublePref manualSpeedLimit =
+        new KDoublePref("elevator MANUAL speed limit", 0.3); // range of 0 to 1
+  }
+
   public static class PWrist {
-    // should switch this all to a set value when we finish tuning
+    public static KDoublePref kS =
+        new KDoublePref("wrist kS", 0.25); // Add kS V output to overcome static friction
+    public static KDoublePref kV =
+        new KDoublePref("wrist kV", 0.12); // A velocity target of 1 rps results in kV V output
+    public static KDoublePref kA =
+        new KDoublePref("wrist kA", 0.01); // An acceleration of 1 rps/s requires kA V output
+    public static KDoublePref kP =
+        new KDoublePref("wrist kP", 7.5); // A position error of 1 rotation results in kP V output
+    public static KDoublePref kI = new KDoublePref("wrist kI", 0); // no output for error over time
+    public static KDoublePref kD =
+        new KDoublePref("wrist kD", 0.1); // A velocity error of 1 rps results in 0.1 V output
 
-    public static KDoublePref proportional = new KDoublePref("wrist proportional", 1.6);
-    public static KDoublePref integral = new KDoublePref("wrist integral", 0.0002);
-    public static KDoublePref derivative =
-        new KDoublePref("wrist derivative", 0.0); // should be tweaked
+    public static KDoublePref speedLimit = new KDoublePref("wrist velocity limit", 3);
+    public static KDoublePref accelerationLimit = new KDoublePref("wrist accel limit", 2.5);
+    public static KDoublePref jerkLimit = new KDoublePref("wrist jerk limit", 10);
+    public static KDoublePref tolerance = new KDoublePref("Wrist Target Tolerance", 0.1);
 
-    public static KDoublePref speedLimit = new KDoublePref("wrist speed limit", 0.01);
-    public static KDoublePref accelerationLimit = new KDoublePref("wrist acceleration limit", 0.01);
+    public static KDoublePref manualSpeedLimit = new KDoublePref("wrist MANUAL speed limit", 0.3);
   }
 }

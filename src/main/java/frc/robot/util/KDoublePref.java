@@ -20,4 +20,8 @@ public class KDoublePref {
   public double getValue() {
     return Preferences.getDouble(name, defaultValue);
   }
+
+  public void setValue(double value) {
+    Preferences.setDouble(name, value);
+  }
 }

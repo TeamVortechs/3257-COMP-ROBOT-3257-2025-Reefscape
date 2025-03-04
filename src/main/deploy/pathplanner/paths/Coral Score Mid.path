@@ -8,38 +8,40 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.698250000000001,
-        "y": 3.9567499999999995
+        "x": 7.229992625128372,
+        "y": 3.97029190220621
       },
       "isLocked": false,
       "linkedName": "MidStartingSpot"
     },
     {
       "anchor": {
-        "x": 5.89875,
-        "y": 4.0
+        "x": 6.130154220779221,
+        "y": 3.8493100649350653
       },
       "prevControl": {
-        "x": 6.332625,
-        "y": 4.020125
+        "x": 6.509303730450973,
+        "y": 3.8836675430863687
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "midcoralscoretop"
+      "linkedName": "CoralScore4 left"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 1.0,
-      "rotationDegrees": 91.33645939912677
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "prepStage3",
+      "waypointRelativePos": 0.12890137328339385,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
-    "maxVelocity": 1.25,
-    "maxAcceleration": 0.75,
+    "maxVelocity": 1.5,
+    "maxAcceleration": 1.25,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -53,7 +55,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 179.06108932154729
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

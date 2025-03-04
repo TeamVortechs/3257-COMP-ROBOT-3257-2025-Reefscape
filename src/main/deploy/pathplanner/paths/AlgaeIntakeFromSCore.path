@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.588409090909089,
+        "y": 4.652272727272727
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 8.493338163073176,
+        "y": 4.600362172316462
+      },
+      "isLocked": false,
+      "linkedName": "AlgaeScoreSpot"
+    },
+    {
+      "anchor": {
+        "x": 6.0627272727272725,
+        "y": 4.059900568181818
+      },
+      "prevControl": {
+        "x": 5.589913504527602,
+        "y": 4.120319886836731
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "AlgaeIntake6"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 1.5,
+    "maxAcceleration": 1.25,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "reversed": false,
+  "folder": "algae paths",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "useDefaultConstraints": true
+}
