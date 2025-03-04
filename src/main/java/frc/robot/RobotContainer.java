@@ -206,8 +206,7 @@ public class RobotContainer {
     // R3 sets to lower-algae position
     controller.rightStick().onTrue(ScoringCommands.prepForScoring(1, wrist, elevator));
     // L1/LB sets to processor-scoring position
-    // requires a new prepForScoring case; will become real later
-    // controller.leftBumper().onTrue(ScoringCommands.prepForScoring([WIP], wrist, elevator));
+    controller.leftBumper().onTrue(ScoringCommands.prepForScoring(5, wrist, elevator));
     // R1/RB sets to barge-scoring position
     controller.rightBumper().onTrue(ScoringCommands.prepForScoring(3, wrist, elevator));
     // R2/RB ejects algae while held
