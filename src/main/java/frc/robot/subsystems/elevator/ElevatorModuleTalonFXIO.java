@@ -68,7 +68,7 @@ public class ElevatorModuleTalonFXIO implements ElevatorModuleIO {
   @Override
   public void updateInputs(ElevatorModuleIOInputsAutoLogged inputs) {
     boolean updatePID =
-        false; // set to true to continuously update the PID constants through preferences
+        true; // set to true to continuously update the PID constants through preferences
     if (updatePID) {
       TalonFXConfiguration elevatorConfigs =
           new TalonFXConfiguration()
@@ -120,6 +120,8 @@ public class ElevatorModuleTalonFXIO implements ElevatorModuleIO {
     inputs.isStalled = checkIfStalled();
   }
 
+
+  
   /**
    * Returns the current elevator height in meters by averaging both motor encoders. this won't work
    * until we do the math with the gears to find out how much one rotation is in length
