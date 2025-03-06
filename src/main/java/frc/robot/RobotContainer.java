@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.Climber.SetClimberSpeed;
 import frc.robot.commands.autoCommands.DriveCommands;
 import frc.robot.commands.autoCommands.IntakingCommands;
 import frc.robot.commands.autoCommands.ScoringCommands;
@@ -37,6 +38,8 @@ import frc.robot.commands.wrist.SetWristRollerSpeedCommand;
 import frc.robot.commands.wrist.SetWristTargetAngleCommand;
 // import frc.robot.commands.SetWristRollerSpeed;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.climber.Climber;
+import frc.robot.subsystems.climber.ClimberIOTalonFX;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -86,6 +89,10 @@ public class RobotContainer {
               Constants.Elevator.MOTOR_RIGHT_ID,
               Constants.Elevator.CANBUS),
           wrist);
+
+    private final Climber climber = new Climber(new ClimberIOTalonFX(Constants.Climber.CLIMBER_MOTOR_ID));
+
+    
   //   private final Elevator2 elevator2 =
   //       new Elevator2(
   //           new ElevatorModuleTalonFXIO(
@@ -280,6 +287,10 @@ public class RobotContainer {
             new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
                 .andThen(
                     new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.WRIST_GROUND_ANGLE)));
+    //climb controls for operator and driver 
+    operatorController.povDownLeft().whileTrue(new SetClimberSpeed(0.3, climber));
+    controller.povDownLeft().whileTrue(new SetClimberSpeed(0.3, climber));
+
 
     // controller.leftTrigger().whileTrue(new ManualElevatorCommand(elevator, () -> -0.2));
     // controller.rightTrigger().whileTrue(new ManualElevatorCommand(elevator, () -> 0.2));

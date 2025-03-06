@@ -11,6 +11,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants;
 import frc.robot.KDoublePreferences.PWrist;
 import org.littletonrobotics.junction.AutoLogOutput;
 
@@ -36,7 +37,7 @@ public class WristIOTalonFX implements WristIO {
                     // relatively
                     // low
                     // stator current limit to help avoid brownouts without impacting performance.
-                    .withStatorCurrentLimit(Amps.of(65))
+                    .withStatorCurrentLimit(Amps.of(Constants.Arm.WRIST_STATOR_LIMIT))
                     .withStatorCurrentLimitEnable(true))
             .withMotorOutput(
                 new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive));

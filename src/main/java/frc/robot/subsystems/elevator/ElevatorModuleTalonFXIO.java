@@ -7,6 +7,8 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import frc.robot.Constants;
 import frc.robot.KDoublePreferences.PElevator;
 import org.littletonrobotics.junction.AutoLogOutput;
 
@@ -76,7 +78,7 @@ public class ElevatorModuleTalonFXIO implements ElevatorModuleIO {
                       // relatively
                       // low
                       // stator current limit to help avoid brownouts without impacting performance.
-                      .withStatorCurrentLimit(Amps.of(80))
+                      .withStatorCurrentLimit(Amps.of(Constants.Elevator.ELEVATOR_STATOR_LIMIT))
                       .withStatorCurrentLimitEnable(true));
 
       var slot0Configs = elevatorConfigs.Slot0;

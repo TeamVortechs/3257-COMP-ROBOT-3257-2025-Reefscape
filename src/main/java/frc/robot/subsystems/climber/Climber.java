@@ -1,9 +1,8 @@
 package frc.robot.subsystems.climber;
 
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.KDoublePreferences;
+import org.littletonrobotics.junction.Logger;
 
 public class Climber extends SubsystemBase {
   private ClimberIO climberIO;
@@ -14,7 +13,7 @@ public class Climber extends SubsystemBase {
     this.climberIO = climberIO;
     // this.limitswitch = limitswitch;
   }
-  
+
   @Override
   public void periodic() {
     climberIO.updateInputs(inputs);

@@ -7,7 +7,7 @@ import frc.robot.subsystems.climber.*;
 Names
 brief description
  */
-public class setClimberSpeed extends Command {
+public class SetClimberSpeed extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
 
   /**
@@ -16,9 +16,10 @@ public class setClimberSpeed extends Command {
    * @param subsystem The subsystem used by this command.
    */
   private double speed;
+
   private Climber climber;
 
-  public setClimberSpeed(double speed, Climber climber) {
+  public SetClimberSpeed(double speed, Climber climber) {
     // addRequirements(null);
     this.speed = speed;
     this.climber = climber;
@@ -38,7 +39,6 @@ public class setClimberSpeed extends Command {
   @Override
   public void end(boolean interrupted) {
     climber.setMotorSpeed(0);
-
   }
 
   // Returns true when the command should end.
