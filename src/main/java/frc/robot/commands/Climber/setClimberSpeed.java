@@ -1,13 +1,13 @@
-package frc.robot.commands.pathfindingCommands;
+package frc.robot.commands.Climber;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.climber.*;
 
 /*
 Names
 brief description
  */
-public class PathfindingCommandCancel extends Command {
+public class setClimberSpeed extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
 
   /**
@@ -15,8 +15,13 @@ public class PathfindingCommandCancel extends Command {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public PathfindingCommandCancel(Drive drive) {
-    addRequirements(drive);
+  private double speed;
+  private Climber climber;
+
+  public setClimberSpeed(double speed, Climber climber) {
+    // addRequirements(null);
+    this.speed = speed;
+    this.climber = climber;
   }
 
   // Called when the command is initially scheduled.
@@ -25,15 +30,20 @@ public class PathfindingCommandCancel extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    climber.setMotorSpeed(speed);
+  }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    climber.setMotorSpeed(0);
+
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    return false;
   }
 }

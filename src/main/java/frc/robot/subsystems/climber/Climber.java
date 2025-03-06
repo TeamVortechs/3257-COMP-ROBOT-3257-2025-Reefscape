@@ -14,7 +14,7 @@ public class Climber extends SubsystemBase {
     // this.limitswitch = limitswitch;
   }
 
-  public void SetMotorSpeed(double speed) {
+  public void setMotorSpeed(double speed) {
     if(Math.abs(speed) > KDoublePreferences.PClimber.manualSpeedLimit.getValue()) {
       speed = Math.copySign(KDoublePreferences.PClimber.manualSpeedLimit.getValue(), speed);
     }
