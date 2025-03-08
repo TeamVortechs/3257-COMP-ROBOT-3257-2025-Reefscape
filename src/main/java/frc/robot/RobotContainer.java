@@ -13,7 +13,6 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.events.EventTrigger;
 import com.pathplanner.lib.path.PathConstraints;
@@ -22,12 +21,14 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commandautos.midStartOneAlgae;
 import frc.robot.commands.autoCommands.DriveCommands;
 import frc.robot.commands.autoCommands.IntakingCommands;
 import frc.robot.commands.autoCommands.ScoringCommands;
@@ -47,9 +48,7 @@ import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorModuleTalonFXIO;
 // import frc.robot.subsystems.elevator.Elevator2;
 import frc.robot.subsystems.vision.Vision;
-import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
-import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.Wrist.WristAngle;
 import frc.robot.subsystems.wrist.WristIOTalonFX;
@@ -98,7 +97,8 @@ public class RobotContainer {
   private final CommandXboxController operatorController = new CommandXboxController(1);
 
   // Dashboard inputs
-  private final LoggedDashboardChooser<Command> autoChooser;
+  private final SendableChooser<Command> autoChooser;
+  private final LoggedDashboardChooser<Command> loggedAutoChooser;
 
   // pathconstraints for pathplanner paths
   private final PathConstraints pathConstraints =
@@ -141,14 +141,18 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive::addVisionMeasurement,
-                new VisionIOPhotonVisionSim(
-                    VisionConstants.ARDUCAM_LEFT_NAME,
-                    VisionConstants.ROBOT_TO_ARDUCAM_LEFT,
-                    drive::getPose),
-                new VisionIOPhotonVisionSim(
-                    VisionConstants.ARDUCAM_RIGHT_NAME,
-                    VisionConstants.ROBOT_TO_ARDUCAM_RIGHT,
-                    drive::getPose));
+                new VisionIO() {},
+                new VisionIO() {}); // disable vision in match
+        // new Vision(
+        //     drive::addVisionMeasurement,
+        //     new VisionIOPhotonVisionSim(
+        //         VisionConstants.ARDUCAM_LEFT_NAME,
+        //         VisionConstants.ROBOT_TO_ARDUCAM_LEFT,
+        //         drive::getPose),
+        //     new VisionIOPhotonVisionSim(
+        //         VisionConstants.ARDUCAM_RIGHT_NAME,
+        //         VisionConstants.ROBOT_TO_ARDUCAM_RIGHT,
+        //         drive::getPose));
         break;
 
       default:
@@ -164,13 +168,22 @@ public class RobotContainer {
         break;
     }
 
-    registerNamedCommandsAuto();
+    // registerNamedCommandsAuto();
 
-    autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
-    autoChooser.addDefaultOption("Clear", getAutonomousCommand());
+    autoChooser = new SendableChooser<>();
+    // autoChooser.addDefaultOption("Clear", getAutonomousCommand());
+    autoChooser.setDefaultOption(
+        "Blue Clear",
+        DriveCommands.joystickDrive(drive, () -> 0.6, () -> 0, () -> 0).withTimeout(2));
+    autoChooser.addOption(
+        "Red Clear",
+        DriveCommands.joystickDrive(drive, () -> -0.6, () -> 0, () -> 0).withTimeout(2));
+    autoChooser.addOption("Mid Start, One Algae", new midStartOneAlgae(wrist, elevator, drive));
 
     // registerAutoChooser();
-    // configure the autonomous named commands
+
+    // set up the logged version of the auto chooser
+    loggedAutoChooser = new LoggedDashboardChooser<>("Auto Choices", autoChooser);
 
     // Configure the button bindings
     configureButtonBindings();
@@ -306,7 +319,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // return autoChooser.get();
+    return loggedAutoChooser.get();
     // try {
     //   final var path = PathPlannerPath.fromPathFile("Clear");
     //   return AutoBuilder.followPath(path);
@@ -324,9 +337,9 @@ public class RobotContainer {
     //       .andThen(Commands.waitSeconds(2))
     //       .andThen(DriveCommands.joystickDrive(drive, () -> 0, () -> 0, () -> 0));
     // }
-    return DriveCommands.joystickDrive(drive, () -> 0.6, () -> 0, () -> 0)
-        .andThen(Commands.waitSeconds(2))
-        .andThen(DriveCommands.joystickDrive(drive, () -> 0, () -> 0, () -> 0));
+    // return DriveCommands.joystickDrive(drive, () -> 0.6, () -> 0, () -> 0)
+    //     .andThen(Commands.waitSeconds(2))
+    //     .andThen(DriveCommands.joystickDrive(drive, () -> 0, () -> 0, () -> 0));
   }
 
   // registers pathplanner's named commands
