@@ -205,12 +205,9 @@ public class RobotContainer {
     controller.leftStick().onTrue(ScoringCommands.prepForScoring(2, wrist, elevator));
     // R3 sets to lower-algae position
     controller.rightStick().onTrue(ScoringCommands.prepForScoring(1, wrist, elevator));
-    // L1/LB sets to processor-scoring position
-    // requires a new prepForScoring case; will become real later
-    // controller.leftBumper().onTrue(ScoringCommands.prepForScoring([WIP], wrist, elevator));
-    // L2 sets arm to ground-intake position while held; on release, sets arm back to elevator-ready position
+    // L1/LB sets to ground-intake position while held; on release, sets arm back to elevator-ready position
     controller
-        .leftTrigger()
+        .leftBumper()
         .onTrue(
             new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
                 .andThen(
@@ -219,14 +216,17 @@ public class RobotContainer {
             new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
                 .andThen(
                     new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.WRIST_STAGE_4_ANGLE)));
+    // L2 sets intakes algae while held
+    controller.leftTrigger().whileTrue(new SetWristRollerSpeedCommand(wrist, 0.6));
     // R1/RB sets to barge-scoring position
     controller.rightBumper().onTrue(ScoringCommands.prepForScoring(3, wrist, elevator));
     // R2/RB ejects algae while held
     controller.rightTrigger().whileTrue(new SetWristRollerSpeedCommand(wrist, -1));
     // B sets elevator to minimum height
     controller.b().onTrue(ScoringCommands.prepForScoring(4, wrist, elevator));
-    // X intakes algae while held
-    controller.x().whileTrue(new SetWristRollerSpeedCommand(wrist, 0.6));
+    // X sets the arm to processor-scoring position
+    // requires a new prepForScoring case; will become real later
+    // controller.x().onTrue(ScoringCommands.prepForScoring([WIP], wrist, elevator));
     // Y fully retracts the arm (sets the arm's angle to 0)
     controller
         .y()
