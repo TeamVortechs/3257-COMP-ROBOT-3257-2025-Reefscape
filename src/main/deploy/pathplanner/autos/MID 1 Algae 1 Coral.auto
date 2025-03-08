@@ -7,7 +7,43 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Algae Score from mid"
+            "pathName": "StartPoint to CoralScore"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "coralScore"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "mechanismBack"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CoralScore To AlgaeIntake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intakeStage1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "mechanismBack"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "AlgaeIntake To Score"
           }
         },
         {
@@ -17,33 +53,15 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "AlgaeIntakeFromSCore"
-          }
-        },
-        {
           "type": "named",
           "data": {
-            "name": "intakeStage2"
+            "name": "mechanismBack"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "AlgaeScoreFrom6"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "score"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "AlgaeClear"
+            "pathName": "Score To Clear"
           }
         }
       ]

@@ -29,9 +29,10 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.autoCommands.DriveCommands;
-import frc.robot.commands.autoCommands.IntakingCommands;
 import frc.robot.commands.autoCommands.ScoringCommands;
+import frc.robot.commands.communication.ControllerVibrateCommand;
 import frc.robot.commands.communication.TellCommand;
+import frc.robot.commands.elevator.SetElevatorPresetCommand;
 import frc.robot.commands.wrist.ManualSetWristSpeedCommand;
 import frc.robot.commands.wrist.SetWristRollerSpeedCommand;
 import frc.robot.commands.wrist.SetWristTargetAngleCommand;
@@ -47,9 +48,7 @@ import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorModuleTalonFXIO;
 // import frc.robot.subsystems.elevator.Elevator2;
 import frc.robot.subsystems.vision.Vision;
-import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
-import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.Wrist.WristAngle;
 import frc.robot.subsystems.wrist.WristIOTalonFX;
@@ -102,7 +101,7 @@ public class RobotContainer {
 
   // pathconstraints for pathplanner paths
   private final PathConstraints pathConstraints =
-      new PathConstraints(3.0, 4.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
+      new PathConstraints(1, 0.5, Units.degreesToRadians(540), Units.degreesToRadians(720));
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -138,17 +137,18 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.FrontRight),
                 new ModuleIOSim(TunerConstants.BackLeft),
                 new ModuleIOSim(TunerConstants.BackRight));
-        vision =
-            new Vision(
-                drive::addVisionMeasurement,
-                new VisionIOPhotonVisionSim(
-                    VisionConstants.ARDUCAM_LEFT_NAME,
-                    VisionConstants.ROBOT_TO_ARDUCAM_LEFT,
-                    drive::getPose),
-                new VisionIOPhotonVisionSim(
-                    VisionConstants.ARDUCAM_RIGHT_NAME,
-                    VisionConstants.ROBOT_TO_ARDUCAM_RIGHT,
-                    drive::getPose));
+        // vision =
+        //     new Vision(
+        //         drive::addVisionMeasurement,
+        //         new VisionIOPhotonVisionSim(
+        //             VisionConstants.ARDUCAM_LEFT_NAME,
+        //             VisionConstants.ROBOT_TO_ARDUCAM_LEFT,
+        //             drive::getPose),
+        //         new VisionIOPhotonVisionSim(
+        //             VisionConstants.ARDUCAM_RIGHT_NAME,
+        //             VisionConstants.ROBOT_TO_ARDUCAM_RIGHT,
+        //             drive::getPose));
+        vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
         break;
 
       default:
@@ -167,7 +167,7 @@ public class RobotContainer {
     registerNamedCommandsAuto();
 
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
-    autoChooser.addDefaultOption("Clear", getAutonomousCommand());
+    autoChooser.addDefaultOption("Clear Command Based", getAutonomousCommand());
 
     // registerAutoChooser();
     // configure the autonomous named commands
@@ -229,6 +229,12 @@ public class RobotContainer {
     // eject note as long as button as help
     // controller.rightBumper().whileTrue(new SetWristRollerSpeedCommand(wrist, -0.3));
 
+    controller
+        .y()
+        .whileTrue(
+            AutoBuilder.pathfindToPose(
+                new Pose2d(7.230, 4.000, Rotation2d.fromDegrees((180))), pathConstraints));
+
     // moves elevator and wrist to the scoring positions level 2 after the right button is tapped
     controller.leftTrigger().whileTrue(ScoringCommands.prepForScoring(1, wrist, elevator));
 
@@ -279,7 +285,8 @@ public class RobotContainer {
         .whileTrue(
             new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
                 .andThen(
-                    new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.WRIST_GROUND_ANGLE)));
+                    new SetWristTargetAngleCommand(
+                        wrist, () -> Constants.Arm.GROUND_INTAKE_ANGLE)));
 
     // controller.leftTrigger().whileTrue(new ManualElevatorCommand(elevator, () -> -0.2));
     // controller.rightTrigger().whileTrue(new ManualElevatorCommand(elevator, () -> 0.2));
@@ -343,7 +350,8 @@ public class RobotContainer {
     //             .unless(() -> !elevator.isOnFloor()),
     //         // controller of the conditional
     //         () -> wrist.isCanCloserThan(0.1)));
-    wrist.setDefaultCommand(new SetWristRollerSpeedCommand(wrist, 0.2));
+    wrist.setDefaultCommand(
+        new SetWristRollerSpeedCommand(wrist, 0.2).unless(() -> wrist.hasCoral()));
 
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
@@ -384,7 +392,7 @@ public class RobotContainer {
 
     controller
         .x()
-        .onTrue(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.WRIST_GROUND_ANGLE));
+        .onTrue(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.GROUND_INTAKE_ANGLE));
 
     // controller.y().whileTrue(new PathfindToClosestDepotCommand(drive, true));
     // controller.y().onFalse(new PathfindingCommandCancel(drive));
@@ -433,27 +441,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // return autoChooser.get();
-    // try {
-    //   final var path = PathPlannerPath.fromPathFile("Clear");
-    //   return AutoBuilder.followPath(path);
-    // } catch (Exception ignored) {
-
-    // }
-    // return null;
-    // if (DriverStation.getAlliance().get()
-    //     == DriverStation.Alliance.Red) { // If red, go in reverse (forwards on red side)
-    //   return DriveCommands.joystickDrive(drive, () -> -0.6, () -> 0, () -> 0)
-    //       .andThen(Commands.waitSeconds(2))
-    //       .andThen(DriveCommands.joystickDrive(drive, () -> 0, () -> 0, () -> 0));
-    // } else { // If not, go forwards (forwards on blue side)
-    //   return DriveCommands.joystickDrive(drive, () -> 0.6, () -> 0, () -> 0)
-    //       .andThen(Commands.waitSeconds(2))
-    //       .andThen(DriveCommands.joystickDrive(drive, () -> 0, () -> 0, () -> 0));
-    // }
-    return DriveCommands.joystickDrive(drive, () -> 0.6, () -> 0, () -> 0)
-        .andThen(Commands.waitSeconds(2))
-        .andThen(DriveCommands.joystickDrive(drive, () -> 0, () -> 0, () -> 0));
+    return autoChooser.get();
   }
 
   // registers pathplanner's named commands
@@ -466,12 +454,32 @@ public class RobotContainer {
     // if (Constants.currentMode == Mode.SIM) isReal = false;
 
     // comm
-    addNamedCommand("intakeStage2", IntakingCommands.intakeCommandAuto(wrist, elevator, 2), isReal);
-    addNamedCommand("intakeStage1", IntakingCommands.intakeCommandAuto(wrist, elevator, 1), isReal);
+    addNamedCommand(
+        "intakeStage1",
+        ScoringCommands.prepForScoring(1, wrist, elevator)
+            .alongWith(new InstantCommand(() -> wrist.setHasCoral(false))),
+        isReal);
+
+    addNamedCommand(
+        "intakeStage2",
+        ScoringCommands.prepForScoring(2, wrist, elevator)
+            .alongWith(new InstantCommand(() -> wrist.setHasCoral(false))),
+        isReal);
     addNamedCommand(
         "score",
-        new WaitCommand(0.2).deadlineFor(new SetWristRollerSpeedCommand(wrist, -0.4)),
+        ScoringCommands.prepForScoring(3, wrist, elevator)
+            .andThen(new WaitCommand(0.2).deadlineFor(new SetWristRollerSpeedCommand(wrist, -1))),
         isReal);
+    addNamedCommand(
+        "mechanismBack",
+        new SetElevatorPresetCommand(elevator, wrist, 0)
+            .andThen(new SetWristTargetAngleCommand(wrist, () -> 0)),
+        isReal);
+
+    // unbounded this for now bc we don't know
+    NamedCommands.registerCommand("coralScore", new InstantCommand(() -> wrist.setHasCoral(false)));
+
+    // addNamedCommand("coralScore", ScoringCommands.coralScoreAuto(wrist), isReal);
   }
 
   // function to add named commands because we need to add is an an event too and not just as a
@@ -483,9 +491,20 @@ public class RobotContainer {
       new EventTrigger(commandName).onTrue(command);
     } else {
       // registers the named commands to print something out instead of actually running anything
-      NamedCommands.registerCommand(commandName, new TellCommand(commandName + " auto command"));
+      NamedCommands.registerCommand(
+          commandName,
+          new TellCommand(commandName + " auto command")
+              .andThen(
+                  new ControllerVibrateCommand(1, controller).withDeadline(new WaitCommand(0.2)))
+              .andThen(new WaitCommand(0.3)));
+
       new EventTrigger(commandName)
-          .onTrue(new TellCommand(commandName + " auto event trigger command"));
+          .onTrue(
+              new TellCommand(commandName + " auto event trigger command")
+                  .andThen(
+                      new ControllerVibrateCommand(1, controller)
+                          .withDeadline(new WaitCommand(0.2)))
+                  .andThen(new WaitCommand(0.3)));
     }
   }
 
@@ -511,5 +530,9 @@ public class RobotContainer {
     SmartDashboard.putNumber("x position:", drive.getPose().getX());
     SmartDashboard.putNumber("y position:", drive.getPose().getY());
     SmartDashboard.putNumber("current rotation:", drive.getPose().getRotation().getDegrees());
+  }
+
+  public Wrist getWrist() {
+    return wrist;
   }
 }

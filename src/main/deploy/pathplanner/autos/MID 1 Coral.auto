@@ -7,19 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Algae Score from mid"
+            "pathName": "StartPoint to CoralScore"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "score"
+            "name": "intakeStage1"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "AlgaeClear"
+            "name": "coralScore"
           }
         }
       ]
