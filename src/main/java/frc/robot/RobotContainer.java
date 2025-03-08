@@ -227,8 +227,7 @@ public class RobotContainer {
     // B sets elevator to minimum height
     controller.b().onTrue(ScoringCommands.prepForScoring(4, wrist, elevator));
     // X sets the arm to processor-scoring position
-    // requires a new prepForScoring case; will become real later
-    // controller.x().onTrue(ScoringCommands.prepForScoring([WIP], wrist, elevator));
+    controller.x().onTrue(ScoringCommands.prepForScoring(5, wrist, elevator));
     // Y fully retracts the arm (sets the arm's angle to 0)
     controller
         .y()
