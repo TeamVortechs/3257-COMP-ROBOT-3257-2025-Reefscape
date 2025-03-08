@@ -19,7 +19,6 @@ import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -179,9 +178,7 @@ public class RobotContainer {
     autoChooser.addOption(
         "Red Clear",
         DriveCommands.joystickDrive(drive, () -> -0.6, () -> 0, () -> 0).withTimeout(2));
-    autoChooser.addOption(
-        "Mid Start, One Algae",
-        new midStartOneAlgae(wrist, elevator, drive, DriverStation.getAlliance().get()));
+    autoChooser.addOption("Mid Start, One Algae", new midStartOneAlgae(wrist, elevator, drive));
 
     // registerAutoChooser();
 
