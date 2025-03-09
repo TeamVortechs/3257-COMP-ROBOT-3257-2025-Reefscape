@@ -67,6 +67,8 @@ public class KDoublePreferences {
     public static KDoublePref kI = new KDoublePref("wrist kI", 0); // no output for error over time
     public static KDoublePref kD =
         new KDoublePref("wrist kD", 0.1); // A velocity error of 1 rps results in 0.1 V output
+    public static KDoublePref kG =
+        new KDoublePref("wrist kG", 0.2); // free kP for gravity but like, arm-y
 
     public static KDoublePref speedLimit = new KDoublePref("wrist velocity limit", 3);
     public static KDoublePref accelerationLimit = new KDoublePref("wrist accel limit", 2.5);

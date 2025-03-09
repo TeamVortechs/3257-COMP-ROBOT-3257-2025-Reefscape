@@ -58,5 +58,6 @@ public interface WristIO {
     return 0.0;
   }
 
-  public void zeroArmEncoder();
+  public default void zeroArmEncoder() {}
+  ;
 }
