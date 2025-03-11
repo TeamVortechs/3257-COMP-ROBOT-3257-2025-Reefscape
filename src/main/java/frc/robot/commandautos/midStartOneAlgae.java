@@ -9,22 +9,27 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.commands.autoCommands.DriveCommands;
-import frc.robot.commands.wrist.SetWristRollerSpeedCommand;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.wrist.Wrist;
 
 public class midStartOneAlgae extends SequentialCommandGroup {
 
+  Alliance allianceColor =
+      DriverStation.getAlliance()
+          .orElseGet(
+              () -> {
+                System.out.println("Cannot get alliance! Defaulting to blue...");
+                return DriverStation.Alliance.Blue;
+              });
+  boolean isBlue = allianceColor == Alliance.Blue ? true : false;
+  double aimAngle = isBlue ? Math.PI / 4 : Math.PI + Math.PI / 4; // have to flip the angle
+
   public midStartOneAlgae(Wrist wrist, Elevator elevator, Drive drive) {
     addRequirements(wrist, elevator, drive);
     final double driveVelocity = 0.6;
 
-    final Alliance allianceColor = DriverStation.getAlliance().get();
-    final boolean isBlue = allianceColor == Alliance.Blue ? true : false;
-    final double aimAngle = isBlue ? Math.PI / 4 : Math.PI + Math.PI / 4; // have to flip the angle
-
-    if (isBlue) {
+    if (isBlue) { // done just for simulation purposes; is redone upon actually activating the auto
       drive.setPose(new Pose2d(7.2, 4.000, new Rotation2d(Math.PI)));
     } else {
       drive.setPose(new Pose2d(10.35, 4.000, new Rotation2d()));
@@ -34,7 +39,15 @@ public class midStartOneAlgae extends SequentialCommandGroup {
         // set the pose of the robot for simulation and logging purposes
         new PrintCommand("I am beginning the autonomous."),
         new InstantCommand(
-            () -> {
+            () -> { // recalculate current alliance and the proper direction to aim
+              allianceColor = DriverStation.getAlliance().orElseGet(
+                () -> {
+                  System.out.println("Cannot get alliance! Defaulting to blue...");
+                  return DriverStation.Alliance.Blue;
+                });
+              isBlue = allianceColor == Alliance.Blue ? true : false;
+              aimAngle = isBlue ? Math.PI / 4 : Math.PI + Math.PI / 4; // have to flip the angle
+
               if (isBlue) {
                 drive.setPose(new Pose2d(7.2, 4.000, new Rotation2d(Math.PI)));
               } else {
@@ -52,11 +65,19 @@ public class midStartOneAlgae extends SequentialCommandGroup {
         new PrintCommand("Setting wrist roller speed to intake."),
         // new ScheduleCommand(
         //     new SetWristRollerSpeedCommand(wrist, 0.6)
-        //         .withTimeout(1).andThen(new SetWristRollerSpeedCommand(wrist, -0.2))), // keep the command rolling while the timeout runs
-        // have arm drive into the algae, then stop intake after 1 second (assume successful) and enable powered intake holding
+        //         .withTimeout(1).andThen(new SetWristRollerSpeedCommand(wrist, -0.2))), // keep
+        // the command rolling while the timeout runs
+        // have arm drive into the algae, then stop intake after 1 second (assume successful) and
+        // enable powered intake holding
         // future: put canrange in the arm to detect success
         DriveCommands.joystickDrive(drive, () -> (-driveVelocity * 0.75), () -> 0, () -> 0)
-            .withTimeout(0.6).beforeStarting(new WaitUntilCommand( () -> elevator.isOnTarget())), // make sure the elevator is actually up before moving in
+            .withTimeout(0.6)
+            .beforeStarting(
+                new WaitUntilCommand(
+                    () ->
+                        elevator
+                            .isOnTarget())), // make sure the elevator is actually up before moving
+        // in
         // drive directly backwards until back of bumpers touches the starting line
         DriveCommands.joystickDrive(drive, () -> (driveVelocity), () -> 0, () -> 0)
             .withTimeout(1.3),
