@@ -60,14 +60,13 @@ public class MechanismSimulator {
 
     // changes the arm color depending on wether the rollers go forwards or backwards
     // intaking/keeping in
-    if (wrist.getRollerSpeed() > 0) {
+    if (Math.abs(wrist.getRollerSpeed()) < 1) {
+      armLigament.setColor(new Color8Bit(Color.kBlue));
+      // ejecting
+    } else if (wrist.getRollerSpeed() > 0) {
       armLigament.setColor(new Color8Bit(Color.kGreen));
 
       // doing nothing
-    } else if (Math.abs(wrist.getRollerSpeed()) < 1) {
-      armLigament.setColor(new Color8Bit(Color.kBlack));
-
-      // ejecting
     } else {
       armLigament.setColor(new Color8Bit(Color.kRed));
     }

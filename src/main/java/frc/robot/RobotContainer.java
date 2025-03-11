@@ -367,7 +367,10 @@ public class RobotContainer {
     //         // controller of the conditional
     //         () -> wrist.isCanCloserThan(0.1)));
     wrist.setDefaultCommand(
-        new ConditionalCommand(new SetWristRollerSpeedCommand(wrist, 0.2), new SetWristRollerSpeedCommand(wrist, 0), () -> !wrist.hasCoral()));
+        new ConditionalCommand(
+            new SetWristRollerSpeedCommand(wrist, 0.2),
+            new SetWristRollerSpeedCommand(wrist, 0),
+            () -> !wrist.hasCoral()));
 
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
