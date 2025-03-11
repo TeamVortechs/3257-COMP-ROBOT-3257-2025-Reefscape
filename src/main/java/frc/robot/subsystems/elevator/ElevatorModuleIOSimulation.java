@@ -14,15 +14,24 @@ import org.littletonrobotics.junction.AutoLogOutput;
  * same gear but are mounted oppositely.
  */
 public class ElevatorModuleIOSimulation implements ElevatorModuleIO {
+
+  private final double speedDivider = 1;
+
   private final DCMotorSim elevatorMotorsSim;
 
   private PIDController elevatorPIDController =
-      new PIDController(PElevator.kP.getValue(), PElevator.kI.getValue(), PElevator.kD.getValue());
+      new PIDController(
+          PElevator.kP.getValue() / speedDivider,
+          PElevator.kI.getValue() / speedDivider,
+          PElevator.kD.getValue() / speedDivider);
   private ElevatorFeedforward elevatorFeedforward =
       new ElevatorFeedforward(
-          PElevator.kS.getValue(), PElevator.kG.getValue(), PElevator.kV.getValue());
-  private double targetVel = PElevator.speedLimit.getValue();
-  private double targetAccel = PElevator.accelerationLimit.getValue();
+          PElevator.kS.getValue() / speedDivider,
+          PElevator.kG.getValue() / speedDivider,
+          PElevator.kV.getValue() / speedDivider);
+
+  private double targetVel = PElevator.speedLimit.getValue() / speedDivider;
+  private double targetAccel = PElevator.accelerationLimit.getValue() / speedDivider;
   // private double targetJerk = PElevator.jerkLimit.getValue(); // not actually used. neat
 
   private final double kGearRatio = 1; // well we're literally just reading rotations so /shrug

@@ -130,11 +130,16 @@ public class Robot extends LoggedRobot {
     // tell robotcontainer to send a vision measurement to the drivetrain
     // robotContainer.sendVisionMeasurement();
     robotContainer.putPositionData();
+
+    // updates the robot simulation
+    robotContainer.getSim().periodic();
   }
 
   /** This function is called once when the robot is disabled. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    robotContainer.getWrist().setRollerSpeed(0);
+  }
 
   /** This function is called periodically when disabled. */
   @Override

@@ -97,6 +97,11 @@ public class WristIOTalonFX implements WristIO {
     rollers.set(speed);
   }
 
+  @Override
+  public double getRollerSpeed() {
+    return rollers.get();
+  }
+
   // gets the angle of the arm
   @Override
   public double getAngleRotations() {

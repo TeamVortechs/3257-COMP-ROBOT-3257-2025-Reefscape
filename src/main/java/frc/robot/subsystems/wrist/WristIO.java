@@ -36,6 +36,10 @@ public interface WristIO {
 
   public default void setRollerSpeed(double speed) {}
 
+  public default double getRollerSpeed() {
+    return 0;
+  }
+
   // stops the wrist at the given angle, locks it
   public default void stopWrist() {}
 

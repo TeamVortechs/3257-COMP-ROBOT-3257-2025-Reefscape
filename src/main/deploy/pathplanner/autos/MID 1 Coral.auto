@@ -13,13 +13,13 @@
         {
           "type": "named",
           "data": {
-            "name": "intakeStage1"
+            "name": "coralScore"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "coralScore"
+            "name": "mechanismBack"
           }
         }
       ]

@@ -1,6 +1,7 @@
 package frc.robot.commands.wrist;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.subsystems.wrist.Wrist;
 import java.util.function.DoubleSupplier;
 
@@ -47,5 +48,10 @@ public class SetWristTargetAngleCommand extends Command {
   public boolean isFinished() {
     // return wrist.isOnTarget();
     return true;
+  }
+
+  public static Command withConsistentEnd(Wrist wrist, DoubleSupplier targetAngle) {
+    return new SetWristTargetAngleCommand(wrist, targetAngle)
+        .andThen(new WaitUntilCommand(() -> wrist.isOnTarget()));
   }
 }

@@ -13,10 +13,65 @@ import frc.robot.subsystems.wrist.Wrist;
 public class ScoringCommands {
 
   public static Command coralScoreAuto(Wrist wrist) {
-    return new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.WRIST_CORAL_SCORE)
+    return SetWristTargetAngleCommand.withConsistentEnd(
+            wrist, () -> Constants.Arm.WRIST_CORAL_SCORE)
         .andThen(new InstantCommand(() -> wrist.setRollerSpeed(-0.2)))
-        .withDeadline(new WaitCommand(0.2))
+        .withDeadline(new WaitCommand(1))
         .andThen(new InstantCommand(() -> wrist.setHasCoral(false)));
+  }
+
+  /*
+  old code:
+        case 1: // low reef algae
+        return new InstantCommand(() -> wrist.setHasCoral(false))
+            .andThen(new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist))
+            .andThen(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.REEF_INTAKE_ANGLE))
+            .andThen(new WaitUntilCommand(() -> wrist.isClearFromElevator()))
+            .andThen(
+                new SetElevatorPresetCommand(elevator, wrist, Constants.Elevator.INTAKE_LEVEL_1))
+            .andThen(new WaitUntilCommand(() -> wrist.isOnTarget()))
+            .andThen(new WaitCommand(1));
+
+      case 2: // high reef algae
+        return new InstantCommand(() -> wrist.setHasCoral(false))
+            .andThen(new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist))
+            .andThen(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.REEF_INTAKE_ANGLE))
+            .andThen(new WaitUntilCommand(() -> wrist.isClearFromElevator()))
+            .andThen(
+                new SetElevatorPresetCommand(elevator, wrist, Constants.Elevator.INTAKE_LEVEL_2))
+            .andThen(new WaitUntilCommand(() -> wrist.isOnTarget()))
+            .andThen(new WaitCommand(1));
+   */
+
+  public static Command intakeAuto(int level, Wrist wrist, Elevator elevator) {
+    switch (level) { // bit of a misnomer here
+      case 1: // low reef algae
+        return new InstantCommand(() -> wrist.setHasCoral(false))
+            .andThen(new InstantCommand(() -> wrist.setRollerSpeed(0.2)))
+            .andThen(new SetElevatorPresetCommand(elevator, Constants.Elevator.INTAKE_LEVEL_1))
+            .andThen(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.REEF_INTAKE_ANGLE))
+            .andThen(new WaitUntilCommand(() -> wrist.isOnTarget()))
+            .andThen(new WaitCommand(1));
+
+      case 2: // high reef algae
+        return new InstantCommand(() -> wrist.setHasCoral(false))
+            .andThen(new InstantCommand(() -> wrist.setRollerSpeed(0.2)))
+            .andThen(new SetElevatorPresetCommand(elevator, Constants.Elevator.INTAKE_LEVEL_2))
+            .andThen(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.REEF_INTAKE_ANGLE))
+            .andThen(new WaitUntilCommand(() -> wrist.isOnTarget()))
+            .andThen(new WaitCommand(1));
+
+      default:
+        return new InstantCommand();
+    }
+  }
+
+  public static Command scoreAuto(Wrist wrist, Elevator elevator) {
+    return new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
+        .andThen(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.SCORING_ANGLE))
+        .andThen(new WaitUntilCommand(() -> wrist.isClearFromElevator()))
+        .andThen(new SetElevatorPresetCommand(elevator, Constants.Elevator.BARGE_LEVEL))
+        .andThen(new InstantCommand(() -> wrist.setRollerSpeed(-1)).andThen(new WaitCommand(1)));
   }
 
   public static Command prepForScoring(int level, Wrist wrist, Elevator elevator) {
@@ -25,8 +80,7 @@ public class ScoringCommands {
         return new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
             .andThen(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.REEF_INTAKE_ANGLE))
             .andThen(new WaitUntilCommand(() -> wrist.isClearFromElevator()))
-            .andThen(
-                new SetElevatorPresetCommand(elevator, wrist, Constants.Elevator.INTAKE_LEVEL_1));
+            .andThen(new SetElevatorPresetCommand(elevator, Constants.Elevator.INTAKE_LEVEL_1));
         // .andThen(
         //     new SetElevatorPresetCommand(elevator, wrist, Constants.Elevator.STAGE_2_LEVEL)
         //         .alongWith(
@@ -37,8 +91,7 @@ public class ScoringCommands {
         return new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
             .andThen(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.REEF_INTAKE_ANGLE))
             .andThen(new WaitUntilCommand(() -> wrist.isClearFromElevator()))
-            .andThen(
-                new SetElevatorPresetCommand(elevator, wrist, Constants.Elevator.INTAKE_LEVEL_2));
+            .andThen(new SetElevatorPresetCommand(elevator, Constants.Elevator.INTAKE_LEVEL_2));
         // return new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
         //     .andThen(
         //         new SetElevatorPresetCommand(elevator, wrist, Constants.Elevator.STAGE_3_LEVEL)
@@ -50,7 +103,7 @@ public class ScoringCommands {
         return new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
             .andThen(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.SCORING_ANGLE))
             .andThen(new WaitUntilCommand(() -> wrist.isClearFromElevator()))
-            .andThen(new SetElevatorPresetCommand(elevator, wrist, Constants.Elevator.BARGE_LEVEL));
+            .andThen(new SetElevatorPresetCommand(elevator, Constants.Elevator.BARGE_LEVEL));
         // return new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
         //     .andThen(
         //         new SetElevatorPresetCommand(
@@ -65,7 +118,7 @@ public class ScoringCommands {
         return new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
             .andThen(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.SCORING_ANGLE))
             .andThen(new WaitUntilCommand(() -> wrist.isClearFromElevator()))
-            .andThen(new SetElevatorPresetCommand(elevator, wrist, Constants.Elevator.MIN_HEIGHT));
+            .andThen(new SetElevatorPresetCommand(elevator, Constants.Elevator.MIN_HEIGHT));
         // return new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
         //     .andThen(
         //         new SetElevatorPresetCommand(elevator, wrist, Constants.Elevator.MIN_HEIGHT)
