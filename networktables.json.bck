@@ -1,93 +1,5 @@
 [
   {
-    "name": "/Preferences/elevator proportional",
-    "type": "double",
-    "value": 0.4,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/elevator integral",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/elevator derivative",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/elevator speed limit",
-    "type": "double",
-    "value": 0.2,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/elevator acceleration limit",
-    "type": "double",
-    "value": 0.1,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Elevator Max height",
-    "type": "double",
-    "value": 10.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Elevator Min height",
-    "type": "double",
-    "value": 0.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Elevator Target Tolerance",
-    "type": "double",
-    "value": 0.1,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Elevator First Level",
-    "type": "double",
-    "value": 2.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Elevator Second Level",
-    "type": "double",
-    "value": 5.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/Elevator Third Level",
-    "type": "double",
-    "value": 9.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
     "name": "/Preferences/wrist kS",
     "type": "double",
     "value": 0.25,
@@ -256,11 +168,37 @@
     }
   },
   {
+    "name": "/Preferences/Elevator Target Tolerance",
+    "type": "double",
+    "value": 0.1,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
     "name": "/Preferences/elevator MANUAL speed limit",
     "type": "double",
     "value": 0.3,
     "properties": {
       "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Camera X offset",
+    "type": "double",
+    "value": 0.2286,
+    "properties": {
+      "persistent": true,
+      "retained": true
+    }
+  },
+  {
+    "name": "/Preferences/Camera Y offset",
+    "type": "double",
+    "value": -0.2002028,
+    "properties": {
+      "persistent": true,
+      "retained": true
     }
   }
 ]
