@@ -117,10 +117,10 @@ public class Elevator extends SubsystemBase {
 
     manualOverride = false;
 
-    // if (!wrist.isClearFromElevator()) {
-    //   System.out.println("tried to set elevator target height but wrist is not clear");
-    //   return;
-    // }
+    if (!wrist.isClearFromElevator()) {
+      System.out.println("tried to set elevator target height but wrist is not clear");
+      return;
+    }
 
     targetHeight = Math.max(0.0, Math.min(height, Constants.Elevator.MAX_HEIGHT));
     // pid.setGoal(targetHeight);

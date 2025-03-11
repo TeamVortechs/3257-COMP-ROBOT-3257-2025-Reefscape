@@ -69,5 +69,7 @@ public final class Constants {
     public static final double WRIST_HIGHEST_ANGLE =
         GROUND_INTAKE_ANGLE + 0.2; // set highest angle to wrist ground angle plus arbitrary leeway
     public static final double WRIST_CORAL_SCORE = 0.5;
+
+    public static final double ELEVATOR_CLEARANCE_ANGLE = SCORING_ANGLE;
   }
 }

@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
+import frc.robot.Constants.Arm;
 import frc.robot.commands.elevator.SetElevatorPresetCommand;
 import frc.robot.commands.wrist.SetWristTargetAngleCommand;
 import frc.robot.subsystems.elevator.Elevator;
@@ -47,18 +48,26 @@ public class ScoringCommands {
     switch (level) { // bit of a misnomer here
       case 1: // low reef algae
         return new InstantCommand(() -> wrist.setHasCoral(false))
+            .andThen(
+                SetWristTargetAngleCommand.withConsistentEnd(
+                    wrist, () -> Arm.ELEVATOR_CLEARANCE_ANGLE))
             .andThen(new InstantCommand(() -> wrist.setRollerSpeed(0.2)))
             .andThen(new SetElevatorPresetCommand(elevator, Constants.Elevator.INTAKE_LEVEL_1))
-            .andThen(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.REEF_INTAKE_ANGLE))
-            .andThen(new WaitUntilCommand(() -> wrist.isOnTarget()))
+            .andThen(
+                SetWristTargetAngleCommand.withConsistentEnd(
+                    wrist, () -> Constants.Arm.REEF_INTAKE_ANGLE))
             .andThen(new WaitCommand(1));
 
       case 2: // high reef algae
         return new InstantCommand(() -> wrist.setHasCoral(false))
+            .andThen(
+                SetWristTargetAngleCommand.withConsistentEnd(
+                    wrist, () -> Arm.ELEVATOR_CLEARANCE_ANGLE))
             .andThen(new InstantCommand(() -> wrist.setRollerSpeed(0.2)))
             .andThen(new SetElevatorPresetCommand(elevator, Constants.Elevator.INTAKE_LEVEL_2))
-            .andThen(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.REEF_INTAKE_ANGLE))
-            .andThen(new WaitUntilCommand(() -> wrist.isOnTarget()))
+            .andThen(
+                SetWristTargetAngleCommand.withConsistentEnd(
+                    wrist, () -> Constants.Arm.REEF_INTAKE_ANGLE))
             .andThen(new WaitCommand(1));
 
       default:
