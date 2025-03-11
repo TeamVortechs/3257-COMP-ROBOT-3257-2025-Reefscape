@@ -241,7 +241,6 @@ public class RobotContainer {
                 .ignoringDisable(true)
                 .alongWith(new InstantCommand(() -> wrist.resetWristEncoder()))
                 .ignoringDisable(true));
-    controller.povUp().onTrue(getAutonomousCommand());
     // dpad up inverts the gyro
     controller
         .povUp()
