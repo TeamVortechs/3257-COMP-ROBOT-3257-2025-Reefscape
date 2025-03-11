@@ -49,6 +49,7 @@ public class Wrist extends SubsystemBase {
     //   return;
     // }
     // set target position to 100 rotations
+    // System.out.println("Target angle: "+targetAngle);
     wristIO.PIDVoltage(targetAngle);
   }
 

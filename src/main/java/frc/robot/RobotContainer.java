@@ -45,12 +45,16 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.elevator.ElevatorModuleIO;
+import frc.robot.subsystems.elevator.ElevatorModuleIOSimulation;
 import frc.robot.subsystems.elevator.ElevatorModuleTalonFXIO;
 // import frc.robot.subsystems.elevator.Elevator2;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.Wrist.WristAngle;
+import frc.robot.subsystems.wrist.WristIO;
+import frc.robot.subsystems.wrist.WristIOSimulation;
 import frc.robot.subsystems.wrist.WristIOTalonFX;
 // import frc.robot.subsystems.wrist.WristIOTalonFX;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -68,23 +72,12 @@ public class RobotContainer {
   private final Vision vision;
 
   // physical subsystems
-  private final Wrist wrist =
-      new Wrist(
-          new WristIOTalonFX(
-              Constants.Arm.ARM_MOTOR_ID, Constants.Arm.ROLLER_MOTOR_ID, Constants.Arm.CANBUS
-              //   Constants.Arm.CANRANGE_ID
-              ));
+  private final Wrist wrist;
 
   // DigitalInput limitSwitch =
   // new DigitalInput(20); // !!!!! FAKE CHANNEL! CHANGE WHEN PROPERLY IMPLEMENTED !!!!!!
   // private final Intake intake = new Intake(new IntakeIOTalonFX(), limitSwitch);
-  private final Elevator elevator =
-      new Elevator(
-          new ElevatorModuleTalonFXIO(
-              Constants.Elevator.MOTOR_LEFT_ID,
-              Constants.Elevator.MOTOR_RIGHT_ID,
-              Constants.Elevator.CANBUS),
-          wrist);
+  private final Elevator elevator;
   //   private final Elevator2 elevator2 =
   //       new Elevator2(
   //           new ElevatorModuleTalonFXIO(
@@ -127,6 +120,19 @@ public class RobotContainer {
         //     //     VisionConstants.ARDUCAM_LEFT_NAME, VisionConstants.ROBOT_TO_ARDUCAM_LEFT),
         //     new VisionIOPhotonVision(
         //         VisionConstants.ARDUCAM_RIGHT_NAME, VisionConstants.ROBOT_TO_ARDUCAM_RIGHT));
+        wrist =
+            new Wrist(
+                new WristIOTalonFX(
+                    Constants.Arm.ARM_MOTOR_ID, Constants.Arm.ROLLER_MOTOR_ID, Constants.Arm.CANBUS
+                    //   Constants.Arm.CANRANGE_ID
+                    ));
+        elevator =
+            new Elevator(
+                new ElevatorModuleTalonFXIO(
+                    Constants.Elevator.MOTOR_LEFT_ID,
+                    Constants.Elevator.MOTOR_RIGHT_ID,
+                    Constants.Elevator.CANBUS),
+                wrist);
         break;
 
       case SIM:
@@ -138,21 +144,20 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.FrontRight),
                 new ModuleIOSim(TunerConstants.BackLeft),
                 new ModuleIOSim(TunerConstants.BackRight));
-        vision =
-            new Vision(
-                drive::addVisionMeasurement,
-                new VisionIO() {},
-                new VisionIO() {}); // disable vision in match
-        // new Vision(
-        //     drive::addVisionMeasurement,
-        //     new VisionIOPhotonVisionSim(
-        //         VisionConstants.ARDUCAM_LEFT_NAME,
-        //         VisionConstants.ROBOT_TO_ARDUCAM_LEFT,
-        //         drive::getPose),
-        //     new VisionIOPhotonVisionSim(
-        //         VisionConstants.ARDUCAM_RIGHT_NAME,
-        //         VisionConstants.ROBOT_TO_ARDUCAM_RIGHT,
-        //         drive::getPose));
+        // vision =
+        //     new Vision(
+        //         drive::addVisionMeasurement,
+        //         new VisionIOPhotonVisionSim(
+        //             VisionConstants.ARDUCAM_LEFT_NAME,
+        //             VisionConstants.ROBOT_TO_ARDUCAM_LEFT,
+        //             drive::getPose),
+        //         new VisionIOPhotonVisionSim(
+        //             VisionConstants.ARDUCAM_RIGHT_NAME,
+        //             VisionConstants.ROBOT_TO_ARDUCAM_RIGHT,
+        //             drive::getPose));
+        vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
+        wrist = new Wrist(new WristIOSimulation());
+        elevator = new Elevator(new ElevatorModuleIOSimulation(), wrist);
         break;
 
       default:
@@ -165,6 +170,8 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {});
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
+        wrist = new Wrist(new WristIO() {});
+        elevator = new Elevator(new ElevatorModuleIO() {}, wrist);
         break;
     }
 
