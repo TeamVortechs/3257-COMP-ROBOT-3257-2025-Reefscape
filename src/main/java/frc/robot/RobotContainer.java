@@ -292,8 +292,10 @@ public class RobotContainer {
     controller
         .x()
         .onTrue(
-            ScoringCommands.prepForScoring(4, wrist, elevator).andThen(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.GROUND_INTAKE_ANGLE)));
-
+        SetWristTargetAngleCommand.withConsistentEnd(wrist, () -> Constants.Arm.ELEVATOR_CLEARANCE_ANGLE)
+        .andThen(SetElevatorPresetCommand.withEndCondition(elevator, 0))
+        .andThen(SetWristTargetAngleCommand.withConsistentEnd(wrist, () -> Constants.Arm.GROUND_INTAKE_ANGLE))
+        );
     // // Reset gyro to 0° when B button is pressed
     controller
         .povDown()
