@@ -222,7 +222,8 @@ public class RobotContainer {
             () -> -controller.getLeftY(),
             () -> -controller.getLeftX(),
             () -> -controller.getRightX()));
-    // constantly slowly intake to keep algae from falling out uness the wrist has a coral in it as part of startup
+    // constantly slowly intake to keep algae from falling out uness the wrist has a coral in it as
+    // part of startup
     wrist.setDefaultCommand(
         new ConditionalCommand(
             new SetWristRollerSpeedCommand(wrist, 0.2),
@@ -311,7 +312,8 @@ public class RobotContainer {
         .whileTrue(
             new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
                 .andThen(
-                    new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.GROUND_INTAKE_ANGLE)));
+                    new SetWristTargetAngleCommand(
+                        wrist, () -> Constants.Arm.GROUND_INTAKE_ANGLE)));
     // dpad up manually moves arm outwards
     operatorController.povUp().whileTrue(new ManualSetWristSpeedCommand(wrist, () -> 0.15));
     // dpad down manually moves arm inwards

@@ -71,6 +71,7 @@ public final class Constants {
     public static final double WRIST_CORAL_SCORE = 0.5;
 
     public static final double ELEVATOR_CLEARANCE_ANGLE = SCORING_ANGLE;
-    public static final double WRIST_PROCESSOR_ANGLE = 5; // !!!!! find out through empirical testing !!!!!
+    public static final double WRIST_PROCESSOR_ANGLE =
+        5; // !!!!! find out through empirical testing !!!!!
   }
 }

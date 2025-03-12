@@ -40,11 +40,13 @@ public class midStartOneAlgae extends SequentialCommandGroup {
         new PrintCommand("I am beginning the autonomous."),
         new InstantCommand(
             () -> { // recalculate current alliance and the proper direction to aim
-              allianceColor = DriverStation.getAlliance().orElseGet(
-                () -> {
-                  System.out.println("Cannot get alliance! Defaulting to blue...");
-                  return DriverStation.Alliance.Blue;
-                });
+              allianceColor =
+                  DriverStation.getAlliance()
+                      .orElseGet(
+                          () -> {
+                            System.out.println("Cannot get alliance! Defaulting to blue...");
+                            return DriverStation.Alliance.Blue;
+                          });
               isBlue = allianceColor == Alliance.Blue ? true : false;
               aimAngle = isBlue ? Math.PI / 4 : Math.PI + Math.PI / 4; // have to flip the angle
 

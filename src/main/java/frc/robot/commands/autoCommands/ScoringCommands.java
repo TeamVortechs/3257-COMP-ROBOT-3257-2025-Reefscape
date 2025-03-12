@@ -85,7 +85,6 @@ public class ScoringCommands {
 
   public static Command prepForScoring(int level, Wrist wrist, Elevator elevator) {
     switch (level) { // bit of a misnomer here
-
       case 1: // low reef algae
         return new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
             .andThen(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.REEF_INTAKE_ANGLE))
