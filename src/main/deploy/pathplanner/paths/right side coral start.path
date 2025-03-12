@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.775897435897435,
-        "y": 2.6007692307642536
+        "x": 7.0013951132236505,
+        "y": 2.4479747413811994
       },
       "isLocked": false,
       "linkedName": "toprightsidecoralstart"
@@ -20,8 +20,8 @@
         "y": 2.961987179487179
       },
       "prevControl": {
-        "x": 5.420833333335325,
-        "y": 2.9103846153796384
+        "x": 5.381031724459607,
+        "y": 2.9416662393689763
       },
       "nextControl": null,
       "isLocked": false,

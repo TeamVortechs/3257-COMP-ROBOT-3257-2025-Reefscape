@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.001758092166827,
-        "y": 4.714375476486082
+        "x": 6.771518409204501,
+        "y": 4.6716393019489235
       },
       "isLocked": false,
       "linkedName": "ScoreTop"
@@ -20,8 +20,8 @@
         "y": 4.0
       },
       "prevControl": {
-        "x": 7.143071097632038,
-        "y": 4.000350993240647
+        "x": 7.177666505066911,
+        "y": 4.311110325164827
       },
       "nextControl": null,
       "isLocked": false,

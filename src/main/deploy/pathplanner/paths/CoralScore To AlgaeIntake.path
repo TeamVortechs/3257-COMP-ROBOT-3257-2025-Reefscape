@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.992238712009031,
-        "y": 3.97367268218103
+        "x": 5.993479510278879,
+        "y": 4.008925517391931
       },
       "isLocked": false,
       "linkedName": "CoralScore"
@@ -20,8 +20,8 @@
         "y": 4.0
       },
       "prevControl": {
-        "x": 5.731967120862354,
-        "y": 4.030803021307054
+        "x": 5.750131387868499,
+        "y": 3.9918958855216977
       },
       "nextControl": null,
       "isLocked": false,

@@ -28,8 +28,7 @@ public class MechanismSimulator {
     this.elevator = elevator;
 
     // initialize elevator
-    this.elevatorPanel =
-        new LoggedMechanism2d(Units.inchesToMeters(60), Units.inchesToMeters(100));
+    this.elevatorPanel = new LoggedMechanism2d(Units.inchesToMeters(60), Units.inchesToMeters(100));
     this.elevatorRoot =
         elevatorPanel.getRoot("elevator", Units.inchesToMeters(40), Units.inchesToMeters(0));
     this.elevatorLigament =

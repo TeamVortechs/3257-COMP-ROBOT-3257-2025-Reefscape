@@ -1,6 +1,7 @@
 package frc.robot.commands.elevator;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.subsystems.elevator.Elevator;
 
 public class SetElevatorPresetCommand extends Command {
@@ -41,7 +42,7 @@ public class SetElevatorPresetCommand extends Command {
     // Finish when the elevator is within tolerance of the target.
     // return elevator.isOnTarget();
 
-    return elevator.isOnTarget();
+    return true;
   }
 
   @Override
@@ -49,5 +50,10 @@ public class SetElevatorPresetCommand extends Command {
     // Once finished, hold the position.
     System.out.println("I AM DONE!!!! says setelevatorpresetcommand");
     // elevator.holdPositionPID();
+  }
+
+  public static Command withEndCondition(Elevator elevator, double presetHeight) {
+    return new SetElevatorPresetCommand(elevator, presetHeight)
+    .andThen(new WaitUntilCommand(() -> elevator.isOnTarget()));
   }
 }

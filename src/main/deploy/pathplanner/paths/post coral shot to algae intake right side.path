@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.243662373233964,
-        "y": 2.7383803817372003
+        "x": 5.225846875790885,
+        "y": 2.7303273547777023
       },
       "isLocked": false,
       "linkedName": "rightsidecoralshoot"
@@ -20,8 +20,8 @@
         "y": 2.786538461538462
       },
       "prevControl": {
-        "x": 5.0794340413138155,
-        "y": 2.989971829340145
+        "x": 5.12695557999195,
+        "y": 3.0287139963261387
       },
       "nextControl": null,
       "isLocked": false,

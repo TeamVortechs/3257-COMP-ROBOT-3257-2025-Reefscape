@@ -200,38 +200,6 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-    // controller.leftTrigger().whileTrue(new PathfindToClosestDepotCommand(drive));
-    // Default command, normal field-relative drive
-
-    // controller.start().whileTrue(new WristSetPosCommand(wrist, 0.25));
-    //  controller.back().whileTrue(new WristSetPosCommand(wrist, -0.25));
-    // controller2.leftBumper().whileTrue(new IntakeSpeedCommand(intake, 0.75, limitSwitch));
-    // controller.b().whileTrue(elevator2.runCurrentZeroing());
-    // controller.rightBumper().whileTrue(new SetElevatorPower(elevator2, 0.1));
-    // controller.leftBumper().whileTrue(new SetElevatorPower(elevator2, -0.1));
-    // controller
-    //     .rightBumper()
-    //     .whileTrue(new SetElevatorCommand(ElevatorLevel.FIRST_LEVEL, elevator2));
-    // controller
-    //     .rightTrigger()
-    //     .whileTrue(new SetElevatorCommand(ElevatorLevel.SECOND_LEVEL, elevator2));
-    // controller
-    //     .leftTrigger()
-    //     .whileTrue(new SetElevatorCommand(ElevatorLevel.THIRD_LEVEL, elevator2));
-
-    // controller
-    //     .a()
-    //     .whileTrue(
-    //         new TellCommand()
-    //             .andThen(
-    //                 new SetWristRollerSpeed(wrist, -0.01)
-    //                     .unless(() -> wrist.isCanCloserThan(0.1))));
-
-    // wrist.setDefaultCommand(
-    //     new ConditionalCommand(
-    //         new SetWristTargetAngleCommand(wrist, WristAngle.STAGE1_ANGLE.getAngle()),
-    //         new SetWristTargetAngleCommand(wrist, 0),
-    //         () - !wrist.isCanCloserThan(0.1)));
     /* */
     // resets encoders. THIS WILL BREAK THE ROBOT
     controller
@@ -251,11 +219,11 @@ public class RobotContainer {
             AutoBuilder.pathfindToPose(
                 new Pose2d(7.230, 4.000, Rotation2d.fromDegrees((180))), pathConstraints));
 
-    // moves elevator and wrist to the scoring positions level 2 after the right button is tapped
-    controller.leftTrigger().whileTrue(ScoringCommands.prepForScoring(1, wrist, elevator));
+    // moves elevator and wrist to the scoring positions level 1 after the right button is tapped
+    controller.rightStick().whileTrue(ScoringCommands.prepForScoring(1, wrist, elevator));
 
     // moves elevator and wrist to the scoring positions level 2 after the right button is tapped
-    controller.leftBumper().whileTrue(ScoringCommands.prepForScoring(2, wrist, elevator));
+    controller.leftStick().whileTrue(ScoringCommands.prepForScoring(2, wrist, elevator));
 
     // moves elevator and wrist to scoring position for level 3
     controller.rightBumper().whileTrue(ScoringCommands.prepForScoring(3, wrist, elevator));
@@ -272,14 +240,6 @@ public class RobotContainer {
     operatorController.rightBumper().whileTrue(ScoringCommands.prepForScoring(3, wrist, elevator));
 
     operatorController.rightTrigger().whileTrue(new SetWristRollerSpeedCommand(wrist, 0.6));
-    // new InstantCommand(() ->
-    // elevator.setTargetHeight(Constants.Elevator.INTAKE_HEIGHT)));
-    // IntakingCommands.intakeCommand(wrist, elevator)
-    // // vibrates the controller for half a second after intake
-    // .andThen(
-    //     Commands.deadline(
-    //         new WaitCommand(0.5), new ControllerVibrateCommand(0.7, controller)))
-    // );
 
     // intakes then vibrates controlller when in position and has coral
     // driver A shoots algae
@@ -288,7 +248,7 @@ public class RobotContainer {
     // left bumper sets the wrist outwards manually
     operatorController
         .b()
-        .whileTrue(new SetWristTargetAngleCommand(wrist, () -> WristAngle.STAGE2_ANGLE.getAngle()));
+        .whileTrue(ScoringCommands.prepForScoring(3, wrist, elevator));
 
     // x sets to inwards angle manually
     operatorController
@@ -304,68 +264,10 @@ public class RobotContainer {
                     new SetWristTargetAngleCommand(
                         wrist, () -> Constants.Arm.GROUND_INTAKE_ANGLE)));
 
-    // controller.leftTrigger().whileTrue(new ManualElevatorCommand(elevator, () -> -0.2));
-    // controller.rightTrigger().whileTrue(new ManualElevatorCommand(elevator, () -> 0.2));
 
-    // left trigger sets height to Stage 2
-    /*controller
-        .leftTrigger()
-        .whileTrue(
-            new InstantCommand(() -> elevator.setTargetHeight(Constants.Elevator.STAGE_2_LEVEL)));
-    // right trigger sets height to Stage 3
-    controller
-        .rightTrigger()
-        .whileTrue(
-            new InstantCommand(() -> elevator.setTargetHeight(Constants.Elevator.STAGE_3_LEVEL)));
-            /* */
     // driver right trigger intakes algae
     controller.rightTrigger().whileTrue(new SetWristRollerSpeedCommand(wrist, 0.6));
-
-    /*controller
-            .rightTrigger()
-            .whileTrue(
-                // new InstantCommand(() ->
-                // elevator.setTargetHeight(Constants.Elevator.INTAKE_HEIGHT)));
-                IntakingCommands.intakeCommand(wrist, elevator)
-                    // vibrates the controller for half a second after intake
-                    .andThen(
-                        Commands.deadline(
-                            new WaitCommand(0.5), new ControllerVibrateCommand(0.7, controller))));
-    /* */
-    // old elevator default command
-    // elevator.setDefaultCommand(
-    //     new WaitCommand(2) // wait two seconds, then
-    //         .andThen(
-    //             new SetElevatorPresetCommand(elevator, wrist, 0) // set elevator to minimum
-    // height
-    //                 .unless(() -> wrist.isCanCloserThan(0.1)))); // unless there is a coral
-
-    // if there is no note move the elevator down to zero. If there is a note move elevator to first
-    // level if it is currently below first level
-    // elevator.setDefaultCommand(
-    //     new ConditionalCommand(
-    //         // set the elevator to move up to stage 1 if it's below and has the coral(that way
-    // cycle
-    //         // time is increased if they forgot to do it)
-    //         new SetElevatorPresetCommand(elevator, wrist, Constants.Elevator.STAGE_2_LEVEL)
-    //             .unless(() -> elevator.getTargetHeight() > Constants.Elevator.STAGE_2_LEVEL),
-    //         // sets the the elevator to go zero if it doesn't have a coral
-    //         new SetElevatorPresetCommand(elevator, wrist, 0),
-    //         // conditional that controls the elevator
-    //         () -> wrist.isCanCloserThan(0.1)));
-
-    // if there is a note move the wrist to scoring position. If there is not a note move the wrist
-    // back to intake position when the elevator is on the floor
-    // wrist.setDefaultCommand(
-    //     new ConditionalCommand(
-    //         // if there is a note move the wrist angle to the shooting angle
-    //         (new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.WRIST_STAGE_2_ANGLE)),
-    //         // if there is not a note move the wrist to the target angle 0
-    //         new SetWristTargetAngleCommand(wrist, () -> 0)
-    //             // unless the elevator is not on the floor
-    //             .unless(() -> !elevator.isOnFloor()),
-    //         // controller of the conditional
-    //         () -> wrist.isCanCloserThan(0.1)));
+    // the wrist mechanism rollers will constantly spin unless theirs a coral in the mechanism
     wrist.setDefaultCommand(
         new ConditionalCommand(
             new SetWristRollerSpeedCommand(wrist, 0.2),
@@ -381,46 +283,16 @@ public class RobotContainer {
 
     controller.povLeft().whileTrue(new SetWristRollerSpeedCommand(wrist, 0.05));
 
-    // Lock to 0° when A button is held
-    // controller
-    //     .a()
-    //     .whileTrue(
-    //         DriveCommands.joystickDriveAtAngle(
-    //             drive,
-    //             () -> -controller.getLeftY(),
-    //             () -> -controller.getLeftX(),
-    //             () -> new Rotation2d( )));
-
-    // Switch to X pattern when X button is pressed
-    // controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
-
-    // controller.x().whileTrue(new PathfindToClosestDepotCommand(drive, false));
-    // controller.x().onFalse(new PathfindingCommandCancel(drive));
-
-    // controller.y().whileTrue(new PathfindToClosestDepotCommand(drive, true));
-    // controller.y().onFalse(new PathfindingCommandCancel(drive));
-
     operatorController.povDown().whileTrue(new ManualSetWristSpeedCommand(wrist, () -> -0.1));
     operatorController.povUp().whileTrue(new ManualSetWristSpeedCommand(wrist, () -> 0.15));
     operatorController
         .a()
         .onTrue(new SetWristTargetAngleCommand(wrist, () -> wrist.getTargetAngle()));
 
-    // controller.x().whileTrue(new PathfindToClosestDepotCommand(drive, false));
-    // controller.x().onFalse(new PathfindingCommandCancel(drive));
-
     controller
         .x()
-        .onTrue(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.GROUND_INTAKE_ANGLE));
-
-    // controller.y().whileTrue(new PathfindToClosestDepotCommand(drive, true));
-    // controller.y().onFalse(new PathfindingCommandCancel(drive));
-
-    // controller
-    //     .leftTrigger()
-    //     .whileTrue(
-    //         PathfindingCommands.pathfindToDepotCommand(
-    //             PathfindingCommands.getClosestDepotPath(drive.getPose())));
+        .onTrue(
+            ScoringCommands.prepForScoring(4, wrist, elevator).andThen(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.GROUND_INTAKE_ANGLE)));
 
     // // Reset gyro to 0° when B button is pressed
     controller
@@ -444,14 +316,6 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    // add a free disturbance when pressing the y button to test vision
-    // var disturbance =
-    //     new Transform2d(new Translation2d(1.0, 1.0), new Rotation2d(0.17 * 2 * Math.PI));
-    // controller
-    //     .y()
-    //     .onTrue(
-    //         Commands.runOnce(() -> drive.setPose(drive.getPose().plus(disturbance)))
-    //             .ignoringDisable(true));
   } // end configure bindings
 
   /**
@@ -481,10 +345,10 @@ public class RobotContainer {
 
     addNamedCommand(
         "mechanismBack",
-
-        SetWristTargetAngleCommand.withConsistentEnd(wrist, () -> Constants.Arm.ELEVATOR_CLEARANCE_ANGLE + 0.1)
-        .andThen(new InstantCommand(() -> wrist.setRollerSpeed(0.2)))
-            .andThen(new SetElevatorPresetCommand(elevator, 0))
+        SetWristTargetAngleCommand.withConsistentEnd(
+                wrist, () -> Constants.Arm.ELEVATOR_CLEARANCE_ANGLE + 0.1)
+            .andThen(new InstantCommand(() -> wrist.setRollerSpeed(0.2)))
+            .andThen(SetElevatorPresetCommand.withEndCondition(elevator, 0))
             .andThen(new SetWristTargetAngleCommand(wrist, () -> 0)),
         isReal);
 

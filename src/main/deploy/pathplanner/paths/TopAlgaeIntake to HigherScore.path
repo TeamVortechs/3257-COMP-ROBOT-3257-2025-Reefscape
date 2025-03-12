@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.295896697401664,
-        "y": 4.703112678070905
+        "x": 6.46202445652174,
+        "y": 4.95793987771739
       },
       "isLocked": false,
       "linkedName": "TopAlgaeIntake"
@@ -20,8 +20,8 @@
         "y": 5.211858974358974
       },
       "prevControl": {
-        "x": 6.013481287507348,
-        "y": 5.244805623405037
+        "x": 6.040048656599768,
+        "y": 5.249462159890707
       },
       "nextControl": null,
       "isLocked": false,
