@@ -100,10 +100,11 @@ public class Elevator extends SubsystemBase {
       return;
     }
 
+    isOnTarget = isOnTarget();
+
     if (Math.abs(currentHeight - targetHeight) < PElevator.tolerance.getValue()) {
-      isOnTarget = true;
+
     } else {
-      isOnTarget = false;
       // Clamp target height to prevent exceeding limits
       targetHeight = Math.max(0.0, Math.min(targetHeight, Constants.Elevator.MAX_HEIGHT));
 
@@ -175,7 +176,7 @@ public class Elevator extends SubsystemBase {
 
   // returns wether or not the elevaotr is on target
   public boolean isOnTarget() {
-    return isOnTarget;
+    return (Math.abs(currentHeight - targetHeight) < PElevator.tolerance.getValue());
   }
 
   /** resets encoders to read 0 and resets PID (setting it to begin at current height) */

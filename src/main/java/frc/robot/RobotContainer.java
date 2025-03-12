@@ -14,7 +14,6 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.events.EventTrigger;
 import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -25,14 +24,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commandautos.midStartOneAlgae;
 import frc.robot.commands.autoCommands.DriveCommands;
-import frc.robot.commands.autoCommands.IntakingCommands;
 import frc.robot.commands.autoCommands.ScoringCommands;
+import frc.robot.commands.communication.ControllerVibrateCommand;
 import frc.robot.commands.communication.TellCommand;
+import frc.robot.commands.elevator.SetElevatorPresetCommand;
 import frc.robot.commands.wrist.ManualSetWristSpeedCommand;
 import frc.robot.commands.wrist.SetWristRollerSpeedCommand;
 import frc.robot.commands.wrist.SetWristTargetAngleCommand;
@@ -57,6 +58,7 @@ import frc.robot.subsystems.wrist.WristIO;
 import frc.robot.subsystems.wrist.WristIOSimulation;
 import frc.robot.subsystems.wrist.WristIOTalonFX;
 // import frc.robot.subsystems.wrist.WristIOTalonFX;
+import frc.robot.util.simulation.MechanismSimulator;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -78,6 +80,9 @@ public class RobotContainer {
   // new DigitalInput(20); // !!!!! FAKE CHANNEL! CHANGE WHEN PROPERLY IMPLEMENTED !!!!!!
   // private final Intake intake = new Intake(new IntakeIOTalonFX(), limitSwitch);
   private final Elevator elevator;
+
+  private final MechanismSimulator sim;
+
   //   private final Elevator2 elevator2 =
   //       new Elevator2(
   //           new ElevatorModuleTalonFXIO(
@@ -95,7 +100,7 @@ public class RobotContainer {
 
   // pathconstraints for pathplanner paths
   private final PathConstraints pathConstraints =
-      new PathConstraints(3.0, 4.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
+      new PathConstraints(1, 0.5, Units.degreesToRadians(540), Units.degreesToRadians(720));
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -175,6 +180,8 @@ public class RobotContainer {
         break;
     }
 
+    sim = new MechanismSimulator(wrist, elevator);
+
     // registerNamedCommandsAuto();
 
     autoChooser = new SendableChooser<>();
@@ -215,8 +222,12 @@ public class RobotContainer {
             () -> -controller.getLeftY(),
             () -> -controller.getLeftX(),
             () -> -controller.getRightX()));
-    // constantly slowly intake to keep algae from falling out
-    wrist.setDefaultCommand(new SetWristRollerSpeedCommand(wrist, 0.2));
+    // constantly slowly intake to keep algae from falling out uness the wrist has a coral in it as part of startup
+    wrist.setDefaultCommand(
+        new ConditionalCommand(
+            new SetWristRollerSpeedCommand(wrist, 0.2),
+            new SetWristRollerSpeedCommand(wrist, 0),
+            () -> !wrist.hasCoral()));
 
     /*
      * driver control binds
@@ -300,7 +311,7 @@ public class RobotContainer {
         .whileTrue(
             new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
                 .andThen(
-                    new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.WRIST_GROUND_ANGLE)));
+                    new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.GROUND_INTAKE_ANGLE)));
     // dpad up manually moves arm outwards
     operatorController.povUp().whileTrue(new ManualSetWristSpeedCommand(wrist, () -> 0.15));
     // dpad down manually moves arm inwards
@@ -346,12 +357,23 @@ public class RobotContainer {
     // if (Constants.currentMode == Mode.SIM) isReal = false;
 
     // comm
-    addNamedCommand("intakeStage2", IntakingCommands.intakeCommandAuto(wrist, elevator, 2), isReal);
-    addNamedCommand("intakeStage1", IntakingCommands.intakeCommandAuto(wrist, elevator, 1), isReal);
+    addNamedCommand("intakeStage1", ScoringCommands.intakeAuto(1, wrist, elevator), isReal);
+
+    addNamedCommand("intakeStage2", ScoringCommands.intakeAuto(2, wrist, elevator), isReal);
+
+    addNamedCommand("score", ScoringCommands.scoreAuto(wrist, elevator), isReal);
+
     addNamedCommand(
-        "score",
-        new WaitCommand(0.2).deadlineFor(new SetWristRollerSpeedCommand(wrist, -0.4)),
+        "mechanismBack",
+        new InstantCommand(() -> wrist.setRollerSpeed(0.2))
+            .andThen(new SetElevatorPresetCommand(elevator, 0))
+            .andThen(SetWristTargetAngleCommand.withConsistentEnd(wrist, () -> 0)),
         isReal);
+
+    // unbounded this for now bc we don't know
+    addNamedCommand("coralScore", ScoringCommands.coralScoreAuto(wrist), isReal);
+
+    // addNamedCommand("coralScore", ScoringCommands.coralScoreAuto(wrist), isReal);
   }
 
   // function to add named commands because we need to add is an an event too and not just as a
@@ -360,12 +382,23 @@ public class RobotContainer {
 
     if (isReal) {
       NamedCommands.registerCommand(commandName, command);
-      new EventTrigger(commandName).onTrue(command);
+      //   new EventTrigger(commandName).onTrue(command);
     } else {
       // registers the named commands to print something out instead of actually running anything
-      NamedCommands.registerCommand(commandName, new TellCommand(commandName + " auto command"));
-      new EventTrigger(commandName)
-          .onTrue(new TellCommand(commandName + " auto event trigger command"));
+      NamedCommands.registerCommand(
+          commandName,
+          new TellCommand(commandName + " auto command")
+              .andThen(
+                  new ControllerVibrateCommand(1, controller).withDeadline(new WaitCommand(0.2)))
+              .alongWith(command));
+
+      //   new EventTrigger(commandName)
+      //       .onTrue(
+      //           new TellCommand(commandName + " auto event trigger command")
+      //               .andThen(
+      //                   new ControllerVibrateCommand(1, controller)
+      //                       .withDeadline(new WaitCommand(0.2)))
+      //               .andThen(new WaitCommand(0.3)));
     }
   }
 
@@ -391,5 +424,13 @@ public class RobotContainer {
     SmartDashboard.putNumber("x position:", drive.getPose().getX());
     SmartDashboard.putNumber("y position:", drive.getPose().getY());
     SmartDashboard.putNumber("current rotation:", drive.getPose().getRotation().getDegrees());
+  }
+
+  public Wrist getWrist() {
+    return wrist;
+  }
+
+  public MechanismSimulator getSim() {
+    return sim;
   }
 }

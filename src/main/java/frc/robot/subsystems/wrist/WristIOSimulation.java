@@ -15,12 +15,23 @@ public class WristIOSimulation implements WristIO {
   private final DCMotorSim armMotorsSim;
   private final DCMotorSim rollerMotorsSim;
 
+  private final double speedDivider = 1;
+
   private PIDController armPIDController =
-      new PIDController(PWrist.kP.getValue(), PWrist.kI.getValue(), PWrist.kD.getValue());
+      new PIDController(
+          PWrist.kP.getValue() / speedDivider,
+          PWrist.kI.getValue() / speedDivider,
+          PWrist.kD.getValue() / speedDivider);
   private ArmFeedforward armFeedforward =
-      new ArmFeedforward(PWrist.kS.getValue(), PWrist.kG.getValue(), PWrist.kV.getValue());
-  private double targetVel = PWrist.speedLimit.getValue();
-  private double targetAccel = PWrist.accelerationLimit.getValue();
+      new ArmFeedforward(
+          PWrist.kS.getValue() / speedDivider,
+          PWrist.kG.getValue() / speedDivider,
+          PWrist.kV.getValue() / speedDivider);
+
+  private double targetVel = PWrist.speedLimit.getValue() / speedDivider;
+
+  // private double targetVel = PWrist.speedLimit.getValue();
+  private double targetAccel = PWrist.accelerationLimit.getValue() / speedDivider;
 
   @AutoLogOutput private double angle;
 
@@ -117,5 +128,10 @@ public class WristIOSimulation implements WristIO {
   @Override
   public void zeroArmEncoder() {
     armMotorsSim.setAngle(0);
+  }
+
+  @Override
+  public double getRollerSpeed() {
+    return rollerMotorsSim.getAngularVelocityRPM();
   }
 }
