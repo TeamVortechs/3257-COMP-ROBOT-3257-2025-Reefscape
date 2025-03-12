@@ -134,6 +134,12 @@ public class ScoringCommands {
         //             .alongWith(
         //                 new SetWristTargetAngleCommand(
         //                     wrist, () -> WristAngle.ALGAE_GROUND_INTAKE.getAngle())));
+      
+      case 5: // processor position
+      return new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
+        .andThen(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.WRIST_PROCESSOR_ANGLE))
+        .andThen(new WaitUntilCommand(() -> wrist.isClearFromElevator()))
+        .andThen(new SetElevatorPresetCommand(elevator, Constants.Elevator.MIN_HEIGHT));
 
       default: // oh dear
         return null;
