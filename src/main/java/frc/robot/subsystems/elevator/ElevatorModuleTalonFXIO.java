@@ -36,16 +36,16 @@ public class ElevatorModuleTalonFXIO implements ElevatorModuleIO {
   private void tuneElevatorPID() {
 
     TalonFXConfiguration elevatorConfigs =
-    new TalonFXConfiguration()
-        .withCurrentLimits(
-            new CurrentLimitsConfigs()
-                // Swerve azimuth does not require much torque output, so we can set a
-                // relatively
-                // low
-                // stator current limit to help avoid brownouts without impacting performance.
-                .withStatorCurrentLimit(Amps.of(80))
-                .withStatorCurrentLimitEnable(true));
-    
+        new TalonFXConfiguration()
+            .withCurrentLimits(
+                new CurrentLimitsConfigs()
+                    // Swerve azimuth does not require much torque output, so we can set a
+                    // relatively
+                    // low
+                    // stator current limit to help avoid brownouts without impacting performance.
+                    .withStatorCurrentLimit(Amps.of(80))
+                    .withStatorCurrentLimitEnable(true));
+
     var slot0Configs = elevatorConfigs.Slot0;
     slot0Configs.kG = PElevator.kG.getValue();
     slot0Configs.kS = PElevator.kS.getValue();
