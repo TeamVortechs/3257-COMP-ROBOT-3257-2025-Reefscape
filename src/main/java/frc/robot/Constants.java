@@ -52,7 +52,7 @@ public final class Constants {
     // public static final double STAGE_1_LEVEL = 0; // currently unimplemented
     public static final double INTAKE_LEVEL_1 = 10.81066;
     public static final double INTAKE_LEVEL_2 = 19.5383;
-    public static final double BARGE_LEVEL = 43.2; // currently impossible to achieve
+    public static final double BARGE_LEVEL = 43.2;
   }
 
   // constants used for the arm/wrist (naming inconsistency)

@@ -29,7 +29,7 @@ public class MechanismSimulator {
 
     // initialize elevator
     this.elevatorPanel =
-        new LoggedMechanism2d(Units.inchesToMeters(100), Units.inchesToMeters(100));
+        new LoggedMechanism2d(Units.inchesToMeters(60), Units.inchesToMeters(100));
     this.elevatorRoot =
         elevatorPanel.getRoot("elevator", Units.inchesToMeters(40), Units.inchesToMeters(0));
     this.elevatorLigament =
@@ -38,7 +38,7 @@ public class MechanismSimulator {
                 "arm", Units.inchesToMeters(25), 90, 6, new Color8Bit(Color.kYellow)));
 
     // initialize elevator
-    this.armPanel = new LoggedMechanism2d(Units.inchesToMeters(100), Units.inchesToMeters(100));
+    this.armPanel = new LoggedMechanism2d(Units.inchesToMeters(60), Units.inchesToMeters(100));
     this.armRoot = armPanel.getRoot("arm", Units.inchesToMeters(7.35), Units.inchesToMeters(10));
 
     this.armLigament =
@@ -53,7 +53,7 @@ public class MechanismSimulator {
 
     // sets angles/heights
     armLigament.setAngle(90 - angle * 22);
-    elevatorLigament.setLength(height / 60);
+    elevatorLigament.setLength(height / 60 + 0.5);
 
     // set the arm to move up and down with the elevator
     armRoot.setPosition(Units.inchesToMeters(40), elevatorLigament.getLength());

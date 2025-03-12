@@ -54,7 +54,7 @@ public class Wrist extends SubsystemBase {
 
   // returns wether or not the wrist is on target
   public boolean isOnTarget() {
-    return Math.abs(targetAngle - CurrentAngle) < PWrist.tolerance.getValue();
+    return Math.abs(targetAngle - CurrentAngle) <= PWrist.tolerance.getValue();
   }
   // Math.abs(targetAngle - CurrentAngle) > 0.1 ||
 
@@ -70,7 +70,7 @@ public class Wrist extends SubsystemBase {
 
   // returns wether or not the arm is clear from the elevator
   public boolean isClearFromElevator() {
-    return wristIO.getAngleRotations() > Constants.Arm.ELEVATOR_CLEARANCE_ANGLE - 0.1;
+    return wristIO.getAngleRotations() >= Constants.Arm.ELEVATOR_CLEARANCE_ANGLE - PWrist.tolerance.getValue();
   }
 
   // turns manual override and sets the manual speeed

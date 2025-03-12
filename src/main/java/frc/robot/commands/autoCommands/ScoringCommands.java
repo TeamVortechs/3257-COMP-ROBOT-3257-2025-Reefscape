@@ -109,10 +109,12 @@ public class ScoringCommands {
         //                     wrist, () -> WristAngle.STAGE2_ANGLE.getAngle())));
 
       case 3: // scoring position
-        return new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
-            .andThen(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.SCORING_ANGLE))
-            .andThen(new WaitUntilCommand(() -> wrist.isClearFromElevator()))
-            .andThen(new SetElevatorPresetCommand(elevator, Constants.Elevator.BARGE_LEVEL));
+      return new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
+      .andThen(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.SCORING_ANGLE))
+      .andThen(new WaitUntilCommand(() -> wrist.isClearFromElevator()))
+      .andThen(new SetElevatorPresetCommand(elevator, Constants.Elevator.BARGE_LEVEL))
+      .andThen(new WaitUntilCommand(() -> elevator.getCurrentHeight() > Constants.Elevator.INTAKE_LEVEL_2))
+      .andThen(new SetWristTargetAngleCommand(wrist, () -> 0));
         // return new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
         //     .andThen(
         //         new SetElevatorPresetCommand(
@@ -123,7 +125,7 @@ public class ScoringCommands {
         //                 new SetWristTargetAngleCommand(
         //                     wrist, () -> Constants.Arm.WRIST_STAGE_4_ANGLE)));
 
-      case 4:
+      case 4: // ground intake level
         return new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
             .andThen(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.SCORING_ANGLE))
             .andThen(new WaitUntilCommand(() -> wrist.isClearFromElevator()))
