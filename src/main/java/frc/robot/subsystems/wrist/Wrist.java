@@ -3,7 +3,6 @@ package frc.robot.subsystems.wrist;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.KDoublePreferences.PElevator;
 import frc.robot.KDoublePreferences.PWrist;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -55,7 +54,7 @@ public class Wrist extends SubsystemBase {
 
   // returns wether or not the wrist is on target
   public boolean isOnTarget() {
-    return Math.abs(targetAngle - CurrentAngle) < PWrist.tolerance.getValue();
+    return Math.abs(targetAngle - CurrentAngle) < 0.5;
   }
   // Math.abs(targetAngle - CurrentAngle) > 0.1 ||
 

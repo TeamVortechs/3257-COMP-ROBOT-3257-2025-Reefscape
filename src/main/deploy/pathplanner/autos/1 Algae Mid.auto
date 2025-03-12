@@ -17,12 +17,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "mechanismBack"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "AlgaeIntake To Score"
@@ -32,6 +26,12 @@
           "type": "named",
           "data": {
             "name": "score"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Rotates after score"
           }
         },
         {

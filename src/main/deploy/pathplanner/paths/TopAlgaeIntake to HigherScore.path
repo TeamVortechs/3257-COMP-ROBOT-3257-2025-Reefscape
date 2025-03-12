@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.039485602157731,
-        "y": 4.582873766870067
+        "x": 6.295896697401664,
+        "y": 4.703112678070905
       },
       "isLocked": false,
       "linkedName": "TopAlgaeIntake"
     },
     {
       "anchor": {
-        "x": 7.608782051282049,
-        "y": 5.247
+        "x": 7.330128205128204,
+        "y": 5.211858974358974
       },
       "prevControl": {
-        "x": 6.505729687085671,
-        "y": 5.344511512540948
+        "x": 6.013481287507348,
+        "y": 5.244805623405037
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 27.5528115767178
   },
   "reversed": false,
   "folder": null,

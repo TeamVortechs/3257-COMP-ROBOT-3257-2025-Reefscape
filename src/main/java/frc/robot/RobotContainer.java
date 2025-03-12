@@ -469,7 +469,7 @@ public class RobotContainer {
     // doing the commands
 
     // stuff to check wether or not it was a sim
-    boolean isReal = false;
+    boolean isReal = true;
     // if (Constants.currentMode == Mode.SIM) isReal = false;
 
     // comm
@@ -481,9 +481,11 @@ public class RobotContainer {
 
     addNamedCommand(
         "mechanismBack",
-        new InstantCommand(() -> wrist.setRollerSpeed(0.2))
+
+        SetWristTargetAngleCommand.withConsistentEnd(wrist, () -> Constants.Arm.ELEVATOR_CLEARANCE_ANGLE + 0.1)
+        .andThen(new InstantCommand(() -> wrist.setRollerSpeed(0.2)))
             .andThen(new SetElevatorPresetCommand(elevator, 0))
-            .andThen(SetWristTargetAngleCommand.withConsistentEnd(wrist, () -> 0)),
+            .andThen(new SetWristTargetAngleCommand(wrist, () -> 0)),
         isReal);
 
     // unbounded this for now bc we don't know

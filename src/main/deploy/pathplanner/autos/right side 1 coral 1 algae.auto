@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "StartPoint to CoralScore"
+            "pathName": "right side coral start"
           }
         },
         {
@@ -19,43 +19,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "CoralScore To AlgaeIntake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intakeStage1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "mechanismBack"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "AlgaeIntake To Score"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "score"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "mechanismBack"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Score to TopAlgaeIntake"
+            "pathName": "post coral shot to algae intake right side"
           }
         },
         {
@@ -73,13 +37,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "TopAlgaeIntake to HigherScore"
+            "pathName": "post algae intake to score"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "score"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Rotates after score"
           }
         },
         {
@@ -91,7 +61,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "HigherScore to Clear"
+            "pathName": "Score To Clear"
           }
         }
       ]

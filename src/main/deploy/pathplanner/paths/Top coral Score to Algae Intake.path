@@ -3,37 +3,32 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.3490625,
-        "y": 4.718025568181818
+        "x": 5.142,
+        "y": 5.098
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.39297218618104,
-        "y": 5.082741533694023
+        "x": 5.253803398874992,
+        "y": 5.321606797749978
       },
       "isLocked": false,
-      "linkedName": "ScoreTop"
+      "linkedName": "TopCoralScore"
     },
     {
       "anchor": {
-        "x": 5.215142045454546,
+        "x": 5.215,
         "y": 5.246519886363636
       },
       "prevControl": {
-        "x": 5.733664772727273,
-        "y": 6.173877840909091
+        "x": 5.099525197822238,
+        "y": 5.0247867808922
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "TopAlgaeIntake"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.900532859680285,
-      "rotationDegrees": -119.99999999999999
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -53,7 +48,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 29.60445074600495
+    "rotation": -119.99999999999999
   },
   "useDefaultConstraints": true
 }

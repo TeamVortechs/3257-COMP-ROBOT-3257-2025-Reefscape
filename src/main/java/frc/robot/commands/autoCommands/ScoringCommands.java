@@ -77,9 +77,10 @@ public class ScoringCommands {
 
   public static Command scoreAuto(Wrist wrist, Elevator elevator) {
     return new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
-        .andThen(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.SCORING_ANGLE))
+        .andThen(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.ELEVATOR_CLEARANCE_ANGLE))
         .andThen(new WaitUntilCommand(() -> wrist.isClearFromElevator()))
         .andThen(new SetElevatorPresetCommand(elevator, Constants.Elevator.BARGE_LEVEL))
+        .andThen(SetWristTargetAngleCommand.withConsistentEnd(wrist, () -> 0))
         .andThen(new InstantCommand(() -> wrist.setRollerSpeed(-1)).andThen(new WaitCommand(1)));
   }
 

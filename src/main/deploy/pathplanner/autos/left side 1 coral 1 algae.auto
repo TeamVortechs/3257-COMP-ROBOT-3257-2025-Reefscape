@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "StartPoint to CoralScore"
+            "pathName": "Top Startpoint to coral Score"
           }
         },
         {
@@ -19,43 +19,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "CoralScore To AlgaeIntake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intakeStage1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "mechanismBack"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "AlgaeIntake To Score"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "score"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "mechanismBack"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Score to TopAlgaeIntake"
+            "pathName": "Top coral Score to Algae Intake"
           }
         },
         {
@@ -80,6 +44,12 @@
           "type": "named",
           "data": {
             "name": "score"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Highcore post score clear"
           }
         },
         {
