@@ -52,7 +52,9 @@ public class ScoringCommands {
                 SetWristTargetAngleCommand.withConsistentEnd(
                     wrist, () -> Arm.ELEVATOR_CLEARANCE_ANGLE))
             .andThen(new InstantCommand(() -> wrist.setRollerSpeed(0.2)))
-            .andThen(SetElevatorPresetCommand.withEndCondition(elevator, Constants.Elevator.INTAKE_LEVEL_1))
+            .andThen(
+                SetElevatorPresetCommand.withEndCondition(
+                    elevator, Constants.Elevator.INTAKE_LEVEL_1))
             .andThen(
                 SetWristTargetAngleCommand.withConsistentEnd(
                     wrist, () -> Constants.Arm.REEF_INTAKE_ANGLE))
@@ -64,7 +66,9 @@ public class ScoringCommands {
                 SetWristTargetAngleCommand.withConsistentEnd(
                     wrist, () -> Arm.ELEVATOR_CLEARANCE_ANGLE))
             .andThen(new InstantCommand(() -> wrist.setRollerSpeed(0.2)))
-            .andThen(SetElevatorPresetCommand.withEndCondition(elevator, Constants.Elevator.INTAKE_LEVEL_2))
+            .andThen(
+                SetElevatorPresetCommand.withEndCondition(
+                    elevator, Constants.Elevator.INTAKE_LEVEL_2))
             .andThen(
                 SetWristTargetAngleCommand.withConsistentEnd(
                     wrist, () -> Constants.Arm.REEF_INTAKE_ANGLE))
@@ -80,7 +84,8 @@ public class ScoringCommands {
         .andThen(
             new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.ELEVATOR_CLEARANCE_ANGLE))
         .andThen(new WaitUntilCommand(() -> wrist.isClearFromElevator()))
-        .andThen(SetElevatorPresetCommand.withEndCondition(elevator, Constants.Elevator.BARGE_LEVEL))
+        .andThen(
+            SetElevatorPresetCommand.withEndCondition(elevator, Constants.Elevator.BARGE_LEVEL))
         .andThen(SetWristTargetAngleCommand.withConsistentEnd(wrist, () -> 0))
         .andThen(new InstantCommand(() -> wrist.setRollerSpeed(-1)).andThen(new WaitCommand(1)));
   }

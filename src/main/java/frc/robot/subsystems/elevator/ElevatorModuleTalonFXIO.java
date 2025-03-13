@@ -66,7 +66,7 @@ public class ElevatorModuleTalonFXIO implements ElevatorModuleIO {
   @Override
   public void updateInputs(ElevatorModuleIOInputsAutoLogged inputs) {
     boolean updatePID =
-        false; // set to true to continuously update the PID constants through preferences
+        true; // set to true to continuously update the PID constants through preferences
     if (updatePID) {
       TalonFXConfiguration elevatorConfigs =
           new TalonFXConfiguration()

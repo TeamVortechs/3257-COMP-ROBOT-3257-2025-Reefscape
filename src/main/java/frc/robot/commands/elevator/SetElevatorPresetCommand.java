@@ -54,6 +54,6 @@ public class SetElevatorPresetCommand extends Command {
 
   public static Command withEndCondition(Elevator elevator, double presetHeight) {
     return new SetElevatorPresetCommand(elevator, presetHeight)
-    .andThen(new WaitUntilCommand(() -> elevator.isOnTarget()));
+        .andThen(new WaitUntilCommand(() -> elevator.isOnTarget()));
   }
 }

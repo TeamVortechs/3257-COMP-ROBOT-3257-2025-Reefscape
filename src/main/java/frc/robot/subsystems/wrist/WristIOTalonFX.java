@@ -113,6 +113,39 @@ public class WristIOTalonFX implements WristIO {
   // advantage kti logging stuff
   @Override
   public void updateInputs(WristIOInputsAutoLogged inputs) {
+    boolean updatePID = true;
+    if (updatePID) {
+      TalonFXConfiguration armMotorConfigs =
+          new TalonFXConfiguration()
+              .withCurrentLimits(
+                  new CurrentLimitsConfigs()
+                      // Swerve azimuth does not require much torque output, so we can set a
+                      // relatively
+                      // low
+                      // stator current limit to help avoid brownouts without impacting performance.
+                      .withStatorCurrentLimit(Amps.of(65))
+                      .withStatorCurrentLimitEnable(true))
+              .withMotorOutput(
+                  new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive));
+
+      var slot0Configs = armMotorConfigs.Slot0;
+      slot0Configs.kS = PWrist.kS.getValue(); // Add 0.25 V output to overcome static friction
+      slot0Configs.kV = PWrist.kV.getValue(); // A velocity target of 1 rps results in 0.12 V output
+      slot0Configs.kA = PWrist.kA.getValue(); // An acceleration of 1 rps/s requires 0.01 V output
+      slot0Configs.kP =
+          PWrist.kP.getValue(); // A position error of 2.5 rotations results in 12 V output
+      slot0Configs.kI = PWrist.kI.getValue(); // no output for integrated error
+      slot0Configs.kD = PWrist.kD.getValue(); // A velocity error of 1 rps results in 0.1 V output
+
+      var motionMagicConfigs = armMotorConfigs.MotionMagic;
+      motionMagicConfigs.MotionMagicCruiseVelocity = PWrist.speedLimit.getValue();
+      motionMagicConfigs.MotionMagicAcceleration = PWrist.accelerationLimit.getValue();
+      motionMagicConfigs.MotionMagicJerk = PWrist.jerkLimit.getValue();
+
+      arm.getConfigurator().apply(armMotorConfigs);
+      arm.setNeutralMode(NeutralModeValue.Brake);
+    }
+
     inputs.wristAppliedVoltage = arm.getMotorVoltage().getValueAsDouble();
     inputs.wristCurrentAmps = arm.getStatorCurrent().getValueAsDouble();
     inputs.wristSpeedRotations = arm.get();

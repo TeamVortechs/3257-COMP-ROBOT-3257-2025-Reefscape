@@ -246,9 +246,7 @@ public class RobotContainer {
     controller.a().whileTrue(new SetWristRollerSpeedCommand(wrist, -1));
 
     // left bumper sets the wrist outwards manually
-    operatorController
-        .b()
-        .whileTrue(ScoringCommands.prepForScoring(3, wrist, elevator));
+    operatorController.b().whileTrue(ScoringCommands.prepForScoring(3, wrist, elevator));
 
     // x sets to inwards angle manually
     operatorController
@@ -263,7 +261,6 @@ public class RobotContainer {
                 .andThen(
                     new SetWristTargetAngleCommand(
                         wrist, () -> Constants.Arm.GROUND_INTAKE_ANGLE)));
-
 
     // driver right trigger intakes algae
     controller.rightTrigger().whileTrue(new SetWristRollerSpeedCommand(wrist, 0.6));
@@ -292,10 +289,12 @@ public class RobotContainer {
     controller
         .x()
         .onTrue(
-        SetWristTargetAngleCommand.withConsistentEnd(wrist, () -> Constants.Arm.ELEVATOR_CLEARANCE_ANGLE)
-        .andThen(SetElevatorPresetCommand.withEndCondition(elevator, 0))
-        .andThen(SetWristTargetAngleCommand.withConsistentEnd(wrist, () -> Constants.Arm.GROUND_INTAKE_ANGLE))
-        );
+            SetWristTargetAngleCommand.withConsistentEnd(
+                    wrist, () -> Constants.Arm.ELEVATOR_CLEARANCE_ANGLE)
+                .andThen(SetElevatorPresetCommand.withEndCondition(elevator, 0))
+                .andThen(
+                    SetWristTargetAngleCommand.withConsistentEnd(
+                        wrist, () -> Constants.Arm.GROUND_INTAKE_ANGLE)));
     // // Reset gyro to 0° when B button is pressed
     controller
         .povDown()
@@ -317,7 +316,6 @@ public class RobotContainer {
                                 drive.getPose().getTranslation(), Rotation2d.fromDegrees(180))),
                     drive)
                 .ignoringDisable(true));
-
   } // end configure bindings
 
   /**
