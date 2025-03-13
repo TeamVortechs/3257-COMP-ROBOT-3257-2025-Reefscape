@@ -102,7 +102,7 @@ public class Elevator extends SubsystemBase {
 
     isOnTarget = isOnTarget();
 
-    if (Math.abs(currentHeight - targetHeight) < PElevator.tolerance.getValue()) {
+    if (Math.abs(currentHeight - targetHeight) < PElevator.tolerance.getValue() / 2) {
 
     } else {
       // Clamp target height to prevent exceeding limits

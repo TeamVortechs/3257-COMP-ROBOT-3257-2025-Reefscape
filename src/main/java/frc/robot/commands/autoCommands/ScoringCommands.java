@@ -109,12 +109,14 @@ public class ScoringCommands {
         //                     wrist, () -> WristAngle.STAGE2_ANGLE.getAngle())));
 
       case 3: // scoring position
-      return new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
-      .andThen(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.SCORING_ANGLE))
-      .andThen(new WaitUntilCommand(() -> wrist.isClearFromElevator()))
-      .andThen(new SetElevatorPresetCommand(elevator, Constants.Elevator.BARGE_LEVEL))
-      .andThen(new WaitUntilCommand(() -> elevator.getCurrentHeight() > Constants.Elevator.INTAKE_LEVEL_2))
-      .andThen(new SetWristTargetAngleCommand(wrist, () -> 0));
+        return new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
+            .andThen(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.SCORING_ANGLE))
+            .andThen(new WaitUntilCommand(() -> wrist.isClearFromElevator()))
+            .andThen(new SetElevatorPresetCommand(elevator, Constants.Elevator.BARGE_LEVEL))
+            .andThen(
+                new WaitUntilCommand(
+                    () -> elevator.getCurrentHeight() > Constants.Elevator.INTAKE_LEVEL_2))
+            .andThen(new SetWristTargetAngleCommand(wrist, () -> 0));
         // return new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
         //     .andThen(
         //         new SetElevatorPresetCommand(
@@ -136,12 +138,13 @@ public class ScoringCommands {
         //             .alongWith(
         //                 new SetWristTargetAngleCommand(
         //                     wrist, () -> WristAngle.ALGAE_GROUND_INTAKE.getAngle())));
-      
+
       case 5: // processor position
-      return new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
-        .andThen(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.WRIST_PROCESSOR_ANGLE))
-        .andThen(new WaitUntilCommand(() -> wrist.isClearFromElevator()))
-        .andThen(new SetElevatorPresetCommand(elevator, Constants.Elevator.MIN_HEIGHT));
+        return new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
+            .andThen(
+                new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.WRIST_PROCESSOR_ANGLE))
+            .andThen(new WaitUntilCommand(() -> wrist.isClearFromElevator()))
+            .andThen(new SetElevatorPresetCommand(elevator, Constants.Elevator.MIN_HEIGHT));
 
       default: // oh dear
         return null;
