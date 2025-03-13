@@ -29,6 +29,8 @@ copy matt's comment
     private Supplier<Pose2d> robotPose;
     private Supplier<ChassisSpeeds> speeds;
     private RobotConfig robotConfig;
+    private boolean pathRunning = false;
+    private boolean commandScheduled = false;
 
     public PathfindingVortechs(LocalADStarAK pathfinder, PathConstraints pathConstraints, Supplier<Pose2d> robotPose, Supplier<ChassisSpeeds> speeds, RobotConfig robotConfig) {
         this.pathfinder = pathfinder;
@@ -41,9 +43,27 @@ copy matt's comment
         
     }
 
-    public void testLog() {
-         
+    //going through the two stages to decide wheater pathRunning and commandScheduled is true and/or false
+    private void scheduleCommand() {
+        if (pathRunning == true && commandScheduled == false) {
+            commandScheduled ;
         }
+        else if(pathRunning == false && commandScheduled == true) {
+
+        }
+    }
+
+    //update the values and start/cancel the command if it's supposed to bstarted
+    public void periodic() {
+        if (pathRunning == true) {
+            updateValues();
+        }
+    }
+
+    //start/end the path depending on the given boolean
+    public void startPath(boolean pathStart) {
+
+    }
 
     //converts the given controller values into ones that serve the pathfinder. This is the primary way that pathfinder will update the robot position
     public void getIdealVector(Vector vector) {
