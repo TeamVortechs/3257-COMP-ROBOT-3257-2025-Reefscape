@@ -113,7 +113,7 @@ public class WristIOTalonFX implements WristIO {
   // advantage kti logging stuff
   @Override
   public void updateInputs(WristIOInputsAutoLogged inputs) {
-    boolean updatePID = true;
+    boolean updatePID = false;
     if (updatePID) {
       TalonFXConfiguration armMotorConfigs =
           new TalonFXConfiguration()

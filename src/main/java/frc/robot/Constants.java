@@ -46,13 +46,13 @@ public final class Constants {
     public static final String CANBUS = "rio";
 
     public static final double MAX_HEIGHT =
-        43.336; // old height 43.66 ABSOLUTELY NEVER ACHIEVE THIS OR EVERYTHING EXPLODES
+        45.135; // old height 43.66 ABSOLUTELY NEVER ACHIEVE THIS OR EVERYTHING EXPLODES
     public static final double MIN_HEIGHT = 0;
     public static final double INTAKE_HEIGHT = 0;
     // public static final double STAGE_1_LEVEL = 0; // currently unimplemented
-    public static final double INTAKE_LEVEL_1 = 10.81066;
-    public static final double INTAKE_LEVEL_2 = 19.5383;
-    public static final double BARGE_LEVEL = 43.2; // currently impossible to achieve
+    public static final double INTAKE_LEVEL_1 = 2.651;
+    public static final double INTAKE_LEVEL_2 = 13.433;
+    public static final double BARGE_LEVEL = 44.5; // currently impossible to achieve
   }
 
   // constants used for the arm/wrist (naming inconsistency)
@@ -62,13 +62,13 @@ public final class Constants {
     public static final int CANRANGE_ID = 60;
     public static final String CANBUS = "rio";
 
-    public static final double REEF_INTAKE_ANGLE = 2.251;
+    public static final double REEF_INTAKE_ANGLE = 1.4155;
     public static final double GROUND_INTAKE_ANGLE =
-        5.441; // we do not know this yet; input correct angle later
-    public static final double SCORING_ANGLE = 1.3007; // currently impossible to achieve
+        5.369; // we do not know this yet; input correct angle later
+    public static final double SCORING_ANGLE = 0.608; // currently impossible to achieve
     public static final double WRIST_HIGHEST_ANGLE =
-        GROUND_INTAKE_ANGLE + 0.2; // set highest angle to wrist ground angle plus arbitrary leeway
-    public static final double WRIST_CORAL_SCORE = 0.5;
+        6.344; // set highest angle to wrist ground angle plus arbitrary leeway
+    public static final double WRIST_CORAL_SCORE = 1.259;
 
     public static final double ELEVATOR_CLEARANCE_ANGLE = SCORING_ANGLE;
   }

@@ -15,18 +15,6 @@
           "data": {
             "name": "coralScore"
           }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "CoralScore To AlgaeIntake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "mechanismBack"
-          }
         }
       ]
     }
