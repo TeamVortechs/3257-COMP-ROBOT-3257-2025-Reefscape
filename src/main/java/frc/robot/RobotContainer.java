@@ -205,7 +205,8 @@ public class RobotContainer {
     controller.leftStick().onTrue(ScoringCommands.prepForScoring(2, wrist, elevator));
     // R3 sets to lower-algae position
     controller.rightStick().onTrue(ScoringCommands.prepForScoring(1, wrist, elevator));
-    // L1/LB sets to ground-intake position while held; on release, sets arm back to elevator-ready position
+    // L1/LB sets to ground-intake position while held; on release, sets arm back to elevator-ready
+    // position
     controller
         .leftBumper()
         .onTrue(
@@ -215,7 +216,8 @@ public class RobotContainer {
         .onFalse(
             new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
                 .andThen(
-                    new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.WRIST_STAGE_4_ANGLE)));
+                    new SetWristTargetAngleCommand(
+                        wrist, () -> Constants.Arm.WRIST_STAGE_4_ANGLE)));
     // L2 sets intakes algae while held
     controller.leftTrigger().whileTrue(new SetWristRollerSpeedCommand(wrist, 0.6));
     // R1/RB sets to barge-scoring position
