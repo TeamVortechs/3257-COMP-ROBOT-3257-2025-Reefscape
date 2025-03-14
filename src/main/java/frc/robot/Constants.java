@@ -66,6 +66,7 @@ public final class Constants {
     public static final double WRIST_GROUND_ANGLE =
         5.369; // we do not know this yet; input correct angle later
     public static final double WRIST_STAGE_4_ANGLE = 0.608; // currently impossible to achieve
-    public static final double WRIST_HIGHEST_ANGLE = 6.344+0.2; // set highest angle to wrist ground angle plus arbitrary leeway
+    public static final double WRIST_HIGHEST_ANGLE =
+        6.344 + 0.2; // set highest angle to wrist ground angle plus arbitrary leeway
   }
 }
