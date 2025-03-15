@@ -18,7 +18,7 @@ public class ScoringCommands {
         .andThen(
             SetWristTargetAngleCommand.withConsistentEnd(
                 wrist, () -> Constants.Arm.WRIST_CORAL_SCORE))
-        .andThen(new InstantCommand(() -> wrist.setRollerSpeed(-0.1)))
+        .andThen(new InstantCommand(() -> wrist.setRollerSpeed(-0.2)))
         .andThen(new WaitCommand(1))
         .andThen(new InstantCommand(() -> wrist.setHasCoral(false)));
   }
