@@ -4,7 +4,7 @@ import static edu.wpi.first.units.Units.Amps;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import frc.robot.KDoublePreferences.PElevator;
@@ -53,6 +53,8 @@ public class ElevatorModuleTalonFXIO implements ElevatorModuleIO {
         PElevator.accelerationLimit.getValue(); // Target acceleration of 160 rps/s (0.5 seconds)
     motionMagicConfigs.MotionMagicJerk =
         PElevator.jerkLimit.getValue(); // Target jerk of 1600 rps/s/s (0.1 seconds)
+    motionMagicConfigs.MotionMagicExpo_kV = 0.2;
+    motionMagicConfigs.MotionMagicExpo_kA = 0.2;
 
     leftMotor.getConfigurator().apply(elevatorConfigs);
     rightMotor.getConfigurator().apply(elevatorConfigs);
@@ -118,7 +120,6 @@ public class ElevatorModuleTalonFXIO implements ElevatorModuleIO {
     inputs.elevatorMotor1CurrentSpeedMeter = leftMotor.getVelocity().getValueAsDouble();
     inputs.elevatorMotor2CurrentSpeedMeter = rightMotor.getVelocity().getValueAsDouble();
 
-
     inputs.isStalled = checkIfStalled();
   }
 
@@ -145,7 +146,7 @@ public class ElevatorModuleTalonFXIO implements ElevatorModuleIO {
 
   @Override
   public void PIDVoltage(double targetAngle) {
-    final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
+    final MotionMagicExpoVoltage m_request = new MotionMagicExpoVoltage(0);
 
     // set target position to 100 rotations
     leftMotor.setControl(m_request.withPosition(targetAngle));
