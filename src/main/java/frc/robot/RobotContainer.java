@@ -246,7 +246,7 @@ public class RobotContainer {
         .onFalse(
             new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
                 .andThen(
-                    new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.CLEAR_ANGLE)
+                    new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.SCORING_ANGLE)
                         .onlyIf(
                             () ->
                                 elevator.getCurrentHeight() <= Constants.Elevator.INTAKE_LEVEL_2)));

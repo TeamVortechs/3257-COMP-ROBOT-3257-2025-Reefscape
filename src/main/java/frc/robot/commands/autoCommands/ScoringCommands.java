@@ -77,7 +77,7 @@ public class ScoringCommands {
 
   public static Command scoreAuto(Wrist wrist, Elevator elevator) {
     return new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
-        .andThen(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.CLEAR_ANGLE))
+        .andThen(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.SCORING_ANGLE))
         .andThen(new WaitUntilCommand(() -> wrist.isClearFromElevator()))
         .andThen(new SetElevatorPresetCommand(elevator, Constants.Elevator.BARGE_LEVEL))
         .andThen(new InstantCommand(() -> wrist.setRollerSpeed(-1)).andThen(new WaitCommand(1)));
@@ -110,7 +110,7 @@ public class ScoringCommands {
 
       case 3: // scoring position
         return new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
-            .andThen(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.CLEAR_ANGLE))
+            .andThen(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.SCORING_ANGLE))
             .andThen(new WaitUntilCommand(() -> wrist.isClearFromElevator()))
             .andThen(new SetElevatorPresetCommand(elevator, Constants.Elevator.BARGE_LEVEL))
             .andThen(
@@ -129,7 +129,7 @@ public class ScoringCommands {
 
       case 4: // minimum height
         return new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
-            .andThen(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.CLEAR_ANGLE))
+            .andThen(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.SCORING_ANGLE))
             .andThen(new WaitUntilCommand(() -> wrist.isClearFromElevator()))
             .andThen(new SetElevatorPresetCommand(elevator, Constants.Elevator.MIN_HEIGHT));
         // return new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
@@ -143,13 +143,14 @@ public class ScoringCommands {
         return new InstantCommand(
                 () -> wrist.setRollerSpeed(0.2), wrist) // keep wrist auto intaking
             .andThen(
-                new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.CLEAR_ANGLE)
+                new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.SCORING_ANGLE)
                     .unless(
                         () ->
-                            elevator.getCurrentHeight() <= Constants.Elevator.INTAKE_LEVEL_1
+                            elevator.getCurrentHeight() <= Constants.Elevator.INTAKE_LEVEL_2
                                 && wrist.getAngleRotations()
                                     >= Constants.Arm
-                                        .CLEAR_ANGLE)) // if not below low algae position, set wrist
+                                        .SCORING_ANGLE)) // if not below low algae position, set
+            // wrist
             // only to clear position
             .andThen(
                 new WaitUntilCommand(() -> wrist.isClearFromElevator())) // wait until it's clear
@@ -171,13 +172,14 @@ public class ScoringCommands {
         return new InstantCommand(
                 () -> wrist.setRollerSpeed(0.2), wrist) // keep wrist auto intaking
             .andThen(
-                new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.CLEAR_ANGLE)
+                new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.SCORING_ANGLE)
                     .unless(
                         () ->
-                            elevator.getCurrentHeight() <= Constants.Elevator.INTAKE_LEVEL_1
+                            elevator.getCurrentHeight() <= Constants.Elevator.INTAKE_LEVEL_2
                                 && wrist.getAngleRotations()
                                     >= Constants.Arm
-                                        .CLEAR_ANGLE)) // if not below low algae position, set wrist
+                                        .SCORING_ANGLE)) // if not below low algae position, set
+            // wrist
             // only to clear position
             .andThen(
                 new WaitUntilCommand(() -> wrist.isClearFromElevator())) // wait until it's clear
