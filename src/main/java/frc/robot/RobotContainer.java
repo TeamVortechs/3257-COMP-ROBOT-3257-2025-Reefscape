@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commandautos.midStartOneAlgae;
@@ -226,7 +227,7 @@ public class RobotContainer {
     // part of startup
     wrist.setDefaultCommand(
         new ConditionalCommand(
-            new SetWristRollerSpeedCommand(wrist, 0.2),
+            new SetWristRollerSpeedCommand(wrist, Constants.Arm.ROLLER_HOLDING_POWER),
             new SetWristRollerSpeedCommand(wrist, 0),
             () -> !wrist.hasCoral()));
 
@@ -244,18 +245,22 @@ public class RobotContainer {
         .leftBumper()
         .onTrue(ScoringCommands.prepForScoring(6, wrist, elevator))
         .onFalse(
-            new InstantCommand(() -> wrist.setRollerSpeed(Constants.Arm.ROLLER_HOLDING_POWER), wrist)
+            new InstantCommand(
+                    () -> wrist.setRollerSpeed(Constants.Arm.ROLLER_HOLDING_POWER), wrist)
                 .andThen(
                     new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.SCORING_ANGLE)
                         .onlyIf(
                             () ->
                                 elevator.getCurrentHeight() <= Constants.Elevator.INTAKE_LEVEL_2)));
     // L2/LT intakes algae while held
-    controller.leftTrigger().whileTrue(new InstantCommand(() -> wrist.setRollerSpeed(Constants.Arm.ROLLER_HOLDING_POWER), wrist));
+    controller.leftTrigger().whileTrue(new RunCommand(() -> wrist.setRollerSpeed(0.4), wrist));
     // R1/RB sets to barge-scoring position
     controller.rightBumper().onTrue(ScoringCommands.prepForScoring(3, wrist, elevator));
-    // R2/RB ejects algae while held
-    controller.rightTrigger().whileTrue(new SetWristRollerSpeedCommand(wrist, -1));
+    // R2/RB ejects algae while held, then sets to floor on release
+    controller
+        .rightTrigger()
+        .whileTrue(new SetWristRollerSpeedCommand(wrist, -1))
+        .onFalse(ScoringCommands.prepForScoring(4, wrist, elevator));
     // B sets elevator to minimum height
     controller.b().onTrue(ScoringCommands.prepForScoring(4, wrist, elevator));
     // X sets the arm to processor-scoring position
@@ -264,7 +269,8 @@ public class RobotContainer {
     controller
         .y()
         .onTrue(
-            new InstantCommand(() -> wrist.setRollerSpeed(Constants.Arm.ROLLER_HOLDING_POWER), wrist)
+            new InstantCommand(
+                    () -> wrist.setRollerSpeed(Constants.Arm.ROLLER_HOLDING_POWER), wrist)
                 .andThen(new SetWristTargetAngleCommand(wrist, () -> 0)));
     // start resets arm and elevator encoders
     controller
@@ -323,7 +329,8 @@ public class RobotContainer {
     operatorController
         .y()
         .whileTrue(
-            new InstantCommand(() -> wrist.setRollerSpeed(Constants.Arm.ROLLER_HOLDING_POWER), wrist)
+            new InstantCommand(
+                    () -> wrist.setRollerSpeed(Constants.Arm.ROLLER_HOLDING_POWER), wrist)
                 .andThen(
                     new SetWristTargetAngleCommand(
                         wrist, () -> Constants.Arm.GROUND_INTAKE_ANGLE)));

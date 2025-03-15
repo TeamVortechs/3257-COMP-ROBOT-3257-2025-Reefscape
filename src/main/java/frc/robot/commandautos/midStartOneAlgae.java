@@ -70,7 +70,7 @@ public class midStartOneAlgae extends SequentialCommandGroup {
         // before getting to the reef, enable intaking
         new PrintCommand("Setting wrist roller speed to intake."),
         new PrintCommand("Initialized ScheduleCommand."),
-        new InstantCommand(() -> wrist.setRollerSpeed(0.6), wrist),
+        new InstantCommand(() -> wrist.setRollerSpeed(0.4), wrist),
         new PrintCommand("Set roller speed to 0.6."),
         DriveCommands.joystickDrive(drive, () -> (-driveVelocity * 0.75), () -> 0, () -> 0)
             .withTimeout(0.6),
