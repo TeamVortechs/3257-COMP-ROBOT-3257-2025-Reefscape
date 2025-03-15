@@ -178,7 +178,7 @@ public class Elevator extends SubsystemBase {
 
   // returns wether or not the elevaotr is on target
   public boolean isOnTarget() {
-    return (Math.abs(currentHeight - targetHeight) < 0.5);
+    return (Math.abs(currentHeight - targetHeight) < PElevator.tolerance.getValue());
   }
 
   /** resets encoders to read 0 and resets PID (setting it to begin at current height) */

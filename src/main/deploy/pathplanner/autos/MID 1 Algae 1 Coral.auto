@@ -17,6 +17,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "intakeStage1"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "CoralScore To AlgaeIntake"

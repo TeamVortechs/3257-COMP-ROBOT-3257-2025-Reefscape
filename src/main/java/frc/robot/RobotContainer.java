@@ -213,12 +213,12 @@ public class RobotContainer {
     // eject note as long as button as help
     // controller.rightBumper().whileTrue(new SetWristRollerSpeedCommand(wrist, -0.3));
 
-    controller
-        .y()
-        .whileTrue(
-            AutoBuilder.pathfindToPose(
-                new Pose2d(7.230, 4.000, Rotation2d.fromDegrees((180))), pathConstraints));
-
+    /*  controller
+            .y()
+            .whileTrue(
+                AutoBuilder.pathfindToPose(
+                    new Pose2d(7.230, 4.000, Rotation2d.fromDegrees((180))), pathConstraints));
+    /* */
     // moves elevator and wrist to the scoring positions level 1 after the right button is tapped
     controller.rightStick().whileTrue(ScoringCommands.prepForScoring(1, wrist, elevator));
 
@@ -257,7 +257,8 @@ public class RobotContainer {
     operatorController
         .y()
         .whileTrue(
-            new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
+            new InstantCommand(
+                    () -> wrist.setRollerSpeed(Constants.Arm.ROLLER_HOLDING_POWER), wrist)
                 .andThen(
                     new SetWristTargetAngleCommand(
                         wrist, () -> Constants.Arm.GROUND_INTAKE_ANGLE)));
@@ -267,7 +268,7 @@ public class RobotContainer {
     // the wrist mechanism rollers will constantly spin unless theirs a coral in the mechanism
     wrist.setDefaultCommand(
         new ConditionalCommand(
-            new SetWristRollerSpeedCommand(wrist, 0.2),
+            new SetWristRollerSpeedCommand(wrist, 0.1),
             new SetWristRollerSpeedCommand(wrist, 0),
             () -> !wrist.hasCoral()));
 
@@ -295,6 +296,15 @@ public class RobotContainer {
                 .andThen(
                     SetWristTargetAngleCommand.withConsistentEnd(
                         wrist, () -> Constants.Arm.GROUND_INTAKE_ANGLE)));
+
+    controller
+        .y()
+        .onTrue(
+            SetWristTargetAngleCommand.withConsistentEnd(
+                    wrist, () -> Constants.Arm.ELEVATOR_CLEARANCE_ANGLE)
+                .andThen(SetElevatorPresetCommand.withEndCondition(elevator, 0))
+                .andThen(SetWristTargetAngleCommand.withConsistentEnd(wrist, () -> 0)));
+
     // // Reset gyro to 0° when B button is pressed
     controller
         .povDown()
@@ -341,13 +351,19 @@ public class RobotContainer {
 
     addNamedCommand("intakeStage2", ScoringCommands.intakeAuto(2, wrist, elevator), isReal);
 
+    addNamedCommand(
+        "prepIntakeStage1", ScoringCommands.prepForIntakeAuto(1, wrist, elevator), isReal);
+    addNamedCommand(
+        "prepIntakeStage2", ScoringCommands.prepForIntakeAuto(2, wrist, elevator), isReal);
+
     addNamedCommand("score", ScoringCommands.scoreAuto(wrist, elevator), isReal);
 
     addNamedCommand(
         "mechanismBack",
         SetWristTargetAngleCommand.withConsistentEnd(
                 wrist, () -> Constants.Arm.ELEVATOR_CLEARANCE_ANGLE + 0.1)
-            .andThen(new InstantCommand(() -> wrist.setRollerSpeed(0.2)))
+            .andThen(
+                new InstantCommand(() -> wrist.setRollerSpeed(Constants.Arm.ROLLER_HOLDING_POWER)))
             .andThen(SetElevatorPresetCommand.withEndCondition(elevator, 0))
             .andThen(new SetWristTargetAngleCommand(wrist, () -> 0)),
         isReal);
@@ -363,7 +379,8 @@ public class RobotContainer {
   public void addNamedCommand(String commandName, Command command, boolean isReal) {
 
     if (isReal) {
-      NamedCommands.registerCommand(commandName, command);
+      NamedCommands.registerCommand(
+          commandName, command.andThen(new TellCommand("just ran " + commandName)));
       //   new EventTrigger(commandName).onTrue(command);
     } else {
       // registers the named commands to print something out instead of actually running anything

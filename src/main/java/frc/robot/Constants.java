@@ -49,9 +49,10 @@ public final class Constants {
         45.135; // old height 43.66 ABSOLUTELY NEVER ACHIEVE THIS OR EVERYTHING EXPLODES
     public static final double MIN_HEIGHT = 0;
     public static final double INTAKE_HEIGHT = 0;
-    // public static final double STAGE_1_LEVEL = 0; // currently unimplemented
-    public static final double INTAKE_LEVEL_1 = 2.651;
-    public static final double INTAKE_LEVEL_2 = 13.433;
+    // public static
+    final double STAGE_1_LEVEL = 0; // currently unimplemented
+    public static final double INTAKE_LEVEL_1 = 2.57;
+    public static final double INTAKE_LEVEL_2 = 13.29;
     public static final double BARGE_LEVEL = 44.5; // currently impossible to achieve
   }
 
@@ -62,14 +63,16 @@ public final class Constants {
     public static final int CANRANGE_ID = 60;
     public static final String CANBUS = "rio";
 
-    public static final double REEF_INTAKE_ANGLE = 1.4155;
+    public static final double REEF_INTAKE_ANGLE = 1.53;
     public static final double GROUND_INTAKE_ANGLE =
-        5.369; // we do not know this yet; input correct angle later
+        5.212; // we do not know this yet; input correct angle later
     public static final double SCORING_ANGLE = 0.608; // currently impossible to achieve
     public static final double WRIST_HIGHEST_ANGLE =
         6.344; // set highest angle to wrist ground angle plus arbitrary leeway
     public static final double WRIST_CORAL_SCORE = 1.259;
 
     public static final double ELEVATOR_CLEARANCE_ANGLE = SCORING_ANGLE;
+
+    public static final double ROLLER_HOLDING_POWER = 0.05;
   }
 }
