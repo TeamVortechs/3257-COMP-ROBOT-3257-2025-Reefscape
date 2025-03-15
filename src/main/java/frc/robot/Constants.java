@@ -76,6 +76,5 @@ public final class Constants {
         GROUND_INTAKE_ANGLE; // !!!!! find out through empirical testing !!!!!
 
     public static final double ROLLER_HOLDING_POWER = 0.05;
-
   }
 }

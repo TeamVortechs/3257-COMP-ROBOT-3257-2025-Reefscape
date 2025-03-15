@@ -13,6 +13,7 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -182,10 +183,11 @@ public class RobotContainer {
     }
 
     sim = new MechanismSimulator(wrist, elevator);
+    registerNamedCommandsAuto();
 
     // registerNamedCommandsAuto();
 
-    autoChooser = new SendableChooser<>();
+    autoChooser = AutoBuilder.buildAutoChooser();
     // autoChooser.addDefaultOption("Clear", getAutonomousCommand());
     autoChooser.setDefaultOption(
         "Blue Clear",
