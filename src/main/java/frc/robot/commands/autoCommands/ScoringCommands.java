@@ -14,10 +14,12 @@ import frc.robot.subsystems.wrist.Wrist;
 public class ScoringCommands {
 
   public static Command coralScoreAuto(Wrist wrist) {
-    return SetWristTargetAngleCommand.withConsistentEnd(
-            wrist, () -> Constants.Arm.WRIST_CORAL_SCORE)
+    return new InstantCommand(() -> wrist.setRollerSpeed(0))
+        .andThen(
+            SetWristTargetAngleCommand.withConsistentEnd(
+                wrist, () -> Constants.Arm.WRIST_CORAL_SCORE))
         .andThen(new InstantCommand(() -> wrist.setRollerSpeed(-0.1)))
-        .andThen(new WaitCommand(0.2))
+        .andThen(new WaitCommand(1))
         .andThen(new InstantCommand(() -> wrist.setHasCoral(false)));
   }
 

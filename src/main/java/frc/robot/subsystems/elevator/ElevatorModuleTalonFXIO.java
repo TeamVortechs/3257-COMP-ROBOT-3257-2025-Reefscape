@@ -4,6 +4,7 @@ import static edu.wpi.first.units.Units.Amps;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -46,15 +47,15 @@ public class ElevatorModuleTalonFXIO implements ElevatorModuleIO {
     slot0Configs.kI = PElevator.kI.getValue();
     slot0Configs.kD = PElevator.kD.getValue();
 
-    var motionMagicConfigs = elevatorConfigs.MotionMagic;
-    motionMagicConfigs.MotionMagicCruiseVelocity =
-        PElevator.speedLimit.getValue(); // Target cruise velocity of 80 rps
-    motionMagicConfigs.MotionMagicAcceleration =
-        PElevator.accelerationLimit.getValue(); // Target acceleration of 160 rps/s (0.5 seconds)
-    motionMagicConfigs.MotionMagicJerk =
-        PElevator.jerkLimit.getValue(); // Target jerk of 1600 rps/s/s (0.1 seconds)
-    motionMagicConfigs.MotionMagicExpo_kV = 0.2;
-    motionMagicConfigs.MotionMagicExpo_kA = 0.2;
+    // var motionMagicConfigs = elevatorConfigs.MotionMagic;
+    // motionMagicConfigs.MotionMagicCruiseVelocity =
+    //     PElevator.speedLimit.getValue(); // Target cruise velocity of 80 rps
+    // motionMagicConfigs.MotionMagicAcceleration =
+    //     PElevator.accelerationLimit.getValue(); // Target acceleration of 160 rps/s (0.5 seconds)
+    // motionMagicConfigs.MotionMagicJerk =
+    //     PElevator.jerkLimit.getValue(); // Target jerk of 1600 rps/s/s (0.1 seconds)
+    // motionMagicConfigs.MotionMagicExpo_kV = 0.12;
+    // motionMagicConfigs.MotionMagicExpo_kA = 0.1;
 
     leftMotor.getConfigurator().apply(elevatorConfigs);
     rightMotor.getConfigurator().apply(elevatorConfigs);
@@ -62,6 +63,8 @@ public class ElevatorModuleTalonFXIO implements ElevatorModuleIO {
     // Set both motors to Brake mode by default.
     leftMotor.setNeutralMode(NeutralModeValue.Brake);
     rightMotor.setNeutralMode(NeutralModeValue.Brake);
+
+    rightMotor.setControl(new Follower(motorIDLeft, false));
   }
 
   // advantage kit logging stuff(everything in here gets logged every tick)
@@ -111,11 +114,11 @@ public class ElevatorModuleTalonFXIO implements ElevatorModuleIO {
     inputs.elevatorMotor1CurrentAmps = leftMotor.getStatorCurrent().getValueAsDouble();
     inputs.elevatorMotor1AppliedVolts = leftMotor.getMotorVoltage().getValueAsDouble();
 
-    inputs.elevatorMotor2CurrentHeightMeter = leftMotor.get();
+    inputs.elevatorMotor2CurrentHeightMeter = rightMotor.get();
     inputs.elevatorMotor2CurrentHeightMeter = getHeightMeters(0);
 
-    inputs.elevatorMotor2CurrentAmps = leftMotor.getStatorCurrent().getValueAsDouble();
-    inputs.elevatorMotor2AppliedVolts = leftMotor.getMotorVoltage().getValueAsDouble();
+    inputs.elevatorMotor2CurrentAmps = rightMotor.getStatorCurrent().getValueAsDouble();
+    inputs.elevatorMotor2AppliedVolts = rightMotor.getMotorVoltage().getValueAsDouble();
 
     inputs.elevatorMotor1CurrentSpeedMeter = leftMotor.getVelocity().getValueAsDouble();
     inputs.elevatorMotor2CurrentSpeedMeter = rightMotor.getVelocity().getValueAsDouble();
@@ -139,7 +142,7 @@ public class ElevatorModuleTalonFXIO implements ElevatorModuleIO {
   @Override
   public void setVoltage(double volts) {
     leftMotor.setVoltage(volts);
-    rightMotor.setVoltage(volts);
+    // rightMotor.setVoltage(volts);
 
     // System.out.println("setting voltage to " + volts);
   }
@@ -150,7 +153,7 @@ public class ElevatorModuleTalonFXIO implements ElevatorModuleIO {
 
     // set target position to 100 rotations
     leftMotor.setControl(m_request.withPosition(targetAngle));
-    rightMotor.setControl(m_request.withPosition(targetAngle));
+    // rightMotor.setControl(m_request.withPosition(targetAngle));
   }
 
   /** Resets both motor encoders to zero. */
@@ -164,14 +167,13 @@ public class ElevatorModuleTalonFXIO implements ElevatorModuleIO {
   @Override
   public void stop() {
     leftMotor.stopMotor();
-    rightMotor.stopMotor();
+    // rightMotor.stopMotor();
   }
 
   /** returns true if either motor has exceeded 40 amps of torque current currently nonfunctional */
   @Override
   public boolean checkIfStalled() {
-    // return (Math.abs(leftMotor.getTorqueCurrent().getValueAsDouble()) > 40
-    //     || Math.abs(rightMotor.getTorqueCurrent().getValueAsDouble()) > 40);
+
     return false;
   }
 
@@ -180,7 +182,7 @@ public class ElevatorModuleTalonFXIO implements ElevatorModuleIO {
   public void setSpeed(double speed) {
     // System.out.println("ModuleIO receiving this speed: " + speed);
     leftMotor.set(speed);
-    rightMotor.set(speed);
+    // rightMotor.set(speed);
   }
 
   /** Sets the neutral mode for both motors (Brake or Coast). */

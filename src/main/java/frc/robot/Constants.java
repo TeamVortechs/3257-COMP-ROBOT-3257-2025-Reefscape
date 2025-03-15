@@ -65,7 +65,7 @@ public final class Constants {
 
     public static final double REEF_INTAKE_ANGLE = 1.53;
     public static final double GROUND_INTAKE_ANGLE =
-        5.212; // we do not know this yet; input correct angle later
+        5; // we do not know this yet; input correct angle later
     public static final double SCORING_ANGLE = 0.608; // currently impossible to achieve
     public static final double WRIST_HIGHEST_ANGLE =
         6.344; // set highest angle to wrist ground angle plus arbitrary leeway

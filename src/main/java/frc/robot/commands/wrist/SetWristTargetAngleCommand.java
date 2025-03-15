@@ -36,7 +36,9 @@ public class SetWristTargetAngleCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    wrist.setRollerSpeed(Constants.Arm.ROLLER_HOLDING_POWER);
+    if (!wrist.hasCoral()) {
+      wrist.setRollerSpeed(Constants.Arm.ROLLER_HOLDING_POWER);
+    }
     wrist.setTargetAngle(targetAngle.getAsDouble());
   }
 
