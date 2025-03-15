@@ -2,6 +2,7 @@ package frc.robot.commands.wrist;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.robot.Constants;
 import frc.robot.subsystems.wrist.Wrist;
 import java.util.function.DoubleSupplier;
 
@@ -35,7 +36,7 @@ public class SetWristTargetAngleCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    wrist.setRollerSpeed(0.2);
+    wrist.setRollerSpeed(Constants.Arm.ROLLER_HOLDING_POWER);
     wrist.setTargetAngle(targetAngle.getAsDouble());
   }
 

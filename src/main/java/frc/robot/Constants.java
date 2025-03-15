@@ -73,5 +73,7 @@ public final class Constants {
     public static final double ELEVATOR_CLEARANCE_ANGLE = SCORING_ANGLE;
     public static final double PROCESSOR_ANGLE =
         GROUND_INTAKE_ANGLE; // !!!!! find out through empirical testing !!!!!
+
+    public static final double ROLLER_HOLDING_POWER = 0.05;
   }
 }

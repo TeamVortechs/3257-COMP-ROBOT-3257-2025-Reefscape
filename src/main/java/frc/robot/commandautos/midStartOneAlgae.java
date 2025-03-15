@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.robot.Constants;
 import frc.robot.commands.autoCommands.DriveCommands;
 import frc.robot.commands.autoCommands.ScoringCommands;
 import frc.robot.commands.wrist.SetWristRollerSpeedCommand;
@@ -73,7 +74,7 @@ public class midStartOneAlgae extends SequentialCommandGroup {
         new PrintCommand("Set roller speed to 0.6."),
         DriveCommands.joystickDrive(drive, () -> (-driveVelocity * 0.75), () -> 0, () -> 0)
             .withTimeout(0.6),
-        new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist),
+        new InstantCommand(() -> wrist.setRollerSpeed(Constants.Arm.ROLLER_HOLDING_POWER), wrist),
         new PrintCommand("Set wrist to do its automatic thing."),
         // .beforeStarting(new WaitUntilCommand(() -> elevator.isOnTarget()))
         // keep

@@ -244,14 +244,14 @@ public class RobotContainer {
         .leftBumper()
         .onTrue(ScoringCommands.prepForScoring(6, wrist, elevator))
         .onFalse(
-            new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
+            new InstantCommand(() -> wrist.setRollerSpeed(Constants.Arm.ROLLER_HOLDING_POWER), wrist)
                 .andThen(
                     new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.SCORING_ANGLE)
                         .onlyIf(
                             () ->
                                 elevator.getCurrentHeight() <= Constants.Elevator.INTAKE_LEVEL_2)));
     // L2/LT intakes algae while held
-    controller.leftTrigger().whileTrue(new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist));
+    controller.leftTrigger().whileTrue(new InstantCommand(() -> wrist.setRollerSpeed(Constants.Arm.ROLLER_HOLDING_POWER), wrist));
     // R1/RB sets to barge-scoring position
     controller.rightBumper().onTrue(ScoringCommands.prepForScoring(3, wrist, elevator));
     // R2/RB ejects algae while held
@@ -264,7 +264,7 @@ public class RobotContainer {
     controller
         .y()
         .onTrue(
-            new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
+            new InstantCommand(() -> wrist.setRollerSpeed(Constants.Arm.ROLLER_HOLDING_POWER), wrist)
                 .andThen(new SetWristTargetAngleCommand(wrist, () -> 0)));
     // start resets arm and elevator encoders
     controller
@@ -323,7 +323,7 @@ public class RobotContainer {
     operatorController
         .y()
         .whileTrue(
-            new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
+            new InstantCommand(() -> wrist.setRollerSpeed(Constants.Arm.ROLLER_HOLDING_POWER), wrist)
                 .andThen(
                     new SetWristTargetAngleCommand(
                         wrist, () -> Constants.Arm.GROUND_INTAKE_ANGLE)));
@@ -380,7 +380,7 @@ public class RobotContainer {
 
     addNamedCommand(
         "mechanismBack",
-        new InstantCommand(() -> wrist.setRollerSpeed(0.2))
+        new InstantCommand(() -> wrist.setRollerSpeed(Constants.Arm.ROLLER_HOLDING_POWER))
             .andThen(new SetElevatorPresetCommand(elevator, 0))
             .andThen(SetWristTargetAngleCommand.withConsistentEnd(wrist, () -> 0)),
         isReal);
