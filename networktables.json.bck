@@ -1,5 +1,94 @@
 [
   {
+    "name": "/Preferences/elevator proportional",
+    "type": "double",
+    "value": 0.4,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/elevator integral",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/elevator derivative",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/elevator speed limit",
+    "type": "double",
+    "value": 0.2,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/elevator acceleration limit",
+    "type": "double",
+    "value": 0.1,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Elevator Max height",
+    "type": "double",
+    "value": 10.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Elevator Min height",
+    "type": "double",
+    "value": 0.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Elevator Target Tolerance",
+    "type": "double",
+    "value": 0.2,
+    "properties": {
+      "persistent": true,
+      "retained": true
+    }
+  },
+  {
+    "name": "/Preferences/Elevator First Level",
+    "type": "double",
+    "value": 2.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Elevator Second Level",
+    "type": "double",
+    "value": 5.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
+    "name": "/Preferences/Elevator Third Level",
+    "type": "double",
+    "value": 9.0,
+    "properties": {
+      "persistent": true
+    }
+  },
+  {
     "name": "/Preferences/wrist kS",
     "type": "double",
     "value": 0.25,
@@ -122,25 +211,28 @@
   {
     "name": "/Preferences/elevator kP",
     "type": "double",
-    "value": 7.5,
+    "value": 1.0,
     "properties": {
-      "persistent": true
+      "persistent": true,
+      "retained": true
     }
   },
   {
     "name": "/Preferences/elevator kI",
     "type": "double",
-    "value": 0.0,
+    "value": 0.5,
     "properties": {
-      "persistent": true
+      "persistent": true,
+      "retained": true
     }
   },
   {
     "name": "/Preferences/elevator kD",
     "type": "double",
-    "value": 0.01,
+    "value": 0.2,
     "properties": {
-      "persistent": true
+      "persistent": true,
+      "retained": true
     }
   },
   {
@@ -168,14 +260,6 @@
     }
   },
   {
-    "name": "/Preferences/Elevator Target Tolerance",
-    "type": "double",
-    "value": 0.1,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
     "name": "/Preferences/elevator MANUAL speed limit",
     "type": "double",
     "value": 0.3,
@@ -184,21 +268,11 @@
     }
   },
   {
-    "name": "/Preferences/Camera X offset",
+    "name": "/Preferences/wrist kG",
     "type": "double",
-    "value": 0.2286,
+    "value": 0.2,
     "properties": {
-      "persistent": true,
-      "retained": true
-    }
-  },
-  {
-    "name": "/Preferences/Camera Y offset",
-    "type": "double",
-    "value": -0.2002028,
-    "properties": {
-      "persistent": true,
-      "retained": true
+      "persistent": true
     }
   }
 ]

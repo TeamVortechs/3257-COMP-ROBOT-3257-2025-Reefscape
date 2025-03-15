@@ -45,6 +45,7 @@ public class ElevatorModuleIOSimulation implements ElevatorModuleIO {
         new DCMotorSim(
             LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(2), 0.001, kGearRatio),
             DCMotor.getKrakenX60(2));
+    elevatorPIDController.setTolerance(PElevator.tolerance.getValue());
   }
 
   // advantage kit logging stuff(everything in here gets logged every tick)
@@ -64,6 +65,10 @@ public class ElevatorModuleIOSimulation implements ElevatorModuleIO {
     inputs.elevatorMotor2AppliedVolts = elevatorMotorsSim.getInputVoltage();
 
     inputs.isStalled = checkIfStalled();
+
+    if (elevatorPIDController.atSetpoint()) {
+      elevatorPIDController.reset();
+    }
 
     elevatorMotorsSim.update(0.02);
   }
@@ -89,7 +94,7 @@ public class ElevatorModuleIOSimulation implements ElevatorModuleIO {
     double currentAngle = elevatorMotorsSim.getAngularPositionRotations();
     setVoltage(
         elevatorPIDController.calculate(currentAngle, targetAngle)
-            + elevatorFeedforward.calculate(targetVel, targetAccel));
+            + elevatorFeedforward.calculate(targetVel));
   }
 
   /** Resets both motor encoders to zero. */
