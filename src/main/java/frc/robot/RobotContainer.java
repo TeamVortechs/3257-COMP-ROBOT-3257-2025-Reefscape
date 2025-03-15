@@ -364,7 +364,7 @@ public class RobotContainer {
                 wrist, () -> Constants.Arm.ELEVATOR_CLEARANCE_ANGLE + 0.1)
             .andThen(
                 new InstantCommand(() -> wrist.setRollerSpeed(Constants.Arm.ROLLER_HOLDING_POWER)))
-            .andThen(SetElevatorPresetCommand.withEndCondition(elevator, 0))
+            .andThen(new SetElevatorPresetCommand(elevator, 0))
             .andThen(new SetWristTargetAngleCommand(wrist, () -> 0)),
         isReal);
 
@@ -427,6 +427,10 @@ public class RobotContainer {
 
   public Wrist getWrist() {
     return wrist;
+  }
+
+  public Elevator getElevator() {
+    return elevator;
   }
 
   public MechanismSimulator getSim() {

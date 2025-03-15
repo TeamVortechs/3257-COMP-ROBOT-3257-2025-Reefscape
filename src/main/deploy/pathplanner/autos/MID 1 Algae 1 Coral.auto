@@ -19,7 +19,7 @@
         {
           "type": "named",
           "data": {
-            "name": "intakeStage1"
+            "name": "prepIntakeStage1"
           }
         },
         {
@@ -32,12 +32,6 @@
           "type": "named",
           "data": {
             "name": "intakeStage1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "mechanismBack"
           }
         },
         {

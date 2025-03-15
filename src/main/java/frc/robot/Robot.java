@@ -152,6 +152,8 @@ public class Robot extends LoggedRobot {
 
     // autos starts withthe corla
     robotContainer.getWrist().setHasCoral(true);
+    robotContainer.getWrist().setTargetAngle(0);
+    robotContainer.getElevator().setTargetHeight(0);
 
     // schedule the autonomous command (example)
     if (autonomousCommand != null) {
