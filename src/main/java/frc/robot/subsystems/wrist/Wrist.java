@@ -20,6 +20,8 @@ public class Wrist extends SubsystemBase {
 
   @AutoLogOutput private double pidOutput;
 
+  @AutoLogOutput private boolean isClearFromElevator;
+
   private final double targetBuffer = PWrist.tolerance.getValue();
 
   @AutoLogOutput private boolean manualOverride = false;
@@ -47,6 +49,7 @@ public class Wrist extends SubsystemBase {
     Logger.processInputs("Wrist", inputsAutoLogged);
 
     isOnTarget = isOnTarget();
+    isClearFromElevator = isClearFromElevator();
 
     CurrentAngle = wristIO.getAngleRotations();
 
