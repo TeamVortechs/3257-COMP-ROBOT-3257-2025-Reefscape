@@ -77,7 +77,7 @@ public class ScoringCommands {
 
   public static Command scoreAuto(Wrist wrist, Elevator elevator) {
     return new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
-        .andThen(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.SCORING_ANGLE))
+        .andThen(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.CLEAR_ANGLE))
         .andThen(new WaitUntilCommand(() -> wrist.isClearFromElevator()))
         .andThen(new SetElevatorPresetCommand(elevator, Constants.Elevator.BARGE_LEVEL))
         .andThen(new InstantCommand(() -> wrist.setRollerSpeed(-1)).andThen(new WaitCommand(1)));
@@ -110,7 +110,7 @@ public class ScoringCommands {
 
       case 3: // scoring position
         return new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
-            .andThen(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.SCORING_ANGLE))
+            .andThen(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.CLEAR_ANGLE))
             .andThen(new WaitUntilCommand(() -> wrist.isClearFromElevator()))
             .andThen(new SetElevatorPresetCommand(elevator, Constants.Elevator.BARGE_LEVEL))
             .andThen(
@@ -127,9 +127,9 @@ public class ScoringCommands {
         //                 new SetWristTargetAngleCommand(
         //                     wrist, () -> Constants.Arm.WRIST_STAGE_4_ANGLE)));
 
-      case 4: // ground intake level
+      case 4: // minimum height
         return new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
-            .andThen(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.SCORING_ANGLE))
+            .andThen(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.CLEAR_ANGLE))
             .andThen(new WaitUntilCommand(() -> wrist.isClearFromElevator()))
             .andThen(new SetElevatorPresetCommand(elevator, Constants.Elevator.MIN_HEIGHT));
         // return new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
@@ -140,12 +140,58 @@ public class ScoringCommands {
         //                     wrist, () -> WristAngle.ALGAE_GROUND_INTAKE.getAngle())));
 
       case 5: // processor position
-        return new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
+        return new InstantCommand(
+                () -> wrist.setRollerSpeed(0.2), wrist) // keep wrist auto intaking
+            .andThen( 
+                new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.CLEAR_ANGLE)
+                    .unless(
+                        () ->
+                            elevator.getCurrentHeight()
+                                <= Constants.Elevator
+                                    .INTAKE_LEVEL_1 && wrist.getAngleRotations() >= Constants.Arm.CLEAR_ANGLE)) // if not below low algae position, set wrist
+            // only to clear position
             .andThen(
-                new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.WRIST_PROCESSOR_ANGLE))
-            .andThen(new WaitUntilCommand(() -> wrist.isClearFromElevator()))
-            .andThen(new SetElevatorPresetCommand(elevator, Constants.Elevator.MIN_HEIGHT));
-
+                new WaitUntilCommand(() -> wrist.isClearFromElevator())) // wait until it's clear
+            .andThen(
+                new SetElevatorPresetCommand(
+                        elevator, Constants.Elevator.MIN_HEIGHT) // bring elevator down
+                    .andThen(
+                        new WaitUntilCommand(
+                            () ->
+                                elevator.getCurrentHeight()
+                                    <= Constants.Elevator
+                                        .INTAKE_LEVEL_1))) // wait until the elevator's below intake
+            // level 1 position
+            .andThen(
+                new SetWristTargetAngleCommand(
+                    wrist, () -> Constants.Arm.PROCESSOR_ANGLE)); // bring the arm out
+                    
+      case 6: // ground intake position
+      return new InstantCommand(
+        () -> wrist.setRollerSpeed(0.2), wrist) // keep wrist auto intaking
+    .andThen( 
+        new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.CLEAR_ANGLE)
+            .unless(
+                () ->
+                    elevator.getCurrentHeight()
+                        <= Constants.Elevator
+                            .INTAKE_LEVEL_1 && wrist.getAngleRotations() >= Constants.Arm.CLEAR_ANGLE)) // if not below low algae position, set wrist
+    // only to clear position
+    .andThen(
+        new WaitUntilCommand(() -> wrist.isClearFromElevator())) // wait until it's clear
+    .andThen(
+        new SetElevatorPresetCommand(
+                elevator, Constants.Elevator.MIN_HEIGHT) // bring elevator down
+            .andThen(
+                new WaitUntilCommand(
+                    () ->
+                        elevator.getCurrentHeight()
+                            <= Constants.Elevator
+                                .INTAKE_LEVEL_1))) // wait until the elevator's below intake
+    // level 1 position
+    .andThen(
+        new SetWristTargetAngleCommand(
+            wrist, () -> Constants.Arm.GROUND_INTAKE_ANGLE)); // bring the arm out
       default: // oh dear
         return null;
     }
