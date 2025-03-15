@@ -237,17 +237,19 @@ public class RobotContainer {
     controller.leftStick().onTrue(ScoringCommands.prepForScoring(2, wrist, elevator));
     // R3 sets to lower-algae position
     controller.rightStick().onTrue(ScoringCommands.prepForScoring(1, wrist, elevator));
-    // L1/LB sets to ground-intake position while held if low enough; on release, sets arm back to elevator-ready
+    // L1/LB sets to ground-intake position while held if low enough; on release, sets arm back to
+    // elevator-ready
     // position
     controller
         .leftBumper()
         .onTrue(ScoringCommands.prepForScoring(6, wrist, elevator))
         .onFalse(
             new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist)
-                .andThen(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.CLEAR_ANGLE).onlyIf(() ->
-                elevator.getCurrentHeight()
-                    <= Constants.Elevator
-                        .INTAKE_LEVEL_2)));
+                .andThen(
+                    new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.CLEAR_ANGLE)
+                        .onlyIf(
+                            () ->
+                                elevator.getCurrentHeight() <= Constants.Elevator.INTAKE_LEVEL_2)));
     // L2/LT intakes algae while held
     controller.leftTrigger().whileTrue(new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist));
     // R1/RB sets to barge-scoring position
@@ -257,9 +259,7 @@ public class RobotContainer {
     // B sets elevator to minimum height
     controller.b().onTrue(ScoringCommands.prepForScoring(4, wrist, elevator));
     // X sets the arm to processor-scoring position
-    controller
-        .x()
-        .onTrue(ScoringCommands.prepForScoring(5, wrist, elevator));
+    controller.x().onTrue(ScoringCommands.prepForScoring(5, wrist, elevator));
     // Y fully retracts the arm (sets the arm's angle to 0)
     controller
         .y()
