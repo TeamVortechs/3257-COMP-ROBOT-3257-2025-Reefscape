@@ -115,6 +115,10 @@ public class ElevatorModuleTalonFXIO implements ElevatorModuleIO {
     inputs.elevatorMotor2CurrentAmps = leftMotor.getStatorCurrent().getValueAsDouble();
     inputs.elevatorMotor2AppliedVolts = leftMotor.getMotorVoltage().getValueAsDouble();
 
+    inputs.elevatorMotor1CurrentSpeedMeter = leftMotor.getVelocity().getValueAsDouble();
+    inputs.elevatorMotor2CurrentSpeedMeter = rightMotor.getVelocity().getValueAsDouble();
+
+
     inputs.isStalled = checkIfStalled();
   }
 
