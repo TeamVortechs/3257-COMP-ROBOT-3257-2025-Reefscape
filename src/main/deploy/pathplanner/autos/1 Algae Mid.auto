@@ -7,7 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "StartPoint To Algae Intake"
+            "pathName": "StartPoint to intake prep"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "prepIntakeStage1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "intake prep to algae intake"
           }
         },
         {
@@ -29,15 +41,9 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "Rotates after score"
-          }
-        },
-        {
           "type": "named",
           "data": {
-            "name": "mechanismBack"
+            "name": "reset"
           }
         },
         {

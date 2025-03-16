@@ -103,7 +103,7 @@ public class Elevator extends SubsystemBase {
     isOnTarget = isOnTarget();
 
     if (Math.abs(currentHeight - targetHeight) < PElevator.tolerance.getValue()) {
-      if (currentHeight < 0.2) {
+      if (currentHeight < PElevator.tolerance.getValue() + 0.1) {
         moduleIO.setVoltage(0);
       }
     } else {

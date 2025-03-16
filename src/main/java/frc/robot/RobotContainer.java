@@ -391,6 +391,11 @@ public class RobotContainer {
     // comm
     addNamedCommand("intakeStage1", ScoringCommands.intakeAuto(1, wrist, elevator), isReal);
 
+    addNamedCommand(
+        "reset",
+        ScoringCommands.prepForIntakeAuto(1, wrist, elevator).withDeadline(new WaitCommand(2)),
+        isReal);
+
     addNamedCommand("intakeStage2", ScoringCommands.intakeAuto(2, wrist, elevator), isReal);
 
     addNamedCommand(
@@ -403,7 +408,10 @@ public class RobotContainer {
     addNamedCommand(
         "mechanismBack",
         new InstantCommand(() -> wrist.setRollerSpeed(Constants.Arm.ROLLER_HOLDING_POWER))
-            .andThen(new SetElevatorPresetCommand(elevator, 0))
+            .andThen(
+                SetWristTargetAngleCommand.withConsistentEnd(
+                    wrist, () -> Constants.Arm.ELEVATOR_CLEARANCE_ANGLE + 0.2))
+            .andThen(SetElevatorPresetCommand.withEndCondition(elevator, 0))
             .andThen(new SetWristTargetAngleCommand(wrist, () -> 0)),
         isReal);
 
