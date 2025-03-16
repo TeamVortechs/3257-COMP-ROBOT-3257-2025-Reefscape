@@ -252,7 +252,7 @@ public class RobotContainer {
                         drive,
                         () -> -controller.getLeftY() * 0.5,
                         () -> -controller.getLeftX() * 0.5,
-                        () -> -controller.getRightX() * 0.5)))
+                        () -> -controller.getRightX() * 0.33)))
         .onFalse( // on false, retract arm
             new InstantCommand(
                     () -> wrist.setRollerSpeed(Constants.Arm.ROLLER_HOLDING_POWER), wrist)
