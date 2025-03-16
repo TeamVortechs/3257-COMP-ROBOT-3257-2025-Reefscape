@@ -7,7 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "StartPoint To Algae Intake"
+            "pathName": "StartPoint to CoralScore"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "prepIntakeStage1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CoralScore To AlgaeIntake"
           }
         },
         {

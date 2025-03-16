@@ -51,7 +51,7 @@ public final class Constants {
     public static final double INTAKE_HEIGHT = 0;
     // public static
     final double STAGE_1_LEVEL = 0; // currently unimplemented
-    public static final double INTAKE_LEVEL_1 = 2.18;
+    public static final double INTAKE_LEVEL_1 = 10.247;
     public static final double INTAKE_LEVEL_2 = 20.5;
     public static final double BARGE_LEVEL = 44; // currently impossible to achieve
   }

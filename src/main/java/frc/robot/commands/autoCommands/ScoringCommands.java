@@ -53,7 +53,7 @@ public class ScoringCommands {
             .andThen(new RunCommand(() -> wrist.setRollerSpeed(0.6)))
             .withDeadline(
                 SetElevatorPresetCommand.withEndCondition(
-                        elevator, Constants.Elevator.INTAKE_LEVEL_1 + 0.2)
+                        elevator, Constants.Elevator.INTAKE_LEVEL_1)
                     .andThen(
                         SetWristTargetAngleCommand.withConsistentEnd(
                             wrist, () -> Constants.Arm.REEF_INTAKE_ANGLE))
