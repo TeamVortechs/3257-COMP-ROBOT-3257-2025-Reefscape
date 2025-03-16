@@ -13,103 +13,104 @@ import frc.robot.subsystems.wrist.Wrist;
 
 public class ScoringCommands {
 
-  public static Command coralScoreAuto(Wrist wrist) {
-    return new InstantCommand(() -> wrist.setRollerSpeed(0))
-        .andThen(
-            SetWristTargetAngleCommand.withConsistentEnd(
-                wrist, () -> Constants.Arm.WRIST_CORAL_SCORE))
-        .andThen(new InstantCommand(() -> wrist.setRollerSpeed(-0.1)))
-        .andThen(new WaitCommand(1))
-        .andThen(new InstantCommand(() -> wrist.setHasCoral(false)));
-  }
-
-  /*
-  old code:
-        case 1: // low reef algae
-        return new InstantCommand(() -> wrist.setHasCoral(false))
-            .andThen(new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist))
-            .andThen(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.REEF_INTAKE_ANGLE))
-            .andThen(new WaitUntilCommand(() -> wrist.isClearFromElevator()))
-            .andThen(
-                new SetElevatorPresetCommand(elevator, wrist, Constants.Elevator.INTAKE_LEVEL_1))
-            .andThen(new WaitUntilCommand(() -> wrist.isOnTarget()))
-            .andThen(new WaitCommand(1));
-
-      case 2: // high reef algae
-        return new InstantCommand(() -> wrist.setHasCoral(false))
-            .andThen(new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist))
-            .andThen(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.REEF_INTAKE_ANGLE))
-            .andThen(new WaitUntilCommand(() -> wrist.isClearFromElevator()))
-            .andThen(
-                new SetElevatorPresetCommand(elevator, wrist, Constants.Elevator.INTAKE_LEVEL_2))
-            .andThen(new WaitUntilCommand(() -> wrist.isOnTarget()))
-            .andThen(new WaitCommand(1));
-   */
-
-  public static Command intakeAuto(int level, Wrist wrist, Elevator elevator) {
-    switch (level) { // bit of a misnomer here
-      case 1: // low reef algae
-        return new InstantCommand(() -> wrist.setHasCoral(false))
-            .andThen(new RunCommand(() -> wrist.setRollerSpeed(0.6)))
-            .withDeadline(
-                SetElevatorPresetCommand.withEndCondition(
-                        elevator, Constants.Elevator.INTAKE_LEVEL_1 + 0.2)
-                    .andThen(
-                        SetWristTargetAngleCommand.withConsistentEnd(
-                            wrist, () -> Constants.Arm.REEF_INTAKE_ANGLE))
-                    .andThen(new WaitCommand(0.1)));
-
-      case 2: // high reef algae
-        return new InstantCommand(() -> wrist.setHasCoral(false))
-            .andThen(new RunCommand(() -> wrist.setRollerSpeed(0.6)))
-            .withDeadline(
-                SetElevatorPresetCommand.withEndCondition(
-                        elevator, Constants.Elevator.INTAKE_LEVEL_2)
-                    .andThen(
-                        SetWristTargetAngleCommand.withConsistentEnd(
-                            wrist, () -> Constants.Arm.REEF_INTAKE_ANGLE))
-                    .andThen(new WaitCommand(0.1)));
-
-      default:
-        return new InstantCommand();
-    }
-  }
-
-  public static Command prepForIntakeAuto(int level, Wrist wrist, Elevator elevator) {
-    switch (level) { // bit of a misnomer here
-      case 1: // low reef algae
-        return new InstantCommand(() -> wrist.setHasCoral(false))
-            .andThen(
-                SetElevatorPresetCommand.withEndCondition(
-                    elevator, Constants.Elevator.INTAKE_LEVEL_1))
+    public static Command coralScoreAuto(Wrist wrist) {
+        return new InstantCommand(() -> wrist.setRollerSpeed(0))
             .andThen(
                 SetWristTargetAngleCommand.withConsistentEnd(
-                    wrist, () -> Constants.Arm.REEF_INTAKE_ANGLE));
-
-      case 2: // high reef algae
-        return new InstantCommand(() -> wrist.setHasCoral(false))
+                    wrist, () -> Constants.Arm.WRIST_CORAL_SCORE))
+            .andThen(new InstantCommand(() -> wrist.setRollerSpeed(-0.2)))
+            .andThen(new WaitCommand(5))
+            .andThen(new InstantCommand(() -> wrist.setHasCoral(false)));
+      }
+    
+      /*
+      old code:
+            case 1: // low reef algae
+            return new InstantCommand(() -> wrist.setHasCoral(false))
+                .andThen(new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist))
+                .andThen(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.REEF_INTAKE_ANGLE))
+                .andThen(new WaitUntilCommand(() -> wrist.isClearFromElevator()))
+                .andThen(
+                    new SetElevatorPresetCommand(elevator, wrist, Constants.Elevator.INTAKE_LEVEL_1))
+                .andThen(new WaitUntilCommand(() -> wrist.isOnTarget()))
+                .andThen(new WaitCommand(1));
+    
+          case 2: // high reef algae
+            return new InstantCommand(() -> wrist.setHasCoral(false))
+                .andThen(new InstantCommand(() -> wrist.setRollerSpeed(0.2), wrist))
+                .andThen(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.REEF_INTAKE_ANGLE))
+                .andThen(new WaitUntilCommand(() -> wrist.isClearFromElevator()))
+                .andThen(
+                    new SetElevatorPresetCommand(elevator, wrist, Constants.Elevator.INTAKE_LEVEL_2))
+                .andThen(new WaitUntilCommand(() -> wrist.isOnTarget()))
+                .andThen(new WaitCommand(1));
+       */
+    
+      public static Command intakeAuto(int level, Wrist wrist, Elevator elevator) {
+        switch (level) { // bit of a misnomer here
+          case 1: // low reef algae
+            return new InstantCommand(() -> wrist.setHasCoral(false))
+                .andThen(new RunCommand(() -> wrist.setRollerSpeed(0.6)))
+                .withDeadline(
+                    SetElevatorPresetCommand.withEndCondition(
+                            elevator, Constants.Elevator.INTAKE_LEVEL_1)
+                        .andThen(
+                            SetWristTargetAngleCommand.withConsistentEnd(
+                                wrist, () -> Constants.Arm.REEF_INTAKE_ANGLE))
+                        .andThen(new WaitCommand(0.1)));
+    
+          case 2: // high reef algae
+            return new InstantCommand(() -> wrist.setHasCoral(false))
+                .andThen(new RunCommand(() -> wrist.setRollerSpeed(0.6)))
+                .withDeadline(
+                    SetElevatorPresetCommand.withEndCondition(
+                            elevator, Constants.Elevator.INTAKE_LEVEL_2)
+                        .andThen(
+                            SetWristTargetAngleCommand.withConsistentEnd(
+                                wrist, () -> Constants.Arm.REEF_INTAKE_ANGLE))
+                        .andThen(new WaitCommand(0.1)));
+    
+          default:
+            return new InstantCommand();
+        }
+      }
+    
+      public static Command prepForIntakeAuto(int level, Wrist wrist, Elevator elevator) {
+        switch (level) { // bit of a misnomer here
+          case 1: // low reef algae
+            return new InstantCommand(() -> wrist.setHasCoral(false))
+                .andThen(
+                    SetElevatorPresetCommand.withEndCondition(
+                        elevator, Constants.Elevator.INTAKE_LEVEL_1))
+                .andThen(
+                    SetWristTargetAngleCommand.withConsistentEnd(
+                        wrist, () -> Constants.Arm.REEF_INTAKE_ANGLE));
+    
+          case 2: // high reef algae
+            return new InstantCommand(() -> wrist.setHasCoral(false))
+                .andThen(
+                    SetElevatorPresetCommand.withEndCondition(
+                        elevator, Constants.Elevator.INTAKE_LEVEL_2))
+                .andThen(
+                    SetWristTargetAngleCommand.withConsistentEnd(
+                        wrist, () -> Constants.Arm.REEF_INTAKE_ANGLE));
+    
+          default:
+            return new InstantCommand();
+        }
+      }
+    
+      public static Command scoreAuto(Wrist wrist, Elevator elevator) {
+        return new InstantCommand(() -> wrist.setRollerSpeed(Constants.Arm.ROLLER_HOLDING_POWER), wrist)
             .andThen(
-                SetElevatorPresetCommand.withEndCondition(
-                    elevator, Constants.Elevator.INTAKE_LEVEL_2))
+                new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.ELEVATOR_CLEARANCE_ANGLE))
+            .andThen(new WaitUntilCommand(() -> wrist.isClearFromElevator()))
             .andThen(
-                SetWristTargetAngleCommand.withConsistentEnd(
-                    wrist, () -> Constants.Arm.REEF_INTAKE_ANGLE));
-
-      default:
-        return new InstantCommand();
-    }
-  }
-
-  public static Command scoreAuto(Wrist wrist, Elevator elevator) {
-    return new InstantCommand(() -> wrist.setRollerSpeed(Constants.Arm.ROLLER_HOLDING_POWER), wrist)
-        .andThen(
-            new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.ELEVATOR_CLEARANCE_ANGLE))
-        .andThen(new WaitUntilCommand(() -> wrist.isClearFromElevator()))
-        .andThen(
-            SetElevatorPresetCommand.withEndCondition(elevator, Constants.Elevator.BARGE_LEVEL))
-        .andThen(SetWristTargetAngleCommand.withConsistentEnd(wrist, () -> 0))
-        .andThen(new InstantCommand(() -> wrist.setRollerSpeed(-1)).andThen(new WaitCommand(1)));
-  }
+                SetElevatorPresetCommand.withEndCondition(elevator, Constants.Elevator.BARGE_LEVEL))
+            .andThen(SetWristTargetAngleCommand.withConsistentEnd(wrist, () -> 0))
+            .andThen(new InstantCommand(() -> wrist.setRollerSpeed(-1)).andThen(new WaitCommand(1)));
+      }
+    
 
   public static Command prepForScoring(int level, Wrist wrist, Elevator elevator) {
     switch (level) { // bit of a misnomer here
