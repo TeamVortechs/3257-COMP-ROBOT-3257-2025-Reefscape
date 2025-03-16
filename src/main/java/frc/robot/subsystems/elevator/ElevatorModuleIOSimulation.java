@@ -37,7 +37,7 @@ public class ElevatorModuleIOSimulation implements ElevatorModuleIO {
   private final double kGearRatio = 1; // well we're literally just reading rotations so /shrug
 
   @AutoLogOutput private double leftHeight;
-  @AutoLogOutput private double rightHeight;
+  // @AutoLogOutput private double rightHeight;
 
   /** Constructs the TalonFX-based elevator simulation. */
   public ElevatorModuleIOSimulation() {

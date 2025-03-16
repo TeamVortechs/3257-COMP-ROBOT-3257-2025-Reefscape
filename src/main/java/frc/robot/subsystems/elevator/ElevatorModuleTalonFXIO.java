@@ -20,7 +20,7 @@ public class ElevatorModuleTalonFXIO implements ElevatorModuleIO {
   private final TalonFX rightMotor;
 
   @AutoLogOutput private double leftHeight;
-  @AutoLogOutput private double rightHeight;
+  // @AutoLogOutput private double rightHeight;
 
   /** Constructs the TalonFX-based elevator module. */
   public ElevatorModuleTalonFXIO(int motorIDLeft, int motorIDRight, String canbusName) {
@@ -114,14 +114,14 @@ public class ElevatorModuleTalonFXIO implements ElevatorModuleIO {
     inputs.elevatorMotor1CurrentAmps = leftMotor.getStatorCurrent().getValueAsDouble();
     inputs.elevatorMotor1AppliedVolts = leftMotor.getMotorVoltage().getValueAsDouble();
 
-    inputs.elevatorMotor2CurrentHeightMeter = rightMotor.get();
-    inputs.elevatorMotor2CurrentHeightMeter = getHeightMeters(0);
+    // inputs.elevatorMotor2CurrentHeightMeter = rightMotor.get();
+    // inputs.elevatorMotor2CurrentHeightMeter = getHeightMeters(0);
 
-    inputs.elevatorMotor2CurrentAmps = rightMotor.getStatorCurrent().getValueAsDouble();
-    inputs.elevatorMotor2AppliedVolts = rightMotor.getMotorVoltage().getValueAsDouble();
+    // inputs.elevatorMotor2CurrentAmps = rightMotor.getStatorCurrent().getValueAsDouble();
+    // inputs.elevatorMotor2AppliedVolts = rightMotor.getMotorVoltage().getValueAsDouble();
 
     inputs.elevatorMotor1CurrentSpeedMeter = leftMotor.getVelocity().getValueAsDouble();
-    inputs.elevatorMotor2CurrentSpeedMeter = rightMotor.getVelocity().getValueAsDouble();
+    // inputs.elevatorMotor2CurrentSpeedMeter = rightMotor.getVelocity().getValueAsDouble();
 
     inputs.isStalled = checkIfStalled();
   }
@@ -133,9 +133,10 @@ public class ElevatorModuleTalonFXIO implements ElevatorModuleIO {
   @Override
   public double getHeightMeters() {
     leftHeight = leftMotor.getPosition().getValueAsDouble();
-    rightHeight = rightMotor.getPosition().getValueAsDouble();
+    // rightHeight = rightMotor.getPosition().getValueAsDouble();
 
-    return (leftHeight + rightHeight) / 2.0;
+    // return (leftHeight + rightHeight) / 2.0;
+    return leftHeight;
   }
 
   /** Sets the voltage to both motors. */
@@ -160,7 +161,7 @@ public class ElevatorModuleTalonFXIO implements ElevatorModuleIO {
   @Override
   public void resetEncoders() {
     leftMotor.setPosition(0);
-    rightMotor.setPosition(0);
+    // rightMotor.setPosition(0);
   }
 
   /** Stops the motor immediately. */
@@ -190,7 +191,7 @@ public class ElevatorModuleTalonFXIO implements ElevatorModuleIO {
   public void setBraked(boolean braked) {
     NeutralModeValue mode = braked ? NeutralModeValue.Brake : NeutralModeValue.Coast;
     leftMotor.setNeutralMode(mode);
-    rightMotor.setNeutralMode(mode);
+    rightMotor.setNeutralMode(mode); // fine since this is a config
   }
 
   @Override
