@@ -161,6 +161,7 @@ public class ElevatorModuleTalonFXIO implements ElevatorModuleIO {
   public void resetEncoders() {
     leftMotor.setPosition(0);
     rightMotor.setPosition(0);
+    // rightMotor.setControl(new Follower(Constants.Elevator.MOTOR_LEFT_ID, false));
   }
 
   /** Stops the motor immediately. */
@@ -196,5 +197,10 @@ public class ElevatorModuleTalonFXIO implements ElevatorModuleIO {
   @Override
   public double getVoltage() {
     return leftMotor.getMotorVoltage().getValueAsDouble();
+  }
+
+  @Override
+  public double getCurrent() {
+    return leftMotor.getStatorCurrent().getValueAsDouble();
   }
 }

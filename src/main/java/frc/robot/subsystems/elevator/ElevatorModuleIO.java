@@ -79,4 +79,8 @@ public interface ElevatorModuleIO {
   public default boolean isMaxHeight() {
     return false;
   }
+
+  public default double getCurrent() {
+    return 0;
+  }
 }

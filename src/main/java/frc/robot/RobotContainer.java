@@ -35,6 +35,7 @@ import frc.robot.commands.autoCommands.DriveCommands;
 import frc.robot.commands.autoCommands.ScoringCommands;
 import frc.robot.commands.communication.ControllerVibrateCommand;
 import frc.robot.commands.communication.TellCommand;
+import frc.robot.commands.elevator.ManualElevatorCommand;
 import frc.robot.commands.elevator.SetElevatorPresetCommand;
 import frc.robot.commands.wrist.ManualSetWristSpeedCommand;
 import frc.robot.commands.wrist.SetWristRollerSpeedCommand;
@@ -340,6 +341,13 @@ public class RobotContainer {
     operatorController.povUp().whileTrue(new ManualSetWristSpeedCommand(wrist, () -> 0.15));
     // dpad down manually moves arm inwards
     operatorController.povDown().whileTrue(new ManualSetWristSpeedCommand(wrist, () -> -0.1));
+
+    operatorController
+        .start()
+        .whileTrue(
+            new ManualElevatorCommand(elevator, () -> -0.4)
+                .until(() -> elevator.getCurrent() > 40)
+                .andThen(new InstantCommand(() -> elevator.resetEncoders())));
   } // end configure bindings
 
   /**

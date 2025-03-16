@@ -51,8 +51,8 @@ public final class Constants {
     public static final double INTAKE_HEIGHT = 0;
     // public static
     final double STAGE_1_LEVEL = 0; // currently unimplemented
-    public static final double INTAKE_LEVEL_1 = 2.57;
-    public static final double INTAKE_LEVEL_2 = 13.29;
+    public static final double INTAKE_LEVEL_1 = 10.247;
+    public static final double INTAKE_LEVEL_2 = 20.5;
     public static final double BARGE_LEVEL = 44; // currently impossible to achieve
   }
 
@@ -63,7 +63,7 @@ public final class Constants {
     public static final int CANRANGE_ID = 60;
     public static final String CANBUS = "rio";
 
-    public static final double REEF_INTAKE_ANGLE = 1.53;
+    public static final double REEF_INTAKE_ANGLE = 3.19;
     public static final double GROUND_INTAKE_ANGLE =
         5; // we do not know this yet; input correct angle later
     public static final double SCORING_ANGLE = 0.608; // currently impossible to achieve

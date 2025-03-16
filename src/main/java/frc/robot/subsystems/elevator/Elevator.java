@@ -184,5 +184,10 @@ public class Elevator extends SubsystemBase {
   /** resets encoders to read 0 and resets PID (setting it to begin at current height) */
   public void resetEncoders() {
     moduleIO.resetEncoders();
+    SmartDashboard.putBoolean("Reset?", true);
+  }
+
+  public double getCurrent() {
+    return moduleIO.getCurrent();
   }
 }
