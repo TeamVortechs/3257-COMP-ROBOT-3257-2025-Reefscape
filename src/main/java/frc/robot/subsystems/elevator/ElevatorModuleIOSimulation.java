@@ -21,18 +21,18 @@ public class ElevatorModuleIOSimulation implements ElevatorModuleIO {
 
   private PIDController elevatorPIDController =
       new PIDController(
-          PElevator.kP.getValue() / speedDivider,
-          PElevator.kI.getValue() / speedDivider,
-          PElevator.kD.getValue() / speedDivider);
+          PElevator.kP / speedDivider,
+          PElevator.kI / speedDivider,
+          PElevator.kD / speedDivider);
   private ElevatorFeedforward elevatorFeedforward =
       new ElevatorFeedforward(
-          PElevator.kS.getValue() / speedDivider,
-          PElevator.kG.getValue() / speedDivider,
-          PElevator.kV.getValue() / speedDivider);
+          PElevator.kS / speedDivider,
+          PElevator.kG / speedDivider,
+          PElevator.kV / speedDivider);
 
-  private double targetVel = PElevator.speedLimit.getValue() / speedDivider;
-  private double targetAccel = PElevator.accelerationLimit.getValue() / speedDivider;
-  // private double targetJerk = PElevator.jerkLimit.getValue(); // not actually used. neat
+  private double targetVel = PElevator.speedLimit / speedDivider;
+  private double targetAccel = PElevator.accelerationLimit / speedDivider;
+  // private double targetJerk = PElevator.jerkLimit; // not actually used. neat
 
   private final double kGearRatio = 1; // well we're literally just reading rotations so /shrug
 
@@ -45,7 +45,7 @@ public class ElevatorModuleIOSimulation implements ElevatorModuleIO {
         new DCMotorSim(
             LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(2), 0.001, kGearRatio),
             DCMotor.getKrakenX60(2));
-    elevatorPIDController.setTolerance(PElevator.tolerance.getValue());
+    elevatorPIDController.setTolerance(PElevator.tolerance);
   }
 
   // advantage kit logging stuff(everything in here gets logged every tick)

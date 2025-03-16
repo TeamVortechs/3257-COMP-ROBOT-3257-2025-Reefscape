@@ -34,8 +34,7 @@ public interface ElevatorModuleIO {
     return 0;
   }
 
-  public default void PIDVoltage(double targetAngle) {}
-  ;
+  public default void PIDVoltage(double targetAngle) {};
 
   /** Stops the motor immediately */
   default void stop() {}

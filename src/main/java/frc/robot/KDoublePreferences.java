@@ -28,31 +28,20 @@ public class KDoublePreferences {
   }
 
   public static class PElevator {
-    public static KDoublePref kG =
-        new KDoublePref("elevator kG", 0.15); // Add kG V output to overcome gravity
-    public static KDoublePref kS =
-        new KDoublePref("elevator kS", 0.25); // Add kS V output to overcome static friction
-    public static KDoublePref kV =
-        new KDoublePref("elevator kV", 0.12); // A velocity target of 1 rps results in kV V output
-    public static KDoublePref kA =
-        new KDoublePref("elevator kA", 0.01); // An acceleration of 1 rps/s requires kA V output
-    public static KDoublePref kP =
-        new KDoublePref("elevator kP", 23); // A position error of 1 rotation results in kP V output
-    public static KDoublePref kI =
-        new KDoublePref("elevator kI", 0); // no output for error over time
-    public static KDoublePref kD =
-        new KDoublePref("elevator kD", 0.01); // A velocity error of 1 rps results in 0.1 V output
+    public static double kG = 0; // Add kG V output to overcome gravity
+    public static double kS = 0; // Add kS V output to overcome static friction
+    public static double kV = 0; // A velocity target of 1 rps results in kV V output
+    public static double kA = 0; // An acceleration of 1 rps/s requires kA V output
+    public static double kP = 0; // A position error of 1 rotation results in kP V output
+    public static double kI = 0; // no output for error over time
+    public static double kD = 0; // A velocity error of 1 rps results in 0.1 V output
 
-    public static KDoublePref speedLimit =
-        new KDoublePref("elevator velocity limit", 15); // unit is rotation per second
-    public static KDoublePref accelerationLimit =
-        new KDoublePref("elevator accel limit", 13); // unit is rotation/second^2
-    public static KDoublePref jerkLimit =
-        new KDoublePref("elevator jerk limit", 30); // unit is rotation/second^3
-    public static KDoublePref tolerance = new KDoublePref("Elevator Target Tolerance", 0.1);
-
-    public static KDoublePref manualSpeedLimit =
-        new KDoublePref("elevator MANUAL speed limit", 0.3); // range of 0 to 1
+    public static double speedLimit = 0;
+    // unit is rotation per second
+    public static double accelerationLimit = 0;
+    public static double jerkLimit = 0;
+    public static double tolerance = 0;
+    public static double manualSpeedLimit = 0; // range of 0 to 1
   }
 
   public static class PWrist {

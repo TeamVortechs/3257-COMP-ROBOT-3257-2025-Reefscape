@@ -39,30 +39,30 @@ public class ElevatorModuleTalonFXIO implements ElevatorModuleIO {
                     .withStatorCurrentLimitEnable(true));
 
     var slot0Configs = elevatorConfigs.Slot0;
-    slot0Configs.kG = PElevator.kG.getValue();
-    slot0Configs.kS = PElevator.kS.getValue();
-    slot0Configs.kV = PElevator.kV.getValue();
-    slot0Configs.kA = PElevator.kA.getValue();
-    slot0Configs.kP = PElevator.kP.getValue();
-    slot0Configs.kI = PElevator.kI.getValue();
-    slot0Configs.kD = PElevator.kD.getValue();
+    slot0Configs.kG = PElevator.kG;
+    slot0Configs.kS = PElevator.kS;
+    slot0Configs.kV = PElevator.kV;
+    slot0Configs.kA = PElevator.kA;
+    slot0Configs.kP = PElevator.kP;
+    slot0Configs.kI = PElevator.kI;
+    slot0Configs.kD = PElevator.kD;
 
     // var motionMagicConfigs = elevatorConfigs.MotionMagic;
     // motionMagicConfigs.MotionMagicCruiseVelocity =
-    //     PElevator.speedLimit.getValue(); // Target cruise velocity of 80 rps
+    //     PElevator.speedLimit; // Target cruise velocity of 80 rps
     // motionMagicConfigs.MotionMagicAcceleration =
-    //     PElevator.accelerationLimit.getValue(); // Target acceleration of 160 rps/s (0.5 seconds)
+    //     PElevator.accelerationLimit; // Target acceleration of 160 rps/s (0.5 seconds)
     // motionMagicConfigs.MotionMagicJerk =
-    //     PElevator.jerkLimit.getValue(); // Target jerk of 1600 rps/s/s (0.1 seconds)
+    //     PElevator.jerkLimit; // Target jerk of 1600 rps/s/s (0.1 seconds)
     // motionMagicConfigs.MotionMagicExpo_kV = 0.12;
     // motionMagicConfigs.MotionMagicExpo_kA = 0.1;
 
     leftMotor.getConfigurator().apply(elevatorConfigs);
-    rightMotor.getConfigurator().apply(elevatorConfigs);
+    // rightMotor.getConfigurator().apply(elevatorConfigs);
 
     // Set both motors to Brake mode by default.
     leftMotor.setNeutralMode(NeutralModeValue.Brake);
-    rightMotor.setNeutralMode(NeutralModeValue.Brake);
+    // rightMotor.setNeutralMode(NeutralModeValue.Brake);
 
     rightMotor.setControl(new Follower(motorIDLeft, false));
   }
@@ -85,28 +85,28 @@ public class ElevatorModuleTalonFXIO implements ElevatorModuleIO {
                       .withStatorCurrentLimitEnable(true));
 
       var slot0Configs = elevatorConfigs.Slot0;
-      slot0Configs.kG = PElevator.kG.getValue();
-      slot0Configs.kS = PElevator.kS.getValue();
-      slot0Configs.kV = PElevator.kV.getValue();
-      slot0Configs.kA = PElevator.kA.getValue();
-      slot0Configs.kP = PElevator.kP.getValue();
-      slot0Configs.kI = PElevator.kI.getValue();
-      slot0Configs.kD = PElevator.kD.getValue();
+      slot0Configs.kG = PElevator.kG;
+      slot0Configs.kS = PElevator.kS;
+      slot0Configs.kV = PElevator.kV;
+      slot0Configs.kA = PElevator.kA;
+      slot0Configs.kP = PElevator.kP;
+      slot0Configs.kI = PElevator.kI;
+      slot0Configs.kD = PElevator.kD;
 
       var motionMagicConfigs = elevatorConfigs.MotionMagic;
       motionMagicConfigs.MotionMagicCruiseVelocity =
-          PElevator.speedLimit.getValue(); // Target cruise velocity of 80 rps
+          PElevator.speedLimit; // Target cruise velocity of 80 rps
       motionMagicConfigs.MotionMagicAcceleration =
-          PElevator.accelerationLimit.getValue(); // Target acceleration of 160 rps/s (0.5 seconds)
+          PElevator.accelerationLimit; // Target acceleration of 160 rps/s (0.5 seconds)
       motionMagicConfigs.MotionMagicJerk =
-          PElevator.jerkLimit.getValue(); // Target jerk of 1600 rps/s/s (0.1 seconds)
+          PElevator.jerkLimit; // Target jerk of 1600 rps/s/s (0.1 seconds)
 
       leftMotor.getConfigurator().apply(elevatorConfigs);
-      rightMotor.getConfigurator().apply(elevatorConfigs);
+      // rightMotor.getConfigurator().apply(elevatorConfigs);
 
       // Set both motors to Brake mode by default.
       leftMotor.setNeutralMode(NeutralModeValue.Brake);
-      rightMotor.setNeutralMode(NeutralModeValue.Brake);
+      // rightMotor.setNeutralMode(NeutralModeValue.Brake);
     }
     inputs.elevatorMotor1CurrentHeightMeter = leftMotor.get();
     inputs.elevatorMotor1CurrentHeightMeter = getHeightMeters(0);
@@ -160,7 +160,7 @@ public class ElevatorModuleTalonFXIO implements ElevatorModuleIO {
   @Override
   public void resetEncoders() {
     leftMotor.setPosition(0);
-    rightMotor.setPosition(0);
+    // rightMotor.setPosition(0);
     // rightMotor.setControl(new Follower(Constants.Elevator.MOTOR_LEFT_ID, false));
   }
 
@@ -191,7 +191,7 @@ public class ElevatorModuleTalonFXIO implements ElevatorModuleIO {
   public void setBraked(boolean braked) {
     NeutralModeValue mode = braked ? NeutralModeValue.Brake : NeutralModeValue.Coast;
     leftMotor.setNeutralMode(mode);
-    rightMotor.setNeutralMode(mode);
+    // rightMotor.setNeutralMode(mode);
   }
 
   @Override

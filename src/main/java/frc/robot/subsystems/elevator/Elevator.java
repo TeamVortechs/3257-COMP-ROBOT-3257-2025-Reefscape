@@ -92,7 +92,7 @@ public class Elevator extends SubsystemBase {
 
     if (manualOverride) {
 
-      if (getCurrentHeight() < Constants.Elevator.MIN_HEIGHT - PElevator.tolerance.getValue()
+      if (getCurrentHeight() < Constants.Elevator.MIN_HEIGHT - PElevator.tolerance
           || getCurrentHeight() > Constants.Elevator.MAX_HEIGHT) {
         System.out.println("ELEVATOR OUT OF BOUDNS");
         setManualSpeed(0);
@@ -102,8 +102,8 @@ public class Elevator extends SubsystemBase {
 
     isOnTarget = isOnTarget();
 
-    if (Math.abs(currentHeight - targetHeight) < PElevator.tolerance.getValue()) {
-      if (currentHeight < PElevator.tolerance.getValue() + 0.1) {
+    if (Math.abs(currentHeight - targetHeight) < PElevator.tolerance) {
+      if (currentHeight < PElevator.tolerance + 0.1) {
         moduleIO.setVoltage(0);
       }
     } else {
@@ -134,8 +134,8 @@ public class Elevator extends SubsystemBase {
     // if (speed < 0 && !homeSwitch.get()) {
     //   speed = 0;
     // }
-    if (Math.abs(speed) > PElevator.manualSpeedLimit.getValue())
-      speed = Math.copySign(PElevator.manualSpeedLimit.getValue(), speed);
+    if (Math.abs(speed) > PElevator.manualSpeedLimit)
+      speed = Math.copySign(PElevator.manualSpeedLimit, speed);
     System.out.println("Above speed limit; rate limiting ELEVATOR speed.");
     moduleIO.setSpeed(speed);
   }
@@ -143,7 +143,7 @@ public class Elevator extends SubsystemBase {
   /** Holds the current position using PID control. */
   public void holdPositionPID() {
     manualOverride = false;
-    if (Math.abs(targetHeight - currentHeight) > PElevator.tolerance.getValue()) {
+    if (Math.abs(targetHeight - currentHeight) > PElevator.tolerance) {
       targetHeight = currentHeight;
       moduleIO.PIDVoltage(targetHeight);
     }
@@ -178,7 +178,7 @@ public class Elevator extends SubsystemBase {
 
   // returns wether or not the elevaotr is on target
   public boolean isOnTarget() {
-    return (Math.abs(currentHeight - targetHeight) < PElevator.tolerance.getValue());
+    return (Math.abs(currentHeight - targetHeight) < PElevator.tolerance);
   }
 
   /** resets encoders to read 0 and resets PID (setting it to begin at current height) */
