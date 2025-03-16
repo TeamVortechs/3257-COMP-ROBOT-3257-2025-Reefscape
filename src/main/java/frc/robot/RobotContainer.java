@@ -244,9 +244,16 @@ public class RobotContainer {
     // elevator-ready
     // position
     controller
-        .leftBumper()
-        .onTrue(ScoringCommands.prepForScoring(6, wrist, elevator))
-        .onFalse(
+        .leftBumper() // while true, hold arm at ground intake level and reduce speed
+        .whileTrue(
+            ScoringCommands.prepForScoring(6, wrist, elevator)
+                .alongWith(
+                    DriveCommands.joystickDrive(
+                        drive,
+                        () -> -controller.getLeftY() * 0.5,
+                        () -> -controller.getLeftX() * 0.5,
+                        () -> -controller.getRightX() * 0.5)))
+        .onFalse( // on false, retract arm
             new InstantCommand(
                     () -> wrist.setRollerSpeed(Constants.Arm.ROLLER_HOLDING_POWER), wrist)
                 .andThen(
