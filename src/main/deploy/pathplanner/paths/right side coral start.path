@@ -4,28 +4,28 @@
     {
       "anchor": {
         "x": 7.15,
-        "y": 2.5491666666616903
+        "y": 1.9366059817918393
       },
       "prevControl": null,
       "nextControl": {
         "x": 6.92139511322365,
-        "y": 2.4479747413811994
+        "y": 1.8354140565113484
       },
       "isLocked": false,
       "linkedName": "toprightsidecoralstart"
     },
     {
       "anchor": {
-        "x": 5.132,
-        "y": 2.961987179487179
+        "x": 5.22474358974359,
+        "y": 2.786538461538462
       },
       "prevControl": {
-        "x": 5.381172750100633,
-        "y": 2.9416662393689763
+        "x": 5.473916339844223,
+        "y": 2.766217521420259
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "rightsidecoralshoot"
+      "linkedName": "rightsidealgaeintake start"
     }
   ],
   "rotationTargets": [],
