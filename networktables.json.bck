@@ -58,7 +58,7 @@
   {
     "name": "/Preferences/Elevator Target Tolerance",
     "type": "double",
-    "value": 0.2,
+    "value": 0.6,
     "properties": {
       "persistent": true,
       "retained": true
@@ -211,7 +211,7 @@
   {
     "name": "/Preferences/elevator kP",
     "type": "double",
-    "value": 1.0,
+    "value": 2.0,
     "properties": {
       "persistent": true,
       "retained": true

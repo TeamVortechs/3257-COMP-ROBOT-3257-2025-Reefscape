@@ -89,7 +89,7 @@ public class midStartOneAlgae extends SequentialCommandGroup {
             .withTimeout(1.3),
         // turn about 135 degrees
         DriveCommands.joystickDriveAtAngle(drive, () -> 0, () -> 0, () -> new Rotation2d(aimAngle))
-            .withTimeout(1.4),
+            .withTimeout(1.4).andThen(DriveCommands.joystickDrive(drive, () -> 0, () -> 0, () -> 0).withTimeout(0)),
         // raise arm up and extend elevator up to BARGE LEVEL
         new PrintCommand("Setting arm to scoring."),
         ScoringCommands.prepForScoring(3, wrist, elevator)
