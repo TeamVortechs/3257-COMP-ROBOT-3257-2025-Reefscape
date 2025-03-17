@@ -389,6 +389,8 @@ public class RobotContainer {
     // if (Constants.currentMode == Mode.SIM) isReal = false;
 
     // comm
+    addNamedCommand("prepScore", ScoringCommands.prepScoreAuto(wrist, elevator), isReal);
+
     addNamedCommand("intakeStage1", ScoringCommands.intakeAuto(1, wrist, elevator), isReal);
 
     addNamedCommand(

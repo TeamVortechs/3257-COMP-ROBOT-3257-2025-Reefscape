@@ -29,15 +29,27 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "intakeStage1"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "AlgaeIntake To Score"
+            "pathName": "Algae Intake to Prep score"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "intakeStage1"
+            "name": "prepScore"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "prep score to score"
           }
         },
         {

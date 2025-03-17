@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
+import frc.robot.commands.communication.TellCommand;
 import frc.robot.commands.elevator.SetElevatorPresetCommand;
 import frc.robot.commands.wrist.SetWristTargetAngleCommand;
 import frc.robot.subsystems.elevator.Elevator;
@@ -113,6 +114,14 @@ public class ScoringCommands {
             SetElevatorPresetCommand.withEndCondition(elevator, Constants.Elevator.BARGE_LEVEL))
         .andThen(SetWristTargetAngleCommand.withConsistentEnd(wrist, () -> 0))
         .andThen(new InstantCommand(() -> wrist.setRollerSpeed(-1)).andThen(new WaitCommand(1)));
+  }
+
+  public static Command prepScoreAuto(Wrist wrist, Elevator elevator) {
+    return new TellCommand("testing")
+        .andThen(
+            new InstantCommand(
+                () -> wrist.setRollerSpeed(Constants.Arm.ROLLER_HOLDING_POWER), wrist))
+        .andThen(new SetElevatorPresetCommand(elevator, Constants.Elevator.BARGE_LEVEL));
   }
 
   public static Command prepForScoring(int level, Wrist wrist, Elevator elevator) {
