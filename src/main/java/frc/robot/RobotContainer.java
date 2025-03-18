@@ -58,10 +58,6 @@ public class RobotContainer {
   private final SendableChooser<Command> autoChooser;
   private final LoggedDashboardChooser<Command> loggedAutoChooser;
 
-  // pathconstraints for pathplanner paths
-  private final PathConstraints pathConstraints =
-      new PathConstraints(1, 0.5, Units.degreesToRadians(540), Units.degreesToRadians(720));
-
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     switch (Constants.currentMode) {

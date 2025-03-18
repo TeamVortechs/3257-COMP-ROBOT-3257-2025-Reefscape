@@ -1,10 +1,13 @@
-package frc.robot.subsystems.templates;
+package frc.robot.subsystems.arm;
 
+import edu.wpi.first.wpilibj.CAN;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.robot.Constants.CArm;
+
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -13,13 +16,13 @@ import org.littletonrobotics.junction.Logger;
  * Elevator subsystem responsible for controlling the lifting mechanism. Uses PID control for
  * precise movement and prevents unsafe operation via limit switches and software constraints.
  */
-public class ArmSubsystemTemplate extends SubsystemBase {
+public class Arm extends SubsystemBase {
 
   // advantage kit logging
-  ArmIOTemplateInputsAutoLogged inputs = new ArmIOTemplateInputsAutoLogged();
+  ArmIOInputsAutoLogged inputs = new ArmIOInputsAutoLogged();
 
   // useful for a flexible hardware interface and for advantage kit logging
-  private final ArmIOTemplate moduleIO;
+  private final ArmIO moduleIO;
 
   // these are for advantage kit state logging and/or for keeping track of key variables
   @AutoLogOutput private double currentHeight = 0.0;
@@ -27,19 +30,13 @@ public class ArmSubsystemTemplate extends SubsystemBase {
   @AutoLogOutput private boolean isOnTarget = false;
   @AutoLogOutput private boolean manualOverride = false;
 
-  // these constants should be moved to a target class
-  private double tolerance = 0.1;
-  private double manManualSpeed = 0.1;
-  private double minHeight = 0;
-  private double maxHeight = 5;
-
   /**
-   * Constructor for the Elevator subsystem.
+   * Constructor for the Arm subsystem.
    *
-   * @param moduleIO Hardware interface for elevator motors.
+   * @param moduleIO Hardware interface for Arm motors.
    * @param homeSwitch Digital input limit switch for homing.
    */
-  public ArmSubsystemTemplate(ArmIOTemplate moduleIO) {
+  public Arm(ArmIO moduleIO) {
     this.moduleIO = moduleIO;
 
     currentHeight = moduleIO.getHeight();
@@ -50,13 +47,13 @@ public class ArmSubsystemTemplate extends SubsystemBase {
   @Override
   public void periodic() {
     moduleIO.updateInputs(inputs);
-    Logger.processInputs("Example", inputs);
+    Logger.processInputs("Arm", inputs);
 
     // check to see if the module is stalling; if so, then stop the motors and cancel the next
     // movement
 
     if (moduleIO.checkIfStalled()) {
-      System.out.println("MODULE IO HAS STALLED ");
+      System.out.println("ARM HAS STALLED ");
       moduleIO.stop();
       return;
     }
@@ -66,8 +63,8 @@ public class ArmSubsystemTemplate extends SubsystemBase {
     // if manual override do a quick bounds check then retuorn
     if (manualOverride) {
 
-      if (getCurrentHeight() < minHeight - tolerance || getCurrentHeight() > maxHeight) {
-        System.out.println("MODULE IO OUT OF BOUDNS");
+      if (getCurrentAngle() < CArm.MIN_HEIGHT - CArm.TOLERANCE || getCurrentAngle() > CArm.MAX_HEIGHT) {
+        System.out.println("ARM OUT OF BOUDNS");
         setManualSpeed(0);
       }
       return;
@@ -76,7 +73,7 @@ public class ArmSubsystemTemplate extends SubsystemBase {
     isOnTarget = isOnTarget();
 
     // Clamp target height to prevent exceeding limits
-    targetHeight = Math.max(0.0, Math.min(targetHeight, maxHeight));
+    targetHeight = Math.max(0.0, Math.min(targetHeight, CArm.MAX_HEIGHT));
 
     moduleIO.PIDVoltage(targetHeight);
   }
@@ -86,22 +83,22 @@ public class ArmSubsystemTemplate extends SubsystemBase {
 
     manualOverride = false;
 
-    targetHeight = Math.max(0.0, Math.min(height, maxHeight));
+    targetHeight = Math.max(0.0, Math.min(height, CArm.MAX_HEIGHT));
   }
 
   /** Allows manual control of the elevator, bypassing PID. */
   public void setManualSpeed(double speed) {
     manualOverride = true;
 
-    if (Math.abs(speed) > manManualSpeed) speed = Math.copySign(manManualSpeed, speed);
-    System.out.println("Above speed limit; rate limiting MODULE IO speed.");
+    if (Math.abs(speed) > CArm.MANUAL_MAX_SPEED) speed = Math.copySign(CArm.MANUAL_MAX_SPEED, speed);
+    System.out.println("Above speed limit; rate limiting ARM speed.");
     moduleIO.setSpeed(speed);
   }
 
   /** Holds the current position using PID control. */
   public void holdPositionPID() {
     manualOverride = false;
-    if (Math.abs(targetHeight - currentHeight) > tolerance) {
+    if (Math.abs(targetHeight - currentHeight) > CArm.TOLERANCE) {
       targetHeight = currentHeight;
       moduleIO.PIDVoltage(targetHeight);
     }
@@ -121,11 +118,11 @@ public class ArmSubsystemTemplate extends SubsystemBase {
 
   // returns wether or not the elevator is close to the floor
   public boolean isOnFloor() {
-    return getCurrentHeight() < 0.1;
+    return getCurrentAngle() < 0.1;
   }
 
   // gest the current height of the elevator motor
-  public double getCurrentHeight() {
+  public double getCurrentAngle() {
     return currentHeight;
   }
 
@@ -135,7 +132,7 @@ public class ArmSubsystemTemplate extends SubsystemBase {
 
   // returns wether or not the elevaotr is on target
   public boolean isOnTarget() {
-    return (Math.abs(currentHeight - targetHeight) < tolerance);
+    return (Math.abs(currentHeight - targetHeight) < CArm.TOLERANCE);
   }
 
   /** resets encoders to read 0 and resets PID (setting it to begin at current height) */
@@ -166,6 +163,11 @@ public class ArmSubsystemTemplate extends SubsystemBase {
   // resets the motors pid
   public void rebuildMotorsPID() {
     moduleIO.rebuildMotorsPID();
+  }
+
+  //returns wether or not the arm is clear from the elevator
+  public boolean isClearFromElevator() {
+    return getCurrentAngle() > CArm.CLEARANCE_ANGLE;
   }
 
   // commands

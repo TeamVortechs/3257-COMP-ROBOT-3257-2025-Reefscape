@@ -1,4 +1,4 @@
-package frc.robot.subsystems.templates;
+package frc.robot.subsystems.arm;
 
 import org.littletonrobotics.junction.AutoLog;
 
@@ -6,9 +6,9 @@ import org.littletonrobotics.junction.AutoLog;
  * Interface for Elevator Module IO implementations. This abstracts all hardware interactions for
  * the elevator.
  */
-public interface ArmIOTemplate {
+public interface ArmIO {
   @AutoLog
-  public static class ArmIOTemplateInputs {
+  public static class ArmIOInputs {
     double elevatorMotor1CurrentHeightMeter = 0;
     double elevatorMotor1CurrentSpeedMeter = 0;
 
@@ -25,7 +25,7 @@ public interface ArmIOTemplate {
   }
 
   // updates the given inputs with new values(advantage kit stuff)
-  public default void updateInputs(ArmIOTemplateInputsAutoLogged inputsAutoLogged) {}
+  public default void updateInputs(ArmIOInputsAutoLogged inputsAutoLogged) {}
 
   // sets the elevator height to the given number
   public default void setSpeed(double Speed) {}
