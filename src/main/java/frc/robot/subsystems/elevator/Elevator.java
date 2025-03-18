@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.subsystems.arm.Arm;
-
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -17,22 +16,22 @@ import org.littletonrobotics.junction.Logger;
  */
 public class Elevator extends SubsystemBase {
 
-  //for advantage kti logging
+  // for advantage kti logging
   ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
 
-  //for flexible modules as well advantage kit
+  // for flexible modules as well advantage kit
   private final ElevatorIO moduleIO;
 
-  //arm for clearance checks
+  // arm for clearance checks
   private Arm arm;
 
-    //these are for advantage kit state logging and/or for keeping track of key variables
+  // these are for advantage kit state logging and/or for keeping track of key variables
   @AutoLogOutput private double currentHeight = 0.0;
   @AutoLogOutput private double targetHeight = 0.0;
   @AutoLogOutput private boolean isOnTarget = false;
   @AutoLogOutput private boolean manualOverride = false;
 
-  //these constants should be moved to another class
+  // these constants should be moved to another class
   private double tolerance = 0.1;
   private double manManualSpeed = 0.1;
   private double minHeight = 0;
@@ -89,9 +88,9 @@ public class Elevator extends SubsystemBase {
   /** Sets a new target height for the elevator using PID control. */
   public void setTargetHeight(double height) {
 
-    if(!arm.isClearFromElevator()) {
-        System.out.println("ARM IS NOT CLEAR FROM ELEVATOR");
-        return;
+    if (!arm.isClearFromElevator()) {
+      System.out.println("ARM IS NOT CLEAR FROM ELEVATOR");
+      return;
     }
 
     manualOverride = false;
@@ -198,12 +197,12 @@ public class Elevator extends SubsystemBase {
     return new InstantCommand(() -> this.resetEncoders());
   }
 
-  //simple command incase you need a chain that requires this subsystem
+  // simple command incase you need a chain that requires this subsystem
   public Command requireSubsystemCommand() {
     return new InstantCommand(null, this);
   }
 
-  //rebuilds the pid constants for testing
+  // rebuilds the pid constants for testing
   public Command rebuildMotorsPIDCommand() {
     return new InstantCommand(() -> this.rebuildMotorsPID());
   }

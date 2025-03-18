@@ -26,12 +26,16 @@ import frc.robot.commands.DriveCommands;
 import frc.robot.commands.communication.ControllerVibrateCommand;
 import frc.robot.commands.communication.TellCommand;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
+import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -56,6 +60,9 @@ public class RobotContainer {
   private final SendableChooser<Command> autoChooser;
   private final LoggedDashboardChooser<Command> loggedAutoChooser;
 
+  private final Arm arm;
+  private final Elevator elevator;
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     switch (Constants.currentMode) {
@@ -73,6 +80,9 @@ public class RobotContainer {
                 drive::addVisionMeasurement,
                 new VisionIO() {},
                 new VisionIO() {}); // disable vision in match
+
+        arm = new Arm(new ArmIO() {});
+        elevator = new Elevator(new ElevatorIO() {}, arm);
         break;
 
       case SIM:
@@ -86,6 +96,9 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.BackRight));
 
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
+
+        arm = new Arm(new ArmIO() {});
+        elevator = new Elevator(new ElevatorIO() {}, arm);
         break;
 
       default:
@@ -98,6 +111,9 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {});
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
+
+        arm = new Arm(new ArmIO() {});
+        elevator = new Elevator(new ElevatorIO() {}, arm);
         break;
     }
 
