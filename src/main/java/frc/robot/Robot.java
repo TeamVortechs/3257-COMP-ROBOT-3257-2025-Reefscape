@@ -132,14 +132,12 @@ public class Robot extends LoggedRobot {
     robotContainer.putPositionData();
 
     // updates the robot simulation
-    robotContainer.getSim().periodic();
+    // robotContainer.getSim().periodic();
   }
 
   /** This function is called once when the robot is disabled. */
   @Override
-  public void disabledInit() {
-    robotContainer.getWrist().setRollerSpeed(0);
-  }
+  public void disabledInit() {}
 
   /** This function is called periodically when disabled. */
   @Override
@@ -149,11 +147,6 @@ public class Robot extends LoggedRobot {
   @Override
   public void autonomousInit() {
     autonomousCommand = robotContainer.getAutonomousCommand();
-
-    // autos starts withthe corla
-    robotContainer.getWrist().setHasCoral(true);
-    robotContainer.getWrist().setTargetAngle(0);
-    robotContainer.getElevator().setTargetHeight(0);
 
     // schedule the autonomous command (example)
     if (autonomousCommand != null) {
@@ -168,10 +161,6 @@ public class Robot extends LoggedRobot {
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
-
-    // it shouldn't have a coral in telop
-    robotContainer.getWrist().setHasCoral(false);
-
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove

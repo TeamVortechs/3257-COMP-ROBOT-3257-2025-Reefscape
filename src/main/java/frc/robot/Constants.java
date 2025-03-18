@@ -21,7 +21,6 @@ import edu.wpi.first.wpilibj.RobotBase;
  * (log replay from a file).
  */
 public final class Constants {
-
   public static final boolean increasedPathfindingSpeed = false;
 
   public static final Mode simMode = Mode.SIM;
@@ -36,45 +35,5 @@ public final class Constants {
 
     /** Replaying from a log file. */
     REPLAY
-  }
-
-  // constants used for the elevator
-  public static final class Elevator {
-
-    public static final int MOTOR_LEFT_ID = 21;
-    public static final int MOTOR_RIGHT_ID = 22;
-    public static final String CANBUS = "rio";
-
-    public static final double MAX_HEIGHT =
-        44.8; // old height 43.66 ABSOLUTELY NEVER ACHIEVE THIS OR EVERYTHING EXPLODES
-    public static final double MIN_HEIGHT = 0;
-    public static final double INTAKE_HEIGHT = 0;
-    // public static
-    final double STAGE_1_LEVEL = 0; // currently unimplemented
-    public static final double INTAKE_LEVEL_1 = 10.247;
-    public static final double INTAKE_LEVEL_2 = 20.5;
-    public static final double BARGE_LEVEL = 44; // currently impossible to achieve
-  }
-
-  // constants used for the arm/wrist (naming inconsistency)
-  public static final class Arm {
-    public static final int ROLLER_MOTOR_ID = 23;
-    public static final int ARM_MOTOR_ID = 24;
-    public static final int CANRANGE_ID = 60;
-    public static final String CANBUS = "rio";
-
-    public static final double REEF_INTAKE_ANGLE = 3.19;
-    public static final double GROUND_INTAKE_ANGLE =
-        5; // we do not know this yet; input correct angle later
-    public static final double SCORING_ANGLE = 0.608; // currently impossible to achieve
-    public static final double WRIST_HIGHEST_ANGLE =
-        6.344; // set highest angle to wrist ground angle plus arbitrary leeway
-    public static final double WRIST_CORAL_SCORE = 1.259;
-
-    public static final double ELEVATOR_CLEARANCE_ANGLE = SCORING_ANGLE;
-    public static final double PROCESSOR_ANGLE =
-        GROUND_INTAKE_ANGLE; // !!!!! find out through empirical testing !!!!!
-
-    public static final double ROLLER_HOLDING_POWER = 0.05;
   }
 }
