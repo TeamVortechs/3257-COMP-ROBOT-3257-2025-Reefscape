@@ -1,20 +1,18 @@
 package frc.robot.subsystems.arm;
 
-import edu.wpi.first.wpilibj.CAN;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants.CArm;
-
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 /**
- * Elevator subsystem responsible for controlling the lifting mechanism. Uses PID control for
- * precise movement and prevents unsafe operation via limit switches and software constraints.
+ * arm subsystem responsible for controlling the lifting mechanism. Uses PID control for precise
+ * movement and prevents unsafe operation via limit switches and software constraints.
  */
 public class Arm extends SubsystemBase {
 
@@ -63,7 +61,8 @@ public class Arm extends SubsystemBase {
     // if manual override do a quick bounds check then retuorn
     if (manualOverride) {
 
-      if (getCurrentAngle() < CArm.MIN_HEIGHT - CArm.TOLERANCE || getCurrentAngle() > CArm.MAX_HEIGHT) {
+      if (getCurrentAngle() < CArm.MIN_HEIGHT - CArm.TOLERANCE
+          || getCurrentAngle() > CArm.MAX_HEIGHT) {
         System.out.println("ARM OUT OF BOUDNS");
         setManualSpeed(0);
       }
@@ -78,7 +77,7 @@ public class Arm extends SubsystemBase {
     moduleIO.PIDVoltage(targetHeight);
   }
 
-  /** Sets a new target height for the elevator using PID control. */
+  /** Sets a new target height for the arm using PID control. */
   public void setTargetHeight(double height) {
 
     manualOverride = false;
@@ -86,11 +85,12 @@ public class Arm extends SubsystemBase {
     targetHeight = Math.max(0.0, Math.min(height, CArm.MAX_HEIGHT));
   }
 
-  /** Allows manual control of the elevator, bypassing PID. */
+  /** Allows manual control of the arm, bypassing PID. */
   public void setManualSpeed(double speed) {
     manualOverride = true;
 
-    if (Math.abs(speed) > CArm.MANUAL_MAX_SPEED) speed = Math.copySign(CArm.MANUAL_MAX_SPEED, speed);
+    if (Math.abs(speed) > CArm.MANUAL_MAX_SPEED)
+      speed = Math.copySign(CArm.MANUAL_MAX_SPEED, speed);
     System.out.println("Above speed limit; rate limiting ARM speed.");
     moduleIO.setSpeed(speed);
   }
@@ -116,12 +116,12 @@ public class Arm extends SubsystemBase {
     manualOverride = true;
   }
 
-  // returns wether or not the elevator is close to the floor
+  // returns wether or not the arm is close to the floor
   public boolean isOnFloor() {
     return getCurrentAngle() < 0.1;
   }
 
-  // gest the current height of the elevator motor
+  // gest the current height of the arm motor
   public double getCurrentAngle() {
     return currentHeight;
   }
@@ -165,7 +165,7 @@ public class Arm extends SubsystemBase {
     moduleIO.rebuildMotorsPID();
   }
 
-  //returns wether or not the arm is clear from the elevator
+  // returns wether or not the arm is clear from the arm
   public boolean isClearFromElevator() {
     return getCurrentAngle() > CArm.CLEARANCE_ANGLE;
   }

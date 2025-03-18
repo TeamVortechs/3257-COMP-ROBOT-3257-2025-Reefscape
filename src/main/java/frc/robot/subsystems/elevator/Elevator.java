@@ -1,45 +1,50 @@
-package frc.robot.subsystems.templates;
+package frc.robot.subsystems.elevator;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.robot.subsystems.arm.Arm;
+
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 /**
- * arm subsystem responsible for controlling the lifting mechanism. Uses PID control for precise
- * movement and prevents unsafe operation via limit switches and software constraints.
+ * Elevator subsystem responsible for controlling the lifting mechanism. Uses PID control for
+ * precise movement and prevents unsafe operation via limit switches and software constraints.
  */
-public class ArmSubsystemTemplate extends SubsystemBase {
+public class Elevator extends SubsystemBase {
 
-  // advantage kit logging
-  ArmIOTemplateInputsAutoLogged inputs = new ArmIOTemplateInputsAutoLogged();
+  //for advantage kti logging
+  ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
 
-  // useful for a flexible hardware interface and for advantage kit logging
-  private final ArmIOTemplate moduleIO;
+  //for flexible modules as well advantage kit
+  private final ElevatorIO moduleIO;
 
-  // these are for advantage kit state logging and/or for keeping track of key variables
+  //arm for clearance checks
+  private Arm arm;
+
+    //these are for advantage kit state logging and/or for keeping track of key variables
   @AutoLogOutput private double currentHeight = 0.0;
   @AutoLogOutput private double targetHeight = 0.0;
   @AutoLogOutput private boolean isOnTarget = false;
   @AutoLogOutput private boolean manualOverride = false;
 
-  // these constants should be moved to a target class
+  //these constants should be moved to another class
   private double tolerance = 0.1;
   private double manManualSpeed = 0.1;
   private double minHeight = 0;
   private double maxHeight = 5;
 
   /**
-   * Constructor for the arm subsystem.
+   * Constructor for the Elevator subsystem.
    *
-   * @param moduleIO Hardware interface for arm motors.
+   * @param moduleIO Hardware interface for elevator motors.
    * @param homeSwitch Digital input limit switch for homing.
    */
-  public ArmSubsystemTemplate(ArmIOTemplate moduleIO) {
+  public Elevator(ElevatorIO moduleIO, Arm arm) {
     this.moduleIO = moduleIO;
 
     currentHeight = moduleIO.getHeight();
@@ -50,7 +55,7 @@ public class ArmSubsystemTemplate extends SubsystemBase {
   @Override
   public void periodic() {
     moduleIO.updateInputs(inputs);
-    Logger.processInputs("Example", inputs);
+    Logger.processInputs("Elevator", inputs);
 
     // check to see if the module is stalling; if so, then stop the motors and cancel the next
     // movement
@@ -66,7 +71,7 @@ public class ArmSubsystemTemplate extends SubsystemBase {
     // if manual override do a quick bounds check then retuorn
     if (manualOverride) {
 
-      if (getCurrentHeight() < minHeight - tolerance || getCurrentHeight() > maxHeight) {
+      if (getCurrentHeight() < minHeight - maxHeight || getCurrentHeight() > maxHeight) {
         System.out.println("MODULE IO OUT OF BOUDNS");
         setManualSpeed(0);
       }
@@ -81,19 +86,24 @@ public class ArmSubsystemTemplate extends SubsystemBase {
     moduleIO.PIDVoltage(targetHeight);
   }
 
-  /** Sets a new target height for the arm using PID control. */
+  /** Sets a new target height for the elevator using PID control. */
   public void setTargetHeight(double height) {
+
+    if(!arm.isClearFromElevator()) {
+        System.out.println("ARM IS NOT CLEAR FROM ELEVATOR");
+        return;
+    }
 
     manualOverride = false;
 
     targetHeight = Math.max(0.0, Math.min(height, maxHeight));
   }
 
-  /** Allows manual control of the arm, bypassing PID. */
+  /** Allows manual control of the elevator, bypassing PID. */
   public void setManualSpeed(double speed) {
     manualOverride = true;
 
-    if (Math.abs(speed) > manManualSpeed) speed = Math.copySign(manManualSpeed, speed);
+    if (Math.abs(speed) > tolerance) speed = Math.copySign(manManualSpeed, speed);
     System.out.println("Above speed limit; rate limiting MODULE IO speed.");
     moduleIO.setSpeed(speed);
   }
@@ -119,12 +129,12 @@ public class ArmSubsystemTemplate extends SubsystemBase {
     manualOverride = true;
   }
 
-  // returns wether or not the arm is close to the floor
+  // returns wether or not the elevator is close to the floor
   public boolean isOnFloor() {
     return getCurrentHeight() < 0.1;
   }
 
-  // gest the current height of the arm motor
+  // gest the current height of the elevator motor
   public double getCurrentHeight() {
     return currentHeight;
   }
@@ -144,26 +154,11 @@ public class ArmSubsystemTemplate extends SubsystemBase {
   }
 
   // gets the current of the subsystem
-  public double getArmCurrent() {
+  public double getCurrent() {
     return moduleIO.getCurrent();
   }
 
-  // sets the roller speed
-  public void setRollerSpeed(double speed) {
-    moduleIO.setRollerSpeed(speed);
-  }
-
-  // gets the roller speed
-  public double getRollerSpeed() {
-    return moduleIO.getRollerSpeed();
-  }
-
-  // gets the distance of the can Range
-  public double getCanDistance() {
-    return moduleIO.getDistance();
-  }
-
-  // resets the motors pid
+  // rebuilds the PID of the motors
   public void rebuildMotorsPID() {
     moduleIO.rebuildMotorsPID();
   }
@@ -203,23 +198,12 @@ public class ArmSubsystemTemplate extends SubsystemBase {
     return new InstantCommand(() -> this.resetEncoders());
   }
 
-  // setRollerSpeed command, doesn't require wrist subsystem
-  public Command setRollerSpeedCommand(double speed) {
-    return new InstantCommand(() -> this.setRollerSpeed(speed));
-  }
-
-  // intakes until the canrange finds distance less than the given distance
-  public Command intakeUntilCanRangeIsDetected(double speed, double distance) {
-    return new RunCommand(() -> this.setRollerSpeed(speed))
-        .until(() -> getCanDistance() < distance);
-  }
-
-  // simple command that requires this subsystem
+  //simple command incase you need a chain that requires this subsystem
   public Command requireSubsystemCommand() {
     return new InstantCommand(null, this);
   }
 
-  // rebuilds the motor pid
+  //rebuilds the pid constants for testing
   public Command rebuildMotorsPIDCommand() {
     return new InstantCommand(() -> this.rebuildMotorsPID());
   }
