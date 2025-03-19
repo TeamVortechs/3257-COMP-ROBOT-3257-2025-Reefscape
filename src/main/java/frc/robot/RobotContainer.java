@@ -137,6 +137,10 @@ public class RobotContainer {
     controller.a().whileTrue(arm.intakeUntilCanRangeIsDetected(1, 23, true));
 
     arm.setDefaultCommand(arm.setRollerSpeedCommand(0, true));
+
+    controller.x().whileTrue(arm.setTargetHeightCommand(12));
+
+    controller.b().whileTrue(arm.setTargetHeightCommand(0));
   }
 
   /**

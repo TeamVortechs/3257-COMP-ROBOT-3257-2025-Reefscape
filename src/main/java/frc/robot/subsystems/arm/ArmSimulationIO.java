@@ -64,6 +64,9 @@ public class ArmSimulationIO implements ArmIO {
     inputs.rollerSpeed = rollerMotorsSim.getAngularVelocityRPM();
 
     inputs.canRangeDistance = distance;
+
+    armMotorsSim.update(0.02);
+    rollerMotorsSim.update(0.02);
   }
 
   @Override
