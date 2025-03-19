@@ -44,6 +44,8 @@ public class Elevator extends SubsystemBase {
    * @param homeSwitch Digital input limit switch for homing.
    */
   public Elevator(ElevatorIO moduleIO, Arm arm) {
+    this.arm = arm;
+
     this.moduleIO = moduleIO;
 
     currentHeight = moduleIO.getHeight();

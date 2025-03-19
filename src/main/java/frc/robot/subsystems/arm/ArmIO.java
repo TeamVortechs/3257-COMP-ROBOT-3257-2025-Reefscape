@@ -21,7 +21,13 @@ public interface ArmIO {
     double armMotor2CurrentSpeedMeter = 0;
     double armMotor2CurrentHeightMeter = 0;
 
-    boolean isStalled;
+    boolean isStalled = false;
+
+    double rollerAmps = 0;
+    double rollerVolts = 0;
+    double rollerSpeed = 0;
+
+    double canRangeDistance = 0;
   }
 
   // updates the given inputs with new values(advantage kit stuff)
@@ -48,7 +54,7 @@ public interface ArmIO {
   ;
 
   // gets the highest possible height of the arm in radians
-  public default double getMaxHeight() {
+  public default double getMaxAngle() {
     return 0.0;
   }
 
@@ -59,11 +65,11 @@ public interface ArmIO {
   public default void setBraked(boolean braked) {}
   // gets the height of the arm in meters
 
-  public default double getHeight() {
+  public default double getAngle() {
     return 0;
   }
 
-  public default boolean isMaxHeight() {
+  public default boolean isMaxAngle() {
     return false;
   }
 
@@ -84,4 +90,6 @@ public interface ArmIO {
 
   // rebuilds the pid constants of the motors
   public default void rebuildMotorsPID() {}
+
+  public default void setCanrangeDistance(double dist) {}
 }

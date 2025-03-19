@@ -15,6 +15,7 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -28,6 +29,7 @@ import frc.robot.commands.communication.TellCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmIO;
+import frc.robot.subsystems.arm.ArmSimulationIO;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -97,7 +99,7 @@ public class RobotContainer {
 
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
 
-        arm = new Arm(new ArmIO() {});
+        arm = new Arm(new ArmSimulationIO());
         elevator = new Elevator(new ElevatorIO() {}, arm);
         break;
 
@@ -126,6 +128,15 @@ public class RobotContainer {
 
     // Configure the button bindings
     configureButtonBindings();
+
+    SmartDashboard.putData(
+        "CanRange Distance 0", (Sendable) this.arm.setCanrangeDistanceCommand(0));
+    SmartDashboard.putData(
+        "CanRange Distance 1000", (Sendable) this.arm.setCanrangeDistanceCommand(1000));
+
+    controller.a().whileTrue(arm.intakeUntilCanRangeIsDetected(1, 23, true));
+
+    arm.setDefaultCommand(arm.setRollerSpeedCommand(0, true));
   }
 
   /**

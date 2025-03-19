@@ -37,8 +37,8 @@ public class Arm extends SubsystemBase {
   public Arm(ArmIO moduleIO) {
     this.moduleIO = moduleIO;
 
-    currentHeight = moduleIO.getHeight();
-    targetHeight = moduleIO.getHeight();
+    currentHeight = moduleIO.getAngle();
+    targetHeight = moduleIO.getAngle();
     setTargetHeight(currentHeight);
   }
 
@@ -56,7 +56,7 @@ public class Arm extends SubsystemBase {
       return;
     }
 
-    currentHeight = moduleIO.getHeight();
+    currentHeight = moduleIO.getAngle();
 
     // if manual override do a quick bounds check then retuorn
     if (manualOverride) {
@@ -92,7 +92,7 @@ public class Arm extends SubsystemBase {
     if (Math.abs(speed) > CArm.MANUAL_MAX_SPEED)
       speed = Math.copySign(CArm.MANUAL_MAX_SPEED, speed);
     System.out.println("Above speed limit; rate limiting ARM speed.");
-    moduleIO.setSpeed(speed);
+    moduleIO.setRollerSpeed(speed);
   }
 
   /** Holds the current position using PID control. */
@@ -140,11 +140,6 @@ public class Arm extends SubsystemBase {
     moduleIO.resetEncoders();
   }
 
-  // gets the current of the subsystem
-  public double getArmCurrent() {
-    return moduleIO.getCurrent();
-  }
-
   // sets the roller speed
   public void setRollerSpeed(double speed) {
     moduleIO.setRollerSpeed(speed);
@@ -168,6 +163,11 @@ public class Arm extends SubsystemBase {
   // returns wether or not the arm is clear from the arm
   public boolean isClearFromElevator() {
     return getCurrentAngle() > CArm.CLEARANCE_ANGLE;
+  }
+
+  // sets canrange distance for simulation
+  public void setCanRangeDistanceSimulation(double distance) {
+    moduleIO.setCanrangeDistance(distance);
   }
 
   // commands
@@ -206,23 +206,35 @@ public class Arm extends SubsystemBase {
   }
 
   // setRollerSpeed command, doesn't require wrist subsystem
-  public Command setRollerSpeedCommand(double speed) {
+  public Command setRollerSpeedCommand(double speed, boolean requireSubsystem) {
+    if (requireSubsystem) return new InstantCommand(() -> this.setRollerSpeed(speed), this);
+
     return new InstantCommand(() -> this.setRollerSpeed(speed));
   }
 
   // intakes until the canrange finds distance less than the given distance
-  public Command intakeUntilCanRangeIsDetected(double speed, double distance) {
+  public Command intakeUntilCanRangeIsDetected(
+      double speed, double distance, boolean requireSubsystem) {
+    if (requireSubsystem)
+      return new RunCommand(() -> this.setRollerSpeed(speed), this)
+          .until(() -> getCanDistance() < distance);
+
     return new RunCommand(() -> this.setRollerSpeed(speed))
         .until(() -> getCanDistance() < distance);
   }
 
   // simple command that requires this subsystem
   public Command requireSubsystemCommand() {
-    return new InstantCommand(null, this);
+    return new InstantCommand(() -> {}, this);
   }
 
   // rebuilds the motor pid
   public Command rebuildMotorsPIDCommand() {
     return new InstantCommand(() -> this.rebuildMotorsPID());
+  }
+
+  // sets the canrange distance for simulation
+  public Command setCanrangeDistanceCommand(double dist) {
+    return new InstantCommand(() -> setCanRangeDistanceSimulation(dist));
   }
 }
