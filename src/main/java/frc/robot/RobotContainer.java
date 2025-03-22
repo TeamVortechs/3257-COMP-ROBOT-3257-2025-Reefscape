@@ -220,4 +220,12 @@ public class RobotContainer {
     SmartDashboard.putNumber("y position:", drive.getPose().getY());
     SmartDashboard.putNumber("current rotation:", drive.getPose().getRotation().getDegrees());
   }
+
+  public Arm getArm() {
+    return arm;
+  }
+
+  public Elevator getElevator() {
+    return elevator;
+  }
 }
