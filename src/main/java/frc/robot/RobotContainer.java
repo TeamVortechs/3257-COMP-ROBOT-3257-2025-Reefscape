@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants.CDrivetrain;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.communication.ControllerVibrateCommand;
 import frc.robot.commands.communication.TellCommand;
@@ -46,6 +47,8 @@ import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.util.FieldMovement.ClosestPoseSupplierVortechs;
 import frc.robot.util.FieldMovement.PathfinderVortechs;
+import java.util.ArrayList;
+import java.util.List;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -156,12 +159,18 @@ public class RobotContainer {
 
     arm.setDefaultCommand(arm.setRollerSpeedCommand(0, true));
 
+    List<Pose2d> index1 = new ArrayList<>();
+    index1.add(new Pose2d(7.050, 1, Rotation2d.fromDegrees(23)));
+    index1.add(new Pose2d(2.094, 1, Rotation2d.fromDegrees(345)));
+
+    List<Pose2d> index2 = new ArrayList<>();
+    index2.add(new Pose2d(2.000, 7, Rotation2d.fromDegrees(180)));
+    index2.add(new Pose2d(6.5, 7, Rotation2d.fromDegrees(270)));
+
     ClosestPoseSupplierVortechs targetPoseSupplier =
-        new ClosestPoseSupplierVortechs(
-            () -> drive.getPose(),
-            new Pose2d(3.6, 5.3, Rotation2d.fromDegrees(180)),
-            new Pose2d(2.1, 1, Rotation2d.fromDegrees(180)),
-            new Pose2d(7.7, 5.6, Rotation2d.fromDegrees(180)));
+        new ClosestPoseSupplierVortechs(() -> drive.getPose(), index1, index2);
+
+    PathfinderVortechs pathfinderVortechs = new PathfinderVortechs(CDrivetrain.pathConstraints);
 
     pathfinderVortechs.setTargetPoseSupplier(() -> targetPoseSupplier.getClosestPose());
 
@@ -169,6 +178,12 @@ public class RobotContainer {
         "pathfinder start", (Sendable) new InstantCommand(() -> pathfinderVortechs.start()));
     SmartDashboard.putData(
         "pathfinder stop", (Sendable) new InstantCommand(() -> pathfinderVortechs.stop()));
+
+    SmartDashboard.putData(
+        "set index 0", (Sendable) new InstantCommand(() -> targetPoseSupplier.setIndex(0)));
+
+    SmartDashboard.putData(
+        "set index 1", (Sendable) new InstantCommand(() -> targetPoseSupplier.setIndex(1)));
   }
 
   /**
