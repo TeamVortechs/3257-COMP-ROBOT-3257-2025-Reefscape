@@ -74,9 +74,6 @@ public class RobotContainer {
   private final Arm arm;
   private final Elevator elevator;
 
-  private PathfinderVortechs pathfinderVortechs =
-      new PathfinderVortechs(Constants.CDrivetrain.pathConstraints);
-
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     switch (Constants.currentMode) {
@@ -162,28 +159,22 @@ public class RobotContainer {
     List<Pose2d> index1 = new ArrayList<>();
     index1.add(new Pose2d(7.050, 1, Rotation2d.fromDegrees(23)));
     index1.add(new Pose2d(2.094, 1, Rotation2d.fromDegrees(345)));
-
-    List<Pose2d> index2 = new ArrayList<>();
-    index2.add(new Pose2d(2.000, 7, Rotation2d.fromDegrees(180)));
-    index2.add(new Pose2d(6.5, 7, Rotation2d.fromDegrees(270)));
+    index1.add(new Pose2d(2.000, 7, Rotation2d.fromDegrees(180)));
+    index1.add(new Pose2d(6.5, 7, Rotation2d.fromDegrees(270)));
 
     ClosestPoseSupplierVortechs targetPoseSupplier =
-        new ClosestPoseSupplierVortechs(() -> drive.getPose(), index1, index2);
+        new ClosestPoseSupplierVortechs(() -> drive.getPose(), index1);
+    targetPoseSupplier.setPipeline(0);
 
-    PathfinderVortechs pathfinderVortechs = new PathfinderVortechs(CDrivetrain.pathConstraints);
-
+    PathfinderVortechs pathfinderVortechs =
+        new PathfinderVortechs(CDrivetrain.pathConstraints, () -> drive.getPose());
     pathfinderVortechs.setTargetPoseSupplier(() -> targetPoseSupplier.getClosestPose());
 
     SmartDashboard.putData(
         "pathfinder start", (Sendable) new InstantCommand(() -> pathfinderVortechs.start()));
+
     SmartDashboard.putData(
         "pathfinder stop", (Sendable) new InstantCommand(() -> pathfinderVortechs.stop()));
-
-    SmartDashboard.putData(
-        "set index 0", (Sendable) new InstantCommand(() -> targetPoseSupplier.setIndex(0)));
-
-    SmartDashboard.putData(
-        "set index 1", (Sendable) new InstantCommand(() -> targetPoseSupplier.setIndex(1)));
   }
 
   /**
