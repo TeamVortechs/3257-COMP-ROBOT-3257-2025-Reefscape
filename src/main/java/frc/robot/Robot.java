@@ -120,17 +120,28 @@ public class Robot extends LoggedRobot {
             () -> 90 - robotContainer.getArm().getCurrentAngle() * 15,
             () -> Units.inchesToMeters(15),
             Units.inchesToMeters(5),
-            new Color8Bit(Color.kAliceBlue),
+            new Color8Bit(Color.kYellow),
             "arm mechanism 2d");
 
     elevatorMechanism =
         new VisualSimulator(
             new Translation2d(0, 0),
             () -> 90,
-            () -> robotContainer.getElevator().getCurrentHeight() * 1/8 + 0.1,
+            () -> robotContainer.getElevator().getCurrentHeight() * 1 / 8 + 0.1,
             Units.inchesToMeters(5),
-            new Color8Bit(Color.kRed),
+            new Color8Bit(Color.kYellow),
             "elevator mechanism 2d");
+
+    armMechanism.setColorSupplier(
+        () -> {
+          if (robotContainer.getArm().getRollerSpeed() > 1) {
+            return new Color8Bit(Color.kGreen);
+          } else if (robotContainer.getArm().getRollerSpeed() < -1) {
+            return new Color8Bit(Color.kRed);
+          } else {
+            return new Color8Bit(Color.kAliceBlue);
+          }
+        });
 
     armMechanism.setParent(elevatorMechanism);
   }

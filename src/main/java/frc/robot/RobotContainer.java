@@ -141,6 +141,11 @@ public class RobotContainer {
     SmartDashboard.putData("arm set target angle 0", (Sendable) this.arm.setTargetHeightCommand(0));
     SmartDashboard.putData("arm set target angle 5", (Sendable) this.arm.setTargetHeightCommand(5));
 
+    SmartDashboard.putData(
+        "arm set roller speed 1", (Sendable) this.arm.setRollerSpeedCommand(1, true));
+    SmartDashboard.putData(
+        "arm set roller speed -1", (Sendable) this.arm.setRollerSpeedCommand(-1, true));
+
     arm.setDefaultCommand(arm.setRollerSpeedCommand(0, true));
   }
 
