@@ -13,6 +13,7 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.wpilibj.RobotBase;
 
 /**
@@ -43,5 +44,10 @@ public final class Constants {
     public static final double MIN_HEIGHT = 0;
     public static final double MAX_HEIGHT = 5;
     public static final double CLEARANCE_ANGLE = 0.1;
+  }
+
+  public class CDrivetrain {
+    public static PathConstraints pathConstraints =
+        new PathConstraints(3.5, 4, Math.PI * 3.5, Math.PI * 4);
   }
 }

@@ -15,12 +15,15 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
@@ -41,6 +44,8 @@ import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.elevator.ElevatorSimulationIO;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
+import frc.robot.util.FieldMovement.ClosestPoseSupplierVortechs;
+import frc.robot.util.FieldMovement.PathfinderVortechs;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -65,6 +70,9 @@ public class RobotContainer {
 
   private final Arm arm;
   private final Elevator elevator;
+
+  private PathfinderVortechs pathfinderVortechs =
+      new PathfinderVortechs(Constants.CDrivetrain.pathConstraints);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -147,6 +155,20 @@ public class RobotContainer {
         "arm set roller speed -1", (Sendable) this.arm.setRollerSpeedCommand(-1, true));
 
     arm.setDefaultCommand(arm.setRollerSpeedCommand(0, true));
+
+    ClosestPoseSupplierVortechs targetPoseSupplier =
+        new ClosestPoseSupplierVortechs(
+            () -> drive.getPose(),
+            new Pose2d(3.6, 5.3, Rotation2d.fromDegrees(180)),
+            new Pose2d(2.1, 1, Rotation2d.fromDegrees(180)),
+            new Pose2d(7.7, 5.6, Rotation2d.fromDegrees(180)));
+
+    pathfinderVortechs.setTargetPoseSupplier(() -> targetPoseSupplier.getClosestPose());
+
+    SmartDashboard.putData(
+        "pathfinder start", (Sendable) new InstantCommand(() -> pathfinderVortechs.start()));
+    SmartDashboard.putData(
+        "pathfinder stop", (Sendable) new InstantCommand(() -> pathfinderVortechs.stop()));
   }
 
   /**
