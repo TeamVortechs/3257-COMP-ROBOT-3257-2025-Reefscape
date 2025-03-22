@@ -4,8 +4,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import java.util.function.Supplier;
 
 public class ClosestPoseSupplierVortechs {
-  Pose2d[] targetPoses;
-  Supplier<Pose2d> drivetrainPoseSupplier;
+  private Pose2d[] targetPoses;
+  private Supplier<Pose2d> drivetrainPoseSupplier;
 
   public ClosestPoseSupplierVortechs(
       Supplier<Pose2d> drivetrainPoseSupplier, Pose2d... targetPoses) {
