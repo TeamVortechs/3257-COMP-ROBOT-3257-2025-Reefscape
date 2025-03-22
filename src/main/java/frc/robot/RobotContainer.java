@@ -38,6 +38,7 @@ import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorIO;
+import frc.robot.subsystems.elevator.ElevatorSimulationIO;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -100,7 +101,7 @@ public class RobotContainer {
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
 
         arm = new Arm(new ArmSimulationIO());
-        elevator = new Elevator(new ElevatorIO() {}, arm);
+        elevator = new Elevator(new ElevatorSimulationIO() {}, arm);
         break;
 
       default:
@@ -134,13 +135,10 @@ public class RobotContainer {
     SmartDashboard.putData(
         "CanRange Distance 1000", (Sendable) this.arm.setCanrangeDistanceCommand(1000));
 
-    controller.a().whileTrue(arm.intakeUntilCanRangeIsDetected(1, 23, true));
+    SmartDashboard.putData("Elevator height 0", (Sendable) this.elevator.setTargetHeightCommand(0));
+    SmartDashboard.putData("Elevator height 5", (Sendable) this.elevator.setTargetHeightCommand(5));
 
     arm.setDefaultCommand(arm.setRollerSpeedCommand(0, true));
-
-    controller.x().whileTrue(arm.setTargetHeightCommand(12));
-
-    controller.b().whileTrue(arm.setTargetHeightCommand(0));
   }
 
   /**
