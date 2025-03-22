@@ -14,6 +14,8 @@
 package frc.robot;
 
 import com.pathplanner.lib.path.PathConstraints;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotBase;
 
 /**
@@ -22,10 +24,13 @@ import edu.wpi.first.wpilibj.RobotBase;
  * (log replay from a file).
  */
 public final class Constants {
-  public static final boolean increasedPathfindingSpeed = false;
-
   public static final Mode simMode = Mode.SIM;
   public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
+
+  public static boolean isFlipped() {
+    return DriverStation.getAlliance().isPresent()
+        && DriverStation.getAlliance().get() == Alliance.Red;
+  }
 
   public static enum Mode {
     /** Running on a real robot. */

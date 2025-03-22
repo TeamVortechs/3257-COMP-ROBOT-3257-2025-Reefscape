@@ -2,8 +2,7 @@ package frc.robot.util.FieldMovement;
 
 import com.pathplanner.lib.util.FlippingUtil;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import frc.robot.Constants;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -32,7 +31,7 @@ public class ClosestPoseSupplierVortechs {
 
     Pose2d curPose = drivetrainPoseSupplier.get();
 
-    if (DriverStation.getAlliance().get() == Alliance.Red) {
+    if (Constants.isFlipped()) {
       curPose = FlippingUtil.flipFieldPose(curPose);
     }
 

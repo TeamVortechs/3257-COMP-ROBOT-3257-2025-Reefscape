@@ -4,11 +4,10 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.util.FlippingUtil;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import frc.robot.Constants;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 
@@ -69,7 +68,7 @@ public class PathfinderVortechs {
 
     Pose2d flippedPose;
 
-    if (isFlipping && DriverStation.getAlliance().get() == Alliance.Red) {
+    if (isFlipping && Constants.isFlipped()) {
       flippedPose = FlippingUtil.flipFieldPose(targetPose.get());
     } else {
       flippedPose = targetPose.get();
@@ -78,7 +77,8 @@ public class PathfinderVortechs {
     return AutoBuilder.pathfindToPose(flippedPose, constraints)
         .until(
             () ->
-                targetPoseSupplier.get().getTranslation().getDistance(flippedPose.getTranslation()) < 0.4)
+                targetPoseSupplier.get().getTranslation().getDistance(flippedPose.getTranslation())
+                    < 0.4)
         .andThen(new InstantCommand(() -> stop()))
         .andThen(new PrintCommand("REACHED POINT"));
   }
