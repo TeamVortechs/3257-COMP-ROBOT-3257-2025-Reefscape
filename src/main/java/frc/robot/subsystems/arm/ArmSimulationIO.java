@@ -12,7 +12,7 @@ public class ArmSimulationIO implements ArmIO {
   private final DCMotorSim armMotorsSim;
   private final DCMotorSim rollerMotorsSim;
 
-  private PIDController armPIDController = new PIDController(5, 0, 0);
+  private PIDController armPIDController = new PIDController(0.9, 0, 0.1);
   private ArmFeedforward armFeedforward = new ArmFeedforward(0, 0, 0);
 
   private double targetVel = 1;

@@ -16,7 +16,7 @@ public class ElevatorSimulationIO implements ElevatorIO {
 
   private final DCMotorSim elevatorMotorsSim;
 
-  private PIDController elevatorPIDController = new PIDController(1, 0, 0);
+  private PIDController elevatorPIDController = new PIDController(1.1, 0, 0.1);
   private ElevatorFeedforward elevatorFeedforward = new ElevatorFeedforward(0, 0, 0);
 
   private double targetVel = 1;
