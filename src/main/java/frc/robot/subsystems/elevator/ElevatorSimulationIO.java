@@ -6,7 +6,6 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import org.littletonrobotics.junction.AutoLogOutput;
 
 /**
  * Implementation of ElevatorModuleIO using two TalonFX motor controllers. The two motors drive the
@@ -26,8 +25,8 @@ public class ElevatorSimulationIO implements ElevatorIO {
 
   private final double kGearRatio = 1; // well we're literally just reading rotations so /shrug
 
-  @AutoLogOutput private double leftHeight;
-  @AutoLogOutput private double rightHeight;
+  private double leftHeight;
+  private double rightHeight;
 
   /** Constructs the TalonFX-based elevator simulation. */
   public ElevatorSimulationIO() {

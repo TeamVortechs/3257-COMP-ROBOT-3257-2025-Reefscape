@@ -18,15 +18,17 @@ import com.ctre.phoenix6.swerve.SwerveModuleConstants.DriveMotorArrangement;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.SteerMotorArrangement;
 import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.pathfinding.Pathfinding;
-
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Threads;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.generated.TunerConstants;
 import frc.robot.util.FieldMovement.LocalADStarAK;
+import frc.robot.util.simulation.SimulationManager;
 import frc.robot.util.simulation.VisualSimulator;
-
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -45,6 +47,8 @@ public class Robot extends LoggedRobot {
   private RobotContainer robotContainer;
 
   private VisualSimulator armMechanism;
+
+  private VisualSimulator elevatorMechanism;
 
   public Robot() {
     // Record metadata
@@ -109,6 +113,26 @@ public class Robot extends LoggedRobot {
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our autonomous chooser on the dashboard.
     robotContainer = new RobotContainer();
+
+    armMechanism =
+        new VisualSimulator(
+            new Translation2d(),
+            () -> 90 - robotContainer.getArm().getCurrentAngle() * 15,
+            () -> Units.inchesToMeters(15),
+            Units.inchesToMeters(5),
+            new Color8Bit(Color.kAliceBlue),
+            "arm mechanism 2d");
+
+    elevatorMechanism =
+        new VisualSimulator(
+            new Translation2d(0, 0),
+            () -> 90,
+            () -> robotContainer.getElevator().getCurrentHeight() * 1/8 + 0.1,
+            Units.inchesToMeters(5),
+            new Color8Bit(Color.kRed),
+            "elevator mechanism 2d");
+
+    armMechanism.setParent(elevatorMechanism);
   }
 
   @Override
@@ -138,7 +162,7 @@ public class Robot extends LoggedRobot {
     robotContainer.putPositionData();
 
     // updates the robot simulation
-    // robotContainer.getSim().periodic();
+    SimulationManager.updateSim();
   }
 
   /** This function is called once when the robot is disabled. */
