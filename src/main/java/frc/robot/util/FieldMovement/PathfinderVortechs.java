@@ -5,9 +5,10 @@ import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.util.FlippingUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
+import java.util.TreeMap;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 
@@ -23,24 +24,54 @@ public class PathfinderVortechs {
 
   @AutoLogOutput private boolean isFlipping = true;
 
-  private Supplier<Pose2d> targetPoseSupplier;
+  private TreeMap<Double, Command> secondaryCommandMap;
+
+  private Supplier<Pose2d> poseSupplier;
 
   public PathfinderVortechs(PathConstraints constraints, Supplier<Pose2d> poseSupplier) {
     this.constraints = constraints;
 
     targetPose = () -> new Pose2d();
 
-    this.targetPoseSupplier = poseSupplier;
+    secondaryCommandMap = new TreeMap<>();
+
+    this.poseSupplier = poseSupplier;
   }
 
+  // sets wether or not the path automatically flips. This defaults to zero.
   public void setFlipping(boolean isFlipping) {
     this.isFlipping = isFlipping;
   }
 
+  // sets the supplier that delegates the target pose of this helper class. USE CLOSEST POSE
+  // SUPPLIER VORTECHS IT IS EASIER. Also note that this will onyl with the start command
   public void setTargetPoseSupplier(Supplier<Pose2d> targetPose) {
     this.targetPose = targetPose;
   }
 
+  // adds a command that activates in parralel after a certain distance has been achieved
+  public void addSecondaryCommand(double distance, Command command) {
+    secondaryCommandMap.put(distance, command);
+  }
+
+  // getters
+
+  // gets the distance between the current pose and the target pose
+  public double getDistance() {
+    Pose2d flippedPose;
+
+    if (isFlipping && Constants.isFlipped()) {
+      flippedPose = FlippingUtil.flipFieldPose(targetPose.get());
+    } else {
+      flippedPose = targetPose.get();
+    }
+
+    return poseSupplier.get().getTranslation().getDistance(flippedPose.getTranslation());
+  }
+
+  // main patthfinding commands
+
+  // schedules the command of the pathfinder(this is the only time the starting pose gets updated)
   public void start() {
     if (isActive) {
       System.out.println(
@@ -54,6 +85,7 @@ public class PathfinderVortechs {
     pathfindingCommand.schedule();
   }
 
+  // stops the command.
   public void stop() {
     if (isActive == false) {
       System.out.println("TRIED TO STOP A PATH WHEN IT ISN'T ACTIVE. PATHFINDINER VORTECHS, STOP");
@@ -75,12 +107,26 @@ public class PathfinderVortechs {
     }
 
     return AutoBuilder.pathfindToPose(flippedPose, constraints)
-        .until(
-            () ->
-                targetPoseSupplier.get().getTranslation().getDistance(flippedPose.getTranslation())
-                    < 0.4)
-        .andThen(new InstantCommand(() -> stop()))
-        .andThen(new PrintCommand("REACHED POINT"));
+        .alongWith(getSecondaryCommandGroup());
+  }
+
+  // helper method that returns the hashmap of secondary commands as a parralel command group
+  private Command getSecondaryCommandGroup() {
+    Command[] commandArr = new Command[secondaryCommandMap.size()];
+
+    // adds all the secondary commands to the array
+    int index = 0;
+
+    for (double distance : secondaryCommandMap.keySet()) {
+      commandArr[index] =
+          secondaryCommandMap
+              .get(distance)
+              .beforeStarting(new WaitUntilCommand(() -> getDistance() < distance));
+
+      index++;
+    }
+
+    return new ParallelCommandGroup(commandArr);
   }
 }
 
