@@ -39,7 +39,7 @@ public class ElevatorModuleTalonFXIO implements ElevatorModuleIO {
                     .withStatorCurrentLimit(Amps.of(95))
                     .withStatorCurrentLimitEnable(true))
             .withVoltage(
-                new VoltageConfigs().withPeakForwardVoltage(12).withPeakReverseVoltage(12));
+                new VoltageConfigs().withPeakForwardVoltage(12).withPeakReverseVoltage(-12));
 
     var slot0Configs = elevatorConfigs.Slot0;
     slot0Configs.kG = PElevator.kG.getValue();
