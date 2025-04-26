@@ -291,7 +291,8 @@ public class RobotContainer {
                     () ->
                         drive.setPose(
                             new Pose2d(
-                                drive.getPose().getTranslation(), drive.getRotation().plus(Rotation2d.fromDegrees(180)))),
+                                drive.getPose().getTranslation(),
+                                drive.getRotation().plus(Rotation2d.fromDegrees(180)))),
                     drive)
                 .ignoringDisable(true));
     // dpad down resets the gyro
@@ -304,6 +305,26 @@ public class RobotContainer {
                             new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
                     drive)
                 .ignoringDisable(true));
+
+    // semi-automatic limelight tracking
+    controller
+        .a()
+        .whileTrue(
+            DriveCommands.ChooseIfLimelightDrive(
+                    drive,
+                    () -> -controller.getLeftY(),
+                    () -> -controller.getLeftX(),
+                    () -> -controller.getRightX(), // end regular drive input
+                    () -> getLLDTranslationX(),
+                    () -> getLLDTranslationY(),
+                    () -> getLLDOmega()) // end limelight inputs
+                // before running, set pipeline index to 
+                .beforeStarting(
+                    Commands.runOnce(
+                        () -> LimelightHelpers.setPipelineIndex("", 1),
+                        vision // technically doesn't need this since it's limelight
+                        )).alongWith(ScoringCommands.prepForScoring(6, wrist, elevator)) // set the arm to ground intake position
+                        );
 
     /*
      * operator control binds
@@ -349,6 +370,44 @@ public class RobotContainer {
                 .until(() -> elevator.getCurrent() > 40)
                 .andThen(new InstantCommand(() -> elevator.resetEncoders())));
   } // end configure bindings
+
+  /**
+   * helper function for limelight drive change scaleFactor from 0-1 to change strength of tracking
+   *
+   * @return double, 0-1 scaled like a joystick to feed into limelight drive for forwards movement
+   */
+  private double getLLDTranslationX() {
+    // NEVER MAKE THIS ABOVE 1!!!!
+    double scaleFactor = 0.8;
+    double orderedTranslation = scaleFactor <= 1 ? scaleFactor : 1;
+    return orderedTranslation;
+  }
+  /**
+   * helper function for limelight drive change scaleFactor above 0 to change strength of tracking
+   * will return 1 if attempted translation would be greater than 1
+   *
+   * @return double, 0-1 scaled like a joystick to feed into limelight drive for forwards movement
+   */
+  private double getLLDTranslationY() {
+    double scaleFactor = 1.4; // arbitrary constant to make movement stronger
+    // for safety, return 1 at most if ordered translation is above 1
+    double orderedTranslation =
+        Units.degreesToRadians(LimelightHelpers.getTX("") * -1) * scaleFactor <= 1
+            ? Units.degreesToRadians(LimelightHelpers.getTX("") * -1) * scaleFactor
+            : 1;
+    return orderedTranslation;
+  }
+  /**
+   * helper function for limelight drive change scaleFactor above 0 to change strength of tracking
+   *
+   * @return double, 0-1 scaled like a joystick to feed into limelight drive for forwards movement
+   */
+  private Rotation2d getLLDOmega() {
+    double scaleFactor = 2; // arbitrary constant to make turning stronger
+    return new Rotation2d(
+        Units.degreesToRadians( // *-1 because robot is CCW+ while limelight is CW+
+            LimelightHelpers.getTX("") * -1 * scaleFactor));
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
