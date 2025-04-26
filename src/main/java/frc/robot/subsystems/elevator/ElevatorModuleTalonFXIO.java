@@ -64,6 +64,7 @@ public class ElevatorModuleTalonFXIO implements ElevatorModuleIO {
     leftMotor.setNeutralMode(NeutralModeValue.Brake);
     rightMotor.setNeutralMode(NeutralModeValue.Brake);
 
+    // set the right motor as follower of left motor (left controls right)
     rightMotor.setControl(new Follower(motorIDLeft, false));
   }
 
