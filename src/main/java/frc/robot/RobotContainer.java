@@ -291,7 +291,8 @@ public class RobotContainer {
                     () ->
                         drive.setPose(
                             new Pose2d(
-                                drive.getPose().getTranslation(), drive.getRotation().plus(Rotation2d.fromDegrees(180)))),
+                                drive.getPose().getTranslation(),
+                                drive.getRotation().plus(Rotation2d.fromDegrees(180)))),
                     drive)
                 .ignoringDisable(true));
     // dpad down resets the gyro
