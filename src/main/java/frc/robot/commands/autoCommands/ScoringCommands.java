@@ -162,8 +162,7 @@ public class ScoringCommands {
         //             .alongWith(
         //                 new SetWristTargetAngleCommand(
         //                     wrist, () -> Constants.Arm.WRIST_STAGE_4_ANGLE)));
-
-      case 4:
+      case 4: // elevator ready state
         return new InstantCommand(
                 () -> wrist.setRollerSpeed(Constants.Arm.ROLLER_HOLDING_POWER), wrist)
             .andThen(new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.SCORING_ANGLE))

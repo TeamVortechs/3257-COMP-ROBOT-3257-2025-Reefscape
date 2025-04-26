@@ -259,7 +259,7 @@ public class RobotContainer {
     controller.leftTrigger().whileTrue(new RunCommand(() -> wrist.setRollerSpeed(0.4), wrist));
     // R1/RB sets to barge-scoring position
     controller.rightBumper().onTrue(ScoringCommands.prepForScoring(3, wrist, elevator));
-    // R2/RB ejects algae while held, then sets to floor on release
+    // R2/RT ejects algae while held, then sets to floor on release
     controller
         .rightTrigger()
         .whileTrue(new SetWristRollerSpeedCommand(wrist, -1))
@@ -306,7 +306,8 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    // semi-automatic limelight tracking
+    // A while held does semi-automatic limelight tracking
+    // on release sets arm back to upright position
     controller
         .a()
         .whileTrue(
@@ -318,13 +319,24 @@ public class RobotContainer {
                     () -> getLLDTranslationX(),
                     () -> getLLDTranslationY(),
                     () -> getLLDOmega()) // end limelight inputs
-                // before running, set pipeline index to 
+                // before running, set pipeline index to
                 .beforeStarting(
                     Commands.runOnce(
                         () -> LimelightHelpers.setPipelineIndex("", 1),
                         vision // technically doesn't need this since it's limelight
-                        )).alongWith(ScoringCommands.prepForScoring(6, wrist, elevator)) // set the arm to ground intake position
-                        );
+                        ))
+                .alongWith(
+                    ScoringCommands.prepForScoring(
+                        6, wrist, elevator)) // set the arm to ground intake position
+            )
+        .onFalse( //
+            new InstantCommand(
+                    () -> wrist.setRollerSpeed(Constants.Arm.ROLLER_HOLDING_POWER), wrist)
+                .andThen(
+                    new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.SCORING_ANGLE)
+                        .onlyIf(
+                            () ->
+                                elevator.getCurrentHeight() <= Constants.Elevator.INTAKE_LEVEL_2)));
 
     /*
      * operator control binds
