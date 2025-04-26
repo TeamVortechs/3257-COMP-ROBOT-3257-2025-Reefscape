@@ -24,7 +24,7 @@ public class PathfinderVortechs {
 
   @AutoLogOutput private boolean isFlipping = true;
 
-  private TreeMap<Double, Command> secondaryCommandMap;
+  private TreeMap<Double, Supplier<Command>> secondaryCommandMap;
 
   private Supplier<Pose2d> poseSupplier;
 
@@ -50,7 +50,7 @@ public class PathfinderVortechs {
   }
 
   // adds a command that activates in parralel after a certain distance has been achieved
-  public void addSecondaryCommand(double distance, Command command) {
+  public void addSecondaryCommand(double distance, Supplier<Command> command) {
     secondaryCommandMap.put(distance, command);
   }
 
@@ -107,11 +107,11 @@ public class PathfinderVortechs {
     }
 
     return AutoBuilder.pathfindToPose(flippedPose, constraints)
-        .alongWith(getSecondaryCommandGroup());
+        .alongWith(new ParallelCommandGroup(getSecondaryCommandGroup()));
   }
 
   // helper method that returns the hashmap of secondary commands as a parralel command group
-  private Command getSecondaryCommandGroup() {
+  private Command[] getSecondaryCommandGroup() {
     Command[] commandArr = new Command[secondaryCommandMap.size()];
 
     // adds all the secondary commands to the array
@@ -121,12 +121,13 @@ public class PathfinderVortechs {
       commandArr[index] =
           secondaryCommandMap
               .get(distance)
+              .get()
               .beforeStarting(new WaitUntilCommand(() -> getDistance() < distance));
 
       index++;
     }
 
-    return new ParallelCommandGroup(commandArr);
+    return commandArr;
   }
 }
 

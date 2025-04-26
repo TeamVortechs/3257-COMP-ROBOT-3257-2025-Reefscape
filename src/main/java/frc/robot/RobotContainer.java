@@ -170,9 +170,12 @@ public class RobotContainer {
         new PathfinderVortechs(CDrivetrain.pathConstraints, () -> drive.getPose());
     pathfinderVortechs.setTargetPoseSupplier(() -> targetPoseSupplier.getClosestPose());
 
-    pathfinderVortechs.addSecondaryCommand(1, arm.setTargetHeightCommand(5));
-
-    controller.rightTrigger().onTrue(new InstantCommand(() -> pathfinderVortechs.start()));
+    pathfinderVortechs.addSecondaryCommand(1, () -> arm.setTargetHeightCommand(5));
+    controller
+        .rightTrigger()
+        .onTrue(
+            arm.setTargetHeightCommandConsistentEnd(0)
+                .andThen(new InstantCommand(() -> pathfinderVortechs.start())));
     controller.rightTrigger().onFalse(new InstantCommand(() -> pathfinderVortechs.stop()));
   }
 
