@@ -50,8 +50,8 @@ import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorModuleIO;
-import frc.robot.subsystems.elevator.ElevatorModuleIOSimulation;
 import frc.robot.subsystems.elevator.ElevatorModuleTalonFXIO;
+import frc.robot.subsystems.elevator.ElevatorModuleTalonFXIOSimulation;
 // import frc.robot.subsystems.elevator.Elevator2;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
@@ -165,7 +165,13 @@ public class RobotContainer {
         //             drive::getPose));
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
         wrist = new Wrist(new WristIOSimulation());
-        elevator = new Elevator(new ElevatorModuleIOSimulation(), wrist);
+        elevator =
+            new Elevator(
+                new ElevatorModuleTalonFXIOSimulation(
+                    Constants.Elevator.MOTOR_LEFT_ID,
+                    Constants.Elevator.MOTOR_RIGHT_ID,
+                    Constants.Elevator.CANBUS),
+                wrist);
         break;
 
       default:

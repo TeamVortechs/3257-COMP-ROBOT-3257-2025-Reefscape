@@ -203,4 +203,12 @@ public class ElevatorModuleTalonFXIO implements ElevatorModuleIO {
   public double getCurrent() {
     return leftMotor.getStatorCurrent().getValueAsDouble();
   }
+
+  protected TalonFX getLeftMotor() {
+    return leftMotor;
+  }
+
+  protected TalonFX getRightMotor() {
+    return rightMotor;
+  }
 }
