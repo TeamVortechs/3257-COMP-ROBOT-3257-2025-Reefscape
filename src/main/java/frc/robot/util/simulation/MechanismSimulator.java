@@ -3,6 +3,7 @@ package frc.robot.util.simulation;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
+import frc.robot.Constants;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.wrist.Wrist;
 import org.littletonrobotics.junction.Logger;
@@ -58,15 +59,19 @@ public class MechanismSimulator {
     armRoot.setPosition(Units.inchesToMeters(40), elevatorLigament.getLength());
 
     // changes the arm color depending on wether the rollers go forwards or backwards
-    // intaking/keeping in
-    if (Math.abs(wrist.getRollerSpeed()) < 1) {
+    // keeping in
+    if (Math.abs(wrist.getRollerSpeed()) <= Constants.Arm.ROLLER_INTAKE_POWER) {
       armLigament.setColor(new Color8Bit(Color.kBlue));
       // ejecting
-    } else if (wrist.getRollerSpeed() > 0) {
+    } else if (wrist.getRollerSpeed() <= -1) {
       armLigament.setColor(new Color8Bit(Color.kGreen));
 
-      // doing nothing
-    } else {
+      //  intaking
+    } else if (wrist.getRollerSpeed() > Constants.Arm.ROLLER_HOLDING_POWER) {
+      armLigament.setColor(new Color8Bit(Color.kAzure));
+    }
+    // doing nothing / invalid state
+    else {
       armLigament.setColor(new Color8Bit(Color.kRed));
     }
 

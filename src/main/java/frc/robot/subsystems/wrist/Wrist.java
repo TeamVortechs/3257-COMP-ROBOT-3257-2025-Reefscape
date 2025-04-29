@@ -115,6 +115,10 @@ public class Wrist extends SubsystemBase {
     return wristIO.getDistance();
   }
 
+  public boolean getIsDetected() {
+    return wristIO.isDetected();
+  }
+
   // resets the encoder of the wrist
   public void resetWristEncoder() {
     wristIO.zeroArmEncoder();

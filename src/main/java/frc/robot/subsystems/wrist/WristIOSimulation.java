@@ -106,11 +106,10 @@ public class WristIOSimulation implements WristIO {
   // }
 
   // returns wether or not the can range is detected
-  // @Override
-  // public boolean isDetected() {
-  //   return canRange.getIsDetected().getValue();
-  // }
-
+  @Override
+  public boolean isDetected() {
+    return false; // testing
+  }
   // gets the distance from the can range
   // @Override
   // public double getDistance() {
@@ -131,7 +130,8 @@ public class WristIOSimulation implements WristIO {
   }
 
   @Override
-  public double getRollerSpeed() {
-    return rollerMotorsSim.getAngularVelocityRPM();
+  public double getRollerSpeed() { // it's supposed to be -1 to 1 range
+    System.out.println(rollerMotorsSim.getInputVoltage() / 12);
+    return rollerMotorsSim.getInputVoltage() / 12;
   }
 }

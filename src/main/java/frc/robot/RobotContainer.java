@@ -131,9 +131,10 @@ public class RobotContainer {
         wrist =
             new Wrist(
                 new WristIOTalonFX(
-                    Constants.Arm.ARM_MOTOR_ID, Constants.Arm.ROLLER_MOTOR_ID, Constants.Arm.CANBUS
-                    //   Constants.Arm.CANRANGE_ID
-                    ));
+                    Constants.Arm.ARM_MOTOR_ID,
+                    Constants.Arm.ROLLER_MOTOR_ID,
+                    Constants.Arm.CANBUS,
+                    Constants.Arm.CANRANGE_ID));
         elevator =
             new Elevator(
                 new ElevatorModuleTalonFXIO(
@@ -256,7 +257,10 @@ public class RobotContainer {
                             () ->
                                 elevator.getCurrentHeight() <= Constants.Elevator.INTAKE_LEVEL_2)));
     // L2/LT intakes algae while held
-    controller.leftTrigger().whileTrue(new RunCommand(() -> wrist.setRollerSpeed(0.4), wrist));
+    controller
+        .leftTrigger()
+        .whileTrue(
+            new RunCommand(() -> wrist.setRollerSpeed(Constants.Arm.ROLLER_INTAKE_POWER), wrist));
     // R1/RB sets to barge-scoring position
     controller.rightBumper().onTrue(ScoringCommands.prepForScoring(3, wrist, elevator));
     // R2/RT ejects algae while held, then sets to floor on release
@@ -319,17 +323,32 @@ public class RobotContainer {
                     () -> getLLDTranslationX(),
                     () -> getLLDTranslationY(),
                     () -> getLLDOmega()) // end limelight inputs
-                // before running, set pipeline index to
+                // while this runs, start intaking if target spotted
+                .alongWith(
+                    // if valid target, not holding algae and not holding coral, intake
+                    // else, keep rollers at regular intake power
+                    Commands.either(
+                            Commands.run(
+                                () -> wrist.setRollerSpeed(Constants.Arm.ROLLER_INTAKE_POWER),
+                                wrist),
+                            Commands.run(
+                                () -> wrist.setRollerSpeed(Constants.Arm.ROLLER_HOLDING_POWER),
+                                wrist),
+                            () ->
+                                LimelightHelpers.getTA("") != 0
+                                    && !wrist.getIsDetected()
+                                    && !wrist.hasCoral()
+                            // true
+                            )
+                        .repeatedly()) // before running, set pipeline index to 1 for algae tracking
                 .beforeStarting(
                     Commands.runOnce(
-                        () -> LimelightHelpers.setPipelineIndex("", 1),
-                        vision // technically doesn't need this since it's limelight
-                        ))
-                .alongWith(
-                    ScoringCommands.prepForScoring(
-                        6, wrist, elevator)) // set the arm to ground intake position
-            )
-        .onFalse( //
+                            () -> LimelightHelpers.setPipelineIndex("", 1),
+                            vision // technically doesn't need this since it's limelight
+                            // and then set the arm to ground intake position
+                            )
+                        .andThen(ScoringCommands.prepForScoring(6, wrist, elevator))))
+        .onFalse( // on release set roller speed back to holding and set arm back to ready position
             new InstantCommand(
                     () -> wrist.setRollerSpeed(Constants.Arm.ROLLER_HOLDING_POWER), wrist)
                 .andThen(
