@@ -4,6 +4,7 @@ import static edu.wpi.first.units.Units.Amps;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -35,8 +36,10 @@ public class ElevatorModuleTalonFXIO implements ElevatorModuleIO {
                     // relatively
                     // low
                     // stator current limit to help avoid brownouts without impacting performance.
-                    .withStatorCurrentLimit(Amps.of(80))
-                    .withStatorCurrentLimitEnable(true));
+                    .withStatorCurrentLimit(Amps.of(95))
+                    .withStatorCurrentLimitEnable(true))
+            .withVoltage(
+                new VoltageConfigs().withPeakForwardVoltage(12).withPeakReverseVoltage(-12));
 
     var slot0Configs = elevatorConfigs.Slot0;
     slot0Configs.kG = PElevator.kG.getValue();
@@ -64,6 +67,7 @@ public class ElevatorModuleTalonFXIO implements ElevatorModuleIO {
     leftMotor.setNeutralMode(NeutralModeValue.Brake);
     rightMotor.setNeutralMode(NeutralModeValue.Brake);
 
+    // set the right motor as follower of left motor (left controls right)
     rightMotor.setControl(new Follower(motorIDLeft, false));
   }
 
