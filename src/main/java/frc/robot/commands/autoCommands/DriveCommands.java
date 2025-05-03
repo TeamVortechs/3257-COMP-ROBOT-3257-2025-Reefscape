@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import frc.robot.LimelightHelpers;
 import frc.robot.subsystems.drive.Drive;
 import java.text.DecimalFormat;
@@ -362,7 +363,8 @@ public class DriveCommands {
               drive.runVelocity(speeds);
             },
             drive)
-
+        // interrupt this command if the limelight loses its target
+        .onlyWhile(() -> LimelightHelpers.getTA("") > 0)
         // Reset PID controller when command starts
         .beforeStarting(() -> angleController.reset(drive.getRotation().getRadians()));
   }
