@@ -54,6 +54,11 @@ public class Wrist extends SubsystemBase {
     CurrentAngle = wristIO.getAngleRotations();
 
     wristIO.PIDVoltage(targetAngle);
+
+    // if canrange detects ball, switch to holding power instead
+    if (wristIO.isDetected()) {
+      wristIO.setRollerSpeed(Constants.Arm.ROLLER_HOLDING_POWER);
+    }
   }
 
   // returns wether or not the wrist is on target
@@ -102,7 +107,12 @@ public class Wrist extends SubsystemBase {
 
   // sets the roller speed
   public void setRollerSpeed(double speed) {
-    wristIO.setRollerSpeed(speed);
+    if (wristIO.isDetected() && speed > Constants.Arm.ROLLER_HOLDING_POWER) {
+      // if there's a ball in there and you're trying to intake, set to holding power instead
+      wristIO.setRollerSpeed(Constants.Arm.ROLLER_HOLDING_POWER);
+    } else {
+      wristIO.setRollerSpeed(speed);
+    }
   }
 
   // gets the roller speed
