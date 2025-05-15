@@ -1,26 +1,22 @@
 package frc.robot.util.FieldMovement.vortechsPath;
 
 import java.util.TreeMap;
+import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
-//This makes it easier to make a path with just a parralel command group
-public abstract class VortechsPathWithCommandGroup implements VortechsPath{
-    
+//This makes it easier to make a path with a parralel command group that is affected by distance
+public abstract class VortechsPathWithCommandGroup extends VortechsPath{
 
-    protected double distanceToTarget = Double.MAX_VALUE;
-
-    
-    @Override
-    public void tick(Pose2d robotPose) {
-        distanceToTarget = robotPose.getTranslation().getDistance(getTargetPose().getTranslation());
+    //abstract super constructor
+    public VortechsPathWithCommandGroup(Supplier<Pose2d> robotPoseSupplier) {
+        super(robotPoseSupplier);
     }
-
     
-
+    //builds teh command group that only calls commands when the robot is close enough
     @Override
     public Command getParallelCommandGroup() {
 
@@ -35,7 +31,7 @@ public abstract class VortechsPathWithCommandGroup implements VortechsPath{
             commandArr[index] =
                 secondaryCommandMap
                     .get(distance)
-                    .beforeStarting(new WaitUntilCommand(() -> this.distanceToTarget < distance));
+                    .beforeStarting(new WaitUntilCommand(() -> getDistance() < distance));
 
             index++;
         }
@@ -44,6 +40,7 @@ public abstract class VortechsPathWithCommandGroup implements VortechsPath{
     } 
     
 
+    //the parralel command group
     public abstract TreeMap<Double, Command> getCommands();
 
 
