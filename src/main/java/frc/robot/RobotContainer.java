@@ -495,6 +495,8 @@ public class RobotContainer {
 
     addNamedCommand("score", ScoringCommands.scoreAuto(wrist, elevator), isReal);
 
+    addNamedCommand("eject", ScoringCommands.eject(wrist), isReal);
+
     addNamedCommand(
         "mechanismBack",
         new InstantCommand(() -> wrist.setRollerSpeed(Constants.Arm.ROLLER_HOLDING_POWER))

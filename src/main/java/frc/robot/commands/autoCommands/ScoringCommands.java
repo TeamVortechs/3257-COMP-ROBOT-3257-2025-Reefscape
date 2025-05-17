@@ -104,6 +104,11 @@ public class ScoringCommands {
     }
   }
 
+  public static Command eject(Wrist wrist) {
+    return new InstantCommand();
+    // return new InstantCommand(() -> wrist.setRollerSpeed(-1), wrist).andThen(new WaitCommand(1));
+  }
+
   public static Command scoreAuto(Wrist wrist, Elevator elevator) {
     return new InstantCommand(() -> wrist.setRollerSpeed(Constants.Arm.ROLLER_HOLDING_POWER), wrist)
         .andThen(
@@ -112,7 +117,8 @@ public class ScoringCommands {
         .andThen(
             SetElevatorPresetCommand.withEndCondition(elevator, Constants.Elevator.BARGE_LEVEL))
         .andThen(SetWristTargetAngleCommand.withConsistentEnd(wrist, () -> 0))
-        .andThen(new InstantCommand(() -> wrist.setRollerSpeed(-1)).andThen(new WaitCommand(1)));
+        .andThen(
+            new InstantCommand(() -> wrist.setRollerSpeed(-1), wrist).andThen(new WaitCommand(1)));
   }
 
   public static Command prepForScoring(int level, Wrist wrist, Elevator elevator) {

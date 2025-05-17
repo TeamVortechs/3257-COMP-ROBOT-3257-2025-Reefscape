@@ -43,6 +43,12 @@
         {
           "type": "named",
           "data": {
+            "name": "eject"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "reset"
           }
         },
