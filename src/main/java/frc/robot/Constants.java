@@ -54,7 +54,8 @@ public final class Constants {
     public static final double INTAKE_LEVEL_1 = 10.247;
     public static final double INTAKE_LEVEL_2 = 20.5;
     public static final double BARGE_LEVEL =
-        30; // currently impossible to achieve; max 44.048 without damaging; 41.7 without overshoot
+        43; // currently impossible to achieve; max 44.048 without damaging; 41.7 without
+    // overshoot
   }
 
   // constants used for the arm/wrist (naming inconsistency)
