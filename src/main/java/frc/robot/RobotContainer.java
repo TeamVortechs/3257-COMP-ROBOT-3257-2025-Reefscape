@@ -157,16 +157,6 @@ public class RobotContainer {
         "arm set roller speed -1", (Sendable) this.arm.setRollerSpeedCommand(-1, true));
 
     arm.setDefaultCommand(arm.setRollerSpeedCommand(0, true));
-
-    Command command =
-        pathfinderVortechs
-            .startPath(new Pose2d(0, 0, new Rotation2d()))
-            .alongWith(
-                new WaitUntilCommand(() -> VortechsUtil.hasReachedDistance(5, pathfinderVortechs))
-                    .andThen(arm.setTargetHeightCommandConsistentEnd(5))
-                    .andThen(elevator.setTargetHeightCommand(5)));
-
-    SmartDashboard.putData("start auto routine", command);
   }
 
   /**
