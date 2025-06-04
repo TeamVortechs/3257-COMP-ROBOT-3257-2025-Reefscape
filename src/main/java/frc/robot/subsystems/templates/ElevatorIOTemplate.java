@@ -45,7 +45,6 @@ public interface ElevatorIOTemplate {
   default boolean checkIfStalled() {
     return false;
   }
-  ;
 
   // gets the highest possible height of the elevator in radians
   public default double getMaxHeight() {

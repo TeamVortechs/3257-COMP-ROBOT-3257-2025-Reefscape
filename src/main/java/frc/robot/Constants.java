@@ -55,4 +55,11 @@ public final class Constants {
     public static PathConstraints pathConstraints =
         new PathConstraints(3.5, 4, Math.PI * 3.5, Math.PI * 4);
   }
+
+  public class CIntake {
+    //dummy values for now
+    public static final double MAX_TARGET_SPEED = 1;
+    public static final double MAX_MANUAL_SPEED = 1;
+    public static final double SPEED_TOLERANCE = 0.2;
+  }
 }
