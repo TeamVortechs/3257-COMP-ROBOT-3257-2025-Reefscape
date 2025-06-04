@@ -54,6 +54,9 @@ public final class Constants {
   public class CDrivetrain {
     public static PathConstraints pathConstraints =
         new PathConstraints(3.5, 4, Math.PI * 3.5, Math.PI * 4);
+
+    public static double TOLERANCE_DIST = 0.1;
+    public static double TOLERANCE_ROT = 0.1;
   }
 
   public class CIntake {

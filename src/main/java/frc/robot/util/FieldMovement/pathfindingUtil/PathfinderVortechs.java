@@ -1,4 +1,4 @@
-package frc.robot.util.FieldMovement;
+package frc.robot.util.FieldMovement.pathfindingUtil;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
@@ -6,7 +6,10 @@ import com.pathplanner.lib.util.FlippingUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
+import frc.robot.Constants.CDrivetrain;
+import frc.robot.util.FieldMovement.VortechsUtil;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 
@@ -62,11 +65,18 @@ public class PathfinderVortechs {
     pathfindingCommand.cancel();
   }
 
-  // helper method that does everything
-  public void startPath(Pose2d targetPose) {
-    stop();
-    setPose(targetPose);
-    start();
+  // helper command that does everything and stops the commadn when the drivetrain reaches position
+  public Command startPath(Pose2d targetPose) {
+    // stops old routine
+    return new InstantCommand(() -> stop())
+        // sets the target pose
+        .andThen(new InstantCommand(() -> setPose(targetPose)))
+        // starts the new routine
+        .andThen(new InstantCommand(() -> start()))
+        // ending logic
+        .andThen(new WaitUntilCommand(() -> isOnTarget()))
+        .andThen(new InstantCommand(() -> stop()));
+    // stops hogging drivetrain
   }
 
   // util setters
@@ -77,7 +87,16 @@ public class PathfinderVortechs {
   // getters
   // gets the distance between the current pose and the target pose
   public double getDistance() {
-    return 0;
+    return poseSupplier.get().getTranslation().getDistance(targetPose.getTranslation());
+  }
+
+  public double getRotationDifferenceRAD() {
+    return poseSupplier.get().getRotation().getRadians() - targetPose.getRotation().getRadians();
+  }
+
+  public boolean isOnTarget() {
+    return VortechsUtil.isInTolerance(getDistance(), CDrivetrain.TOLERANCE_DIST)
+        && VortechsUtil.isInTolerance(getRotationDifferenceRAD(), CDrivetrain.TOLERANCE_ROT);
   }
 
   // helper commands

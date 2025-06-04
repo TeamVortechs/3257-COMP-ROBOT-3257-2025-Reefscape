@@ -15,6 +15,8 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -22,6 +24,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.communication.ControllerVibrateCommand;
@@ -41,7 +44,8 @@ import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.elevator.ElevatorSimulationIO;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
-import frc.robot.util.FieldMovement.PathfinderVortechs;
+import frc.robot.util.FieldMovement.VortechsUtil;
+import frc.robot.util.FieldMovement.pathfindingUtil.PathfinderVortechs;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -153,6 +157,18 @@ public class RobotContainer {
         "arm set roller speed -1", (Sendable) this.arm.setRollerSpeedCommand(-1, true));
 
     arm.setDefaultCommand(arm.setRollerSpeedCommand(0, true));
+
+    Command command =
+        pathfinderVortechs
+            .startPath(new Pose2d(0, 0, new Rotation2d()))
+            .alongWith(
+                elevator
+                    .setTargetHeightCommand(5)
+                    .beforeStarting(
+                        new WaitUntilCommand(
+                            () -> VortechsUtil.hasReachedDistance(1, pathfinderVortechs))));
+
+    SmartDashboard.putData("start auto routine", command);
   }
 
   /**
