@@ -24,13 +24,13 @@ public class PathfinderVortechs {
   // the current rendition of the pathfinding command
   private Command pathfindingCommand;
 
-  private PathConstraints constraints;
+  private PathConstraints defaultConstraints;
 
   // the target pose of the pathfinder
   private Pose2d targetPose;
 
   public PathfinderVortechs(PathConstraints constraints, Supplier<Pose2d> poseSupplier) {
-    this.constraints = constraints;
+    this.defaultConstraints = constraints;
 
     this.poseSupplier = poseSupplier;
 
@@ -41,7 +41,13 @@ public class PathfinderVortechs {
 
   // pathfinding manager commands
   // schedules the command of the pathfinder(this is the only time the starting pose gets updated)
+  //I would reccomend running the generate command function. This might break stuff
   public void start() {
+    start(defaultConstraints);
+  }
+
+  //I would reccomend running the generate command function. This might break stuff
+  public void start(PathConstraints constraintsOverride) {
     if (isActive) {
       System.out.println(
           "TRIED TO START A NEW PATHFINDING COMMAND WHEN THE OLD IS ACTIVE. PATHFINDER VORTECHS, START");
@@ -50,10 +56,11 @@ public class PathfinderVortechs {
 
     isActive = true;
 
-    pathfindingCommand = generatePathfindingCommand();
+    pathfindingCommand = generatePathfindingCommand(constraintsOverride);
     pathfindingCommand.schedule();
   }
 
+  //I would reccomend running the generate command function. This might break stuff
   // stops the command.
   public void stop() {
     if (isActive == false) {
@@ -65,36 +72,29 @@ public class PathfinderVortechs {
     pathfindingCommand.cancel();
   }
 
-  // helper command that does everything and stops the commadn when the drivetrain reaches position
-  public Command runPath(Pose2d targetPose) {
-    // stops old routine
-    return new InstantCommand(() -> stop())
-        // sets the target pose
-        .andThen(new InstantCommand(() -> setPose(targetPose)))
-        // starts the new routine
-        .andThen(new InstantCommand(() -> start()))
-        // ending logic
-        .andThen(new WaitUntilCommand(() -> isOnTarget()))
-        .andThen(new InstantCommand(() -> stop()));
-    // stops hogging drivetrain
+  //I would reccomend running the generate command function. This might break stuff
+  public void setPose(Pose2d targetPose) {
+    this.targetPose = targetPose;
   }
 
-  public Command runPath(Supplier<Pose2d> targetPose) {
+
+  // helper command that does everything and stops the commadn when the drivetrain reaches position
+  public Command runPathCommand(Supplier<Pose2d> targetPose) {
+    return runPathCommand(targetPose, defaultConstraints);
+  }
+
+  public Command runPathCommand(Supplier<Pose2d> targetPose, PathConstraints constraintsOverride) {
     // stops old routine
     return new InstantCommand(() -> stop())
         // sets the target pose
         .andThen(new InstantCommand(() -> setPose(targetPose.get())))
         // starts the new routine
-        .andThen(new InstantCommand(() -> start()))
+        .andThen(new InstantCommand(() -> start(constraintsOverride)))
         // ending logic
         .andThen(new WaitUntilCommand(() -> isOnTarget()))
-        .andThen(new InstantCommand(() -> stop()));
-    // stops hogging drivetrain
-  }
+            // stops hogging drivetrain
 
-  // util setters
-  public void setPose(Pose2d targetPose) {
-    this.targetPose = targetPose;
+        .andThen(new InstantCommand(() -> stop()));
   }
 
   // getters
@@ -113,8 +113,7 @@ public class PathfinderVortechs {
   }
 
   // helper commands
-  private Command generatePathfindingCommand() {
-
+  private Command generatePathfindingCommand(PathConstraints constraints) {
     Pose2d flippedPose = flipPoseIfNeeded(targetPose);
     return AutoBuilder.pathfindToPose(flippedPose, constraints);
   }

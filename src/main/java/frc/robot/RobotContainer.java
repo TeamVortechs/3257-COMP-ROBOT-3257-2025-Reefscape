@@ -15,6 +15,8 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.PathConstraints;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.util.sendable.Sendable;
@@ -46,6 +48,11 @@ import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.util.FieldMovement.VortechsUtil;
 import frc.robot.util.FieldMovement.pathfindingUtil.PathfinderVortechs;
+import frc.robot.util.FieldMovement.pathfindingUtil.VortechsClosestPoseSupplier;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -128,7 +135,7 @@ public class RobotContainer {
     }
 
     pathfinderVortechs =
-        new PathfinderVortechs(Constants.CDrivetrain.pathConstraints, () -> drive.getPose());
+        new PathfinderVortechs(Constants.CDrivetrain.DEFAULT_PATH_CONSTRAINTS, () -> drive.getPose());
 
     registerNamedCommandsAuto();
 
@@ -157,6 +164,22 @@ public class RobotContainer {
         "arm set roller speed -1", (Sendable) this.arm.setRollerSpeedCommand(-1, true));
 
     arm.setDefaultCommand(arm.setRollerSpeedCommand(0, true));
+
+        List<Pose2d> pathPoses = new ArrayList<>();
+    pathPoses.add(new Pose2d());
+    pathPoses.add(new Pose2d(10, 2, new Rotation2d()));
+    VortechsClosestPoseSupplier poseSupplier = new VortechsClosestPoseSupplier(pathPoses, () -> drive.getPose());
+    
+
+    Command command =
+        pathfinderVortechs
+            .runPathCommand(() -> poseSupplier.getClosestPose())
+            .alongWith(
+                    new WaitUntilCommand(() -> VortechsUtil.hasReachedDistance(0.2, pathfinderVortechs))
+                    .andThen(arm.setTargetHeightCommandConsistentEnd(5))
+                    .andThen(elevator.setTargetHeightCommand(5)));
+
+    SmartDashboard.putData("run auto routine", (Sendable) command);
   }
 
   /**
