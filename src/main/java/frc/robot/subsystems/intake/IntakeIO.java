@@ -7,69 +7,71 @@ import org.littletonrobotics.junction.AutoLog;
  * arm.
  */
 public interface IntakeIO {
-    @AutoLog
-    public static class IntakeIOInputs {
-        double rollerAmps = 0;
-        double rollerVolts = 0;
-        double rollerSpeed = 0;
+  @AutoLog
+  public static class IntakeIOInputs {
+    double rollerAmps = 0;
+    double rollerVolts = 0;
+    double rollerSpeed = 0;
 
-        double canRangeDistance = 0;
-        double targetSpeed = 0;
-    }
+    double canRangeDistance = 0;
+    double targetSpeed = 0;
+  }
 
-    // updates the given inputs with new values(advantage kit stuff)
-    public default void updateInputs(IntakeIOInputsAutoLogged inputsAutoLogged) {}
+  // updates the given inputs with new values(advantage kit stuff)
+  public default void updateInputs(IntakeIOInputsAutoLogged inputsAutoLogged) {}
 
-    //getters for motors
+  // getters for motors
 
-    // gets the height of the arm in meters
-    public default double getCurrent() {
-        return 0;
-    }
+  // gets the height of the arm in meters
+  public default double getCurrent() {
+    return 0;
+  }
 
-    public default double getVoltage() {
-        return 0;
-    }
-    
-    public default double getRollerSpeed() {
-        return 0;
-    }
+  public default double getVoltage() {
+    return 0;
+  }
 
-    public default double getTargetSpeed() {
-        return 0;
-    }
+  public default double getRollerSpeed() {
+    return 0;
+  }
 
-    //setters for motors
+  public default double getTargetSpeed() {
+    return 0;
+  }
 
-    //sets the target in rotations per second that the roller pid tries to go to
-    public default void setRollerSpeedTarget(double speedRPS) {}
+  // setters for motors
 
-    public default void setVoltage(double volt) {}
+  // sets the target in rotations per second that the roller pid tries to go to
+  public default void setRollerSpeedTarget(double speedRPS) {}
 
-    //canrange functions
+  public default void setVoltage(double volt) {}
 
-    //sets the distance from the can range. This is only used in simulation for system testing and doesn't work on real ios
-    public default void setCanrangeDistance(double dist) {}
+  // canrange functions
 
-    // gets the distance of the can rnage
-    public default double getDistance() {
-        return 0;
-    }
+  // sets the distance from the can range. This is only used in simulation for system testing and
+  // doesn't work on real ios
+  public default void setCanrangeDistance(double dist) {}
 
-    //misc methods
+  // gets the distance of the can rnage
+  public default double getDistance() {
+    return 0;
+  }
 
-    // rebuilds the pid constants of the motors
-    public default void rebuildMotorsPID() {}
+  // misc methods
 
-    /** Stops the motor immediately */
-    default void stop() {};
+  // rebuilds the pid constants of the motors
+  public default void rebuildMotorsPID() {}
 
-    /** returns true if either motor has exceeded 40 amps of torque current */
-    default boolean checkIfStalled() {
-        return false;
-    }
+  /** Stops the motor immediately */
+  default void stop() {}
+  ;
 
-    public default void resetEncoders() {}
+  /** returns true if either motor has exceeded 40 amps of torque current */
+  default boolean checkIfStalled() {
+    return false;
+  }
 
-    public default void setBraked(boolean braked) {}
+  public default void resetEncoders() {}
+
+  public default void setBraked(boolean braked) {}
 }

@@ -62,6 +62,13 @@ public class PathfinderVortechs {
     pathfindingCommand.cancel();
   }
 
+  // helper method that does everything
+  public void startPath(Pose2d targetPose) {
+    stop();
+    setPose(targetPose);
+    start();
+  }
+
   // util setters
   public void setPose(Pose2d targetPose) {
     this.targetPose = targetPose;

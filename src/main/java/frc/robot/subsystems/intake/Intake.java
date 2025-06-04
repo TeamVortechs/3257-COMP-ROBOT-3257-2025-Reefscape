@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
 import frc.robot.Constants.CIntake;
 import frc.robot.util.FieldMovement.VortechsUtil;
-
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -86,7 +85,7 @@ public class Intake extends SubsystemBase {
   public void setManualVoltage(double voltage) {
     manualOverride = true;
 
-    //clamp speed to prevent exceeding limits
+    // clamp speed to prevent exceeding limits
     voltage = VortechsUtil.clamp(voltage, Constants.CIntake.MAX_MANUAL_SPEED);
 
     System.out.println("Above speed limit; rate limiting Intake speed.");
@@ -158,7 +157,7 @@ public class Intake extends SubsystemBase {
   public void setCanRangeDistanceSimulation(double distance) {
     moduleIO.setCanrangeDistance(distance);
   }
-  
+
   // commands
 
   // sets the target height of the subsystem. Ends immediately
