@@ -162,11 +162,9 @@ public class RobotContainer {
         pathfinderVortechs
             .startPath(new Pose2d(0, 0, new Rotation2d()))
             .alongWith(
-                elevator
-                    .setTargetHeightCommand(5)
-                    .beforeStarting(
-                        new WaitUntilCommand(
-                            () -> VortechsUtil.hasReachedDistance(1, pathfinderVortechs))));
+                new WaitUntilCommand(() -> VortechsUtil.hasReachedDistance(5, pathfinderVortechs))
+                    .andThen(arm.setTargetHeightCommandConsistentEnd(5))
+                    .andThen(elevator.setTargetHeightCommand(5)));
 
     SmartDashboard.putData("start auto routine", command);
   }

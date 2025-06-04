@@ -87,11 +87,11 @@ public class PathfinderVortechs {
   // getters
   // gets the distance between the current pose and the target pose
   public double getDistance() {
-    return poseSupplier.get().getTranslation().getDistance(targetPose.getTranslation());
+    return poseSupplier.get().getTranslation().getDistance(flipPoseIfNeeded(targetPose).getTranslation());
   }
 
   public double getRotationDifferenceRAD() {
-    return poseSupplier.get().getRotation().getRadians() - targetPose.getRotation().getRadians();
+    return poseSupplier.get().getRotation().getRadians() - flipPoseIfNeeded(targetPose).getRotation().getRadians();
   }
 
   public boolean isOnTarget() {
@@ -102,6 +102,11 @@ public class PathfinderVortechs {
   // helper commands
   private Command generatePathfindingCommand() {
 
+    Pose2d flippedPose = flipPoseIfNeeded(targetPose);
+    return AutoBuilder.pathfindToPose(flippedPose, constraints);
+  }
+
+  private Pose2d flipPoseIfNeeded(Pose2d pose2d) {
     Pose2d flippedPose;
 
     if (Constants.isFlipped()) {
@@ -110,16 +115,29 @@ public class PathfinderVortechs {
       flippedPose = targetPose;
     }
 
-    return AutoBuilder.pathfindToPose(flippedPose, constraints);
+    return flippedPose;
   }
 }
 
 /*
 
 research document for layout of this class:
-https://docs.google.com/document/d/13N6u-yb6LBJfHOlOZAyZdYXvdHyHThwkKrRBeyr_iXg/edit?usp=sharing
  */
 
  /*
  get the closest one from a pipeline
+
+sample command to allow the robot to move when it is in position:
+    Command command =
+        pathfinderVortechs
+            .startPath(new Pose2d(0, 0, new Rotation2d()))
+            .alongWith(
+                new WaitUntilCommand(() -> VortechsUtil.hasReachedDistance(5, pathfinderVortechs))
+                    .andThen(arm.setTargetHeightCommandConsistentEnd(5))
+                    .andThen(elevator.setTargetHeightCommand(5)));
+
+
+
+
+
   */
