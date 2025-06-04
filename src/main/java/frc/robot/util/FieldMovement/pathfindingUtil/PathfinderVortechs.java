@@ -66,11 +66,24 @@ public class PathfinderVortechs {
   }
 
   // helper command that does everything and stops the commadn when the drivetrain reaches position
-  public Command startPath(Pose2d targetPose) {
+  public Command runPath(Pose2d targetPose) {
     // stops old routine
     return new InstantCommand(() -> stop())
         // sets the target pose
         .andThen(new InstantCommand(() -> setPose(targetPose)))
+        // starts the new routine
+        .andThen(new InstantCommand(() -> start()))
+        // ending logic
+        .andThen(new WaitUntilCommand(() -> isOnTarget()))
+        .andThen(new InstantCommand(() -> stop()));
+    // stops hogging drivetrain
+  }
+
+  public Command runPath(Supplier<Pose2d> targetPose) {
+    // stops old routine
+    return new InstantCommand(() -> stop())
+        // sets the target pose
+        .andThen(new InstantCommand(() -> setPose(targetPose.get())))
         // starts the new routine
         .andThen(new InstantCommand(() -> start()))
         // ending logic
@@ -127,12 +140,19 @@ research document for layout of this class:
  /*
  get the closest one from a pipeline
 
-sample command to allow the robot to move when it is in position:
+sample command to allow the robot to move mechanisms when it is in position and pathfind to closest pose:
+
+    List<Pose2d> pathPoses = new ArrayList<>();
+    pathPoses.add(new Pose2d());
+    pathPoses.add(new Pose2d(10, 2, new Rotation2d()));
+    VortechsClosestPoseSupplier poseSupplier = new VortechsClosestPoseSupplier(pathPoses, () -> drive.getPose());
+    
+
     Command command =
         pathfinderVortechs
-            .startPath(new Pose2d(0, 0, new Rotation2d()))
+            .runPath(() -> poseSupplier.getClosestPose())
             .alongWith(
-                new WaitUntilCommand(() -> VortechsUtil.hasReachedDistance(5, pathfinderVortechs))
+                new WaitUntilCommand(() -> VortechsUtil.hasReachedDistance(0.2, pathfinderVortechs))
                     .andThen(arm.setTargetHeightCommandConsistentEnd(5))
                     .andThen(elevator.setTargetHeightCommand(5)));
 
