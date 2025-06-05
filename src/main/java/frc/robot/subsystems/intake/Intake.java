@@ -13,11 +13,7 @@ import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-import com.ctre.phoenix6.hardware.CANrange;
-
-/**
- * Intake subsystem responsible for the intake rolling mechanism
- */
+/** Intake subsystem responsible for the intake rolling mechanism */
 public class Intake extends SubsystemBase {
 
   // advantage kit logging
