@@ -7,14 +7,16 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
 import frc.robot.Constants.CIntake;
+import frc.robot.subsystems.canrange.RangeFinder;
 import frc.robot.util.FieldMovement.VortechsUtil;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
+import com.ctre.phoenix6.hardware.CANrange;
+
 /**
- * Intake subsystem responsible for controlling the lifting mechanism. Uses PID control for precise
- * movement and prevents unsafe operation via limit switches and software constraints.
+ * Intake subsystem responsible for the intake rolling mechanism
  */
 public class Intake extends SubsystemBase {
 
@@ -23,6 +25,8 @@ public class Intake extends SubsystemBase {
 
   // useful for a flexible hardware interface and for advantage kit logging
   private final IntakeIO moduleIO;
+
+  private final RangeFinder canRange;
 
   // these are for advantage kit state logging and/or for keeping track of key variables
   @AutoLogOutput private double currentSpeed = 0.0;
@@ -36,8 +40,9 @@ public class Intake extends SubsystemBase {
    * @param moduleIO Hardware interface for Intake motors.
    * @param homeSwitch Digital input limit switch for homing.
    */
-  public Intake(IntakeIO moduleIO) {
+  public Intake(IntakeIO moduleIO, RangeFinder canRange) {
     this.moduleIO = moduleIO;
+    this.canRange = canRange;
 
     currentSpeed = moduleIO.getRollerSpeed();
     targetSpeed = moduleIO.getTargetSpeed();
@@ -143,19 +148,9 @@ public class Intake extends SubsystemBase {
     return moduleIO.getRollerSpeed();
   }
 
-  // gets the distance of the can Range
-  public double getCanDistance() {
-    return moduleIO.getDistance();
-  }
-
   // resets the motors pid
   public void rebuildMotorsPID() {
     moduleIO.rebuildMotorsPID();
-  }
-
-  // sets canrange distance for simulation
-  public void setCanRangeDistanceSimulation(double distance) {
-    moduleIO.setCanrangeDistance(distance);
   }
 
   // commands
@@ -198,10 +193,10 @@ public class Intake extends SubsystemBase {
       double speed, double distance, boolean requireSubsystem) {
     if (requireSubsystem)
       return new RunCommand(() -> this.setTargetSpeed(speed), this)
-          .until(() -> getCanDistance() < distance);
+          .until(() -> canRange.getCanDistance() < distance);
 
     return new RunCommand(() -> this.setTargetSpeed(speed))
-        .until(() -> getCanDistance() < distance);
+        .until(() -> canRange.getCanDistance() < distance);
   }
 
   // simple command that requires this subsystem
@@ -212,10 +207,5 @@ public class Intake extends SubsystemBase {
   // rebuilds the motor pid
   public Command rebuildMotorsPIDCommand() {
     return new InstantCommand(() -> this.rebuildMotorsPID());
-  }
-
-  // sets the canrange distance for simulation
-  public Command setCanrangeDistanceCommand(double dist) {
-    return new InstantCommand(() -> setCanRangeDistanceSimulation(dist));
   }
 }

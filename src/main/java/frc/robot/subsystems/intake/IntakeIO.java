@@ -13,7 +13,6 @@ public interface IntakeIO {
     double rollerVolts = 0;
     double rollerSpeed = 0;
 
-    double canRangeDistance = 0;
     double targetSpeed = 0;
   }
 
@@ -45,17 +44,6 @@ public interface IntakeIO {
   public default void setRollerSpeedTarget(double speedRPS) {}
 
   public default void setVoltage(double volt) {}
-
-  // canrange functions
-
-  // sets the distance from the can range. This is only used in simulation for system testing and
-  // doesn't work on real ios
-  public default void setCanrangeDistance(double dist) {}
-
-  // gets the distance of the can rnage
-  public default double getDistance() {
-    return 0;
-  }
 
   // misc methods
 

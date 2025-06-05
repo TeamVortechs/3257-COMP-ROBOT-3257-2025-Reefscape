@@ -41,12 +41,12 @@ public class PathfinderVortechs {
 
   // pathfinding manager commands
   // schedules the command of the pathfinder(this is the only time the starting pose gets updated)
-  //I would reccomend running the generate command function. This might break stuff
+  // I would reccomend running the generate command function. This might break stuff
   public void start() {
     start(defaultConstraints);
   }
 
-  //I would reccomend running the generate command function. This might break stuff
+  // I would reccomend running the generate command function. This might break stuff
   public void start(PathConstraints constraintsOverride) {
     if (isActive) {
       System.out.println(
@@ -60,7 +60,7 @@ public class PathfinderVortechs {
     pathfindingCommand.schedule();
   }
 
-  //I would reccomend running the generate command function. This might break stuff
+  // I would reccomend running the generate command function. This might break stuff
   // stops the command.
   public void stop() {
     if (isActive == false) {
@@ -72,11 +72,10 @@ public class PathfinderVortechs {
     pathfindingCommand.cancel();
   }
 
-  //I would reccomend running the generate command function. This might break stuff
+  // I would reccomend running the generate command function. This might break stuff
   public void setPose(Pose2d targetPose) {
     this.targetPose = targetPose;
   }
-
 
   // helper command that does everything and stops the commadn when the drivetrain reaches position
   public Command runPathCommand(Supplier<Pose2d> targetPose) {
@@ -92,7 +91,7 @@ public class PathfinderVortechs {
         .andThen(new InstantCommand(() -> start(constraintsOverride)))
         // ending logic
         .andThen(new WaitUntilCommand(() -> isOnTarget()))
-            // stops hogging drivetrain
+        // stops hogging drivetrain
 
         .andThen(new InstantCommand(() -> stop()));
   }
@@ -100,11 +99,15 @@ public class PathfinderVortechs {
   // getters
   // gets the distance between the current pose and the target pose
   public double getDistance() {
-    return poseSupplier.get().getTranslation().getDistance(flipPoseIfNeeded(targetPose).getTranslation());
+    return poseSupplier
+        .get()
+        .getTranslation()
+        .getDistance(flipPoseIfNeeded(targetPose).getTranslation());
   }
 
   public double getRotationDifferenceRAD() {
-    return poseSupplier.get().getRotation().getRadians() - flipPoseIfNeeded(targetPose).getRotation().getRadians();
+    return poseSupplier.get().getRotation().getRadians()
+        - flipPoseIfNeeded(targetPose).getRotation().getRadians();
   }
 
   public boolean isOnTarget() {
@@ -137,26 +140,26 @@ research document for layout of this class:
  */
 
  /*
- get the closest one from a pipeline
+  get the closest one from a pipeline
 
-sample command to allow the robot to move mechanisms when it is in position and pathfind to closest pose:
+ sample command to allow the robot to move mechanisms when it is in position and pathfind to closest pose:
 
-    List<Pose2d> pathPoses = new ArrayList<>();
-    pathPoses.add(new Pose2d());
-    pathPoses.add(new Pose2d(10, 2, new Rotation2d()));
-    VortechsClosestPoseSupplier poseSupplier = new VortechsClosestPoseSupplier(pathPoses, () -> drive.getPose());
-    
-
-    Command command =
-        pathfinderVortechs
-            .runPath(() -> poseSupplier.getClosestPose())
-            .alongWith(
-                new WaitUntilCommand(() -> VortechsUtil.hasReachedDistance(0.2, pathfinderVortechs))
-                    .andThen(arm.setTargetHeightCommandConsistentEnd(5))
-                    .andThen(elevator.setTargetHeightCommand(5)));
+     List<Pose2d> pathPoses = new ArrayList<>();
+     pathPoses.add(new Pose2d());
+     pathPoses.add(new Pose2d(10, 2, new Rotation2d()));
+     VortechsClosestPoseSupplier poseSupplier = new VortechsClosestPoseSupplier(pathPoses, () -> drive.getPose());
 
 
+     Command command =
+         pathfinderVortechs
+             .runPath(() -> poseSupplier.getClosestPose())
+             .alongWith(
+                 new WaitUntilCommand(() -> VortechsUtil.hasReachedDistance(0.2, pathfinderVortechs))
+                     .andThen(arm.setTargetHeightCommandConsistentEnd(5))
+                     .andThen(elevator.setTargetHeightCommand(5)));
 
 
 
-  */
+
+
+   */
