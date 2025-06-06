@@ -17,7 +17,7 @@ import org.littletonrobotics.junction.Logger;
 public class Intake extends SubsystemBase {
 
   // advantage kit logging
-  IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
+  private IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
 
   // useful for a flexible hardware interface and for advantage kit logging
   private final IntakeIO moduleIO;

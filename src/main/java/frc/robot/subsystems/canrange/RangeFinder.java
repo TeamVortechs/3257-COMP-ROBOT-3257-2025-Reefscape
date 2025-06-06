@@ -9,7 +9,7 @@ import org.littletonrobotics.junction.Logger;
 public class RangeFinder extends SubsystemBase {
 
   // advantage kit logging
-  RangeFinderIOInputsAutoLogged inputs = new RangeFinderIOInputsAutoLogged();
+  private RangeFinderIOInputsAutoLogged inputs = new RangeFinderIOInputsAutoLogged();
 
   // useful for a flexible hardware interface and for advantage kit logging
   private final RangeFinderIO moduleIO;

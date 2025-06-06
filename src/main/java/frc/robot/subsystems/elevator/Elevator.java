@@ -17,7 +17,7 @@ import org.littletonrobotics.junction.Logger;
 public class Elevator extends SubsystemBase {
 
   // for advantage kti logging
-  ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
+  private ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
 
   // for flexible modules as well advantage kit
   private final ElevatorIO moduleIO;

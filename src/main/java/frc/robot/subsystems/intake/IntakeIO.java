@@ -51,7 +51,7 @@ public interface IntakeIO {
 
   public default void setVoltage(double volt) {}
 
-  //sets the position of the rollers. This function will most likely not be implemented
+  // sets the position of the rollers. This function will most likely not be implemented
   public default void setPosition(double position) {}
 
   // misc methods
@@ -60,11 +60,10 @@ public interface IntakeIO {
   public default void rebuildMotorsPID() {}
 
   /** Stops the motor immediately */
-  default void stop() {}
-  ;
+  public default void stop() {}
 
   /** returns true if either motor has exceeded 40 amps of torque current */
-  default boolean checkIfStalled() {
+  public default boolean checkIfStalled() {
     return false;
   }
 
