@@ -14,6 +14,8 @@ public interface IntakeIO {
     double rollerSpeed = 0;
 
     double targetSpeed = 0;
+
+    double position = 0;
   }
 
   // updates the given inputs with new values(advantage kit stuff)
@@ -38,12 +40,19 @@ public interface IntakeIO {
     return 0;
   }
 
+  public default double getRotations() {
+    return 0;
+  }
+
   // setters for motors
 
   // sets the target in rotations per second that the roller pid tries to go to
   public default void setRollerSpeedTarget(double speedRPS) {}
 
   public default void setVoltage(double volt) {}
+
+  //sets the position of the rollers. This function will most likely not be implemented
+  public default void setPosition(double position) {}
 
   // misc methods
 
