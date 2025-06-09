@@ -5,6 +5,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import frc.robot.util.VTControlType;
 
 public class IntakeIOSimulation implements IntakeIO {
   private final DCMotorSim motorSim;
@@ -14,6 +15,9 @@ public class IntakeIOSimulation implements IntakeIO {
   protected double tolerance = 0.1;
   protected double targetPosition = 0;
   protected double maxPosition = 0.0;
+  protected double targetSpeed = 0;
+
+  private VTControlType controlType = VTControlType.MANUAL;
 
   public IntakeIOSimulation() {
 
@@ -28,7 +32,17 @@ public class IntakeIOSimulation implements IntakeIO {
   // updates the given inputs with new values(advantage kit stuff)
   @Override
   public void updateInputs(IntakeIOInputsAutoLogged inputsAutoLogged) {
-    updatePID();
+
+    if (controlType == VTControlType.POSITION_PID) updatePID();
+
+    inputsAutoLogged.rollerAmps = motorSim.getCurrentDrawAmps();
+    inputsAutoLogged.rollerVolts = motorSim.getInputVoltage();
+    inputsAutoLogged.position = motorSim.getAngularPositionRad();
+    inputsAutoLogged.rollerSpeed = motorSim.getAngularVelocityRadPerSec();
+    inputsAutoLogged.targetSpeed = targetSpeed;
+    inputsAutoLogged.targetPosition = targetPosition;
+
+    inputsAutoLogged.controlType = controlType.name();
   }
 
   // getters for motors
@@ -47,12 +61,16 @@ public class IntakeIOSimulation implements IntakeIO {
   // setters for motors
   @Override
   public void setVoltage(double volt) {
+    controlType = VTControlType.MANUAL;
+
     motorSim.setInputVoltage(MathUtil.clamp(volt, -12, 12));
   }
 
   // sets the position of the rollers. This function will most likely not be implemented
   @Override
   public void setRotationTarget(double position) {
+    controlType = VTControlType.POSITION_PID;
+
     targetPosition = position;
   }
 
@@ -98,6 +116,9 @@ public class IntakeIOSimulation implements IntakeIO {
 
   @Override
   public void setSpeedTarget(double speed) {
+    controlType = VTControlType.SPEED_PID;
+    targetSpeed = speed;
+
     motorSim.setAngularVelocity(speed * Math.PI * 2);
   }
 
@@ -116,6 +137,11 @@ public class IntakeIOSimulation implements IntakeIO {
     double inputVoltage = controller.calculate(currentAngle, targetPosition);
     // System.out.println("Input volt: "+inputVoltage+" Target Angle: "+targetAngle);x
     setVoltage(inputVoltage);
+  }
+
+  @Override
+  public VTControlType getControlType() {
+    return controlType;
   }
 }
 

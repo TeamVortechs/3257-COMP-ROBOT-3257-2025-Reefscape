@@ -1,5 +1,6 @@
 package frc.robot.subsystems.intake;
 
+import frc.robot.util.VTControlType;
 import org.littletonrobotics.junction.AutoLog;
 
 /**
@@ -16,6 +17,9 @@ public interface IntakeIO {
     double targetSpeed = 0;
 
     double position = 0;
+    double targetPosition = 0;
+
+    String controlType = "none";
   }
 
   // updates the given inputs with new values(advantage kit stuff)
@@ -77,5 +81,9 @@ public interface IntakeIO {
 
   public default boolean checkIfStalled() {
     return false;
+  }
+
+  public default VTControlType getControlType() {
+    return VTControlType.MANUAL;
   }
 }
