@@ -129,7 +129,7 @@ public class IntakeIOSimulation implements IntakeIO {
 
   @Override
   public double getSpeed() {
-    return motorSim.getAngularVelocityRPM();
+    return motorSim.getInputVoltage();
   }
 
   protected void updatePID() {

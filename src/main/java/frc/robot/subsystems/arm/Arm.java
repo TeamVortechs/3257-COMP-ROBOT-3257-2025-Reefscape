@@ -140,21 +140,6 @@ public class Arm extends SubsystemBase {
     moduleIO.resetEncoders();
   }
 
-  // sets the roller speed
-  public void setRollerSpeed(double speed) {
-    moduleIO.setRollerSpeed(speed);
-  }
-
-  // gets the roller speed
-  public double getRollerSpeed() {
-    return moduleIO.getRollerSpeed();
-  }
-
-  // gets the distance of the can Range
-  public double getCanDistance() {
-    return moduleIO.getDistance();
-  }
-
   // resets the motors pid
   public void rebuildMotorsPID() {
     moduleIO.rebuildMotorsPID();
@@ -163,11 +148,6 @@ public class Arm extends SubsystemBase {
   // returns wether or not the arm is clear from the arm
   public boolean isClearFromElevator() {
     return getCurrentAngle() > CArm.CLEARANCE_ANGLE;
-  }
-
-  // sets canrange distance for simulation
-  public void setCanRangeDistanceSimulation(double distance) {
-    moduleIO.setCanrangeDistance(distance);
   }
 
   // commands
@@ -205,24 +185,6 @@ public class Arm extends SubsystemBase {
     return new InstantCommand(() -> this.resetEncoders());
   }
 
-  // setRollerSpeed command, doesn't require wrist subsystem
-  public Command setRollerSpeedCommand(double speed, boolean requireSubsystem) {
-    if (requireSubsystem) return new InstantCommand(() -> this.setRollerSpeed(speed), this);
-
-    return new InstantCommand(() -> this.setRollerSpeed(speed));
-  }
-
-  // intakes until the canrange finds distance less than the given distance
-  public Command intakeUntilCanRangeIsDetected(
-      double speed, double distance, boolean requireSubsystem) {
-    if (requireSubsystem)
-      return new RunCommand(() -> this.setRollerSpeed(speed), this)
-          .until(() -> getCanDistance() < distance);
-
-    return new RunCommand(() -> this.setRollerSpeed(speed))
-        .until(() -> getCanDistance() < distance);
-  }
-
   // simple command that requires this subsystem
   public Command requireSubsystemCommand() {
     return new InstantCommand(() -> {}, this);
@@ -231,10 +193,5 @@ public class Arm extends SubsystemBase {
   // rebuilds the motor pid
   public Command rebuildMotorsPIDCommand() {
     return new InstantCommand(() -> this.rebuildMotorsPID());
-  }
-
-  // sets the canrange distance for simulation
-  public Command setCanrangeDistanceCommand(double dist) {
-    return new InstantCommand(() -> setCanRangeDistanceSimulation(dist));
   }
 }

@@ -2,7 +2,6 @@ package frc.robot.subsystems.intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -187,13 +186,8 @@ public class Intake extends SubsystemBase {
   }
 
   // intakes until the canrange finds distance less than the given distance
-  public Command intakeUntilCanRangeIsDetected(
-      double speed, double distance, boolean requireSubsystem) {
-    if (requireSubsystem)
-      return new RunCommand(() -> this.setTargetSpeed(speed), this)
-          .until(() -> canRange.getCanDistance() < distance);
-
-    return new RunCommand(() -> this.setTargetSpeed(speed))
+  public Command intakeUntilCanRangeIsDetected(double speed, double distance) {
+    return new RunCommand(() -> this.setTargetSpeed(speed), this)
         .until(() -> canRange.getCanDistance() < distance);
   }
 

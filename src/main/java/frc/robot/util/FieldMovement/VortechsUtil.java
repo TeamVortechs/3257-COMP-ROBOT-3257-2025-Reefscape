@@ -9,7 +9,6 @@ public class VortechsUtil {
 
   public static double clamp(double num, double lowerClamp, double higherClamp) {
     return Math.min(higherClamp, Math.max(num, lowerClamp));
-
   }
 
   public static boolean hasReachedDistance(double distance, PathfinderVortechs pathfinderVortechs) {

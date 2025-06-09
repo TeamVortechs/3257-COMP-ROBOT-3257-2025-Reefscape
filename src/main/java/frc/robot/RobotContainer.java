@@ -163,21 +163,11 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
 
-    SmartDashboard.putData(
-        "CanRange Distance 0", (Sendable) this.arm.setCanrangeDistanceCommand(0));
-    SmartDashboard.putData(
-        "CanRange Distance 1000", (Sendable) this.arm.setCanrangeDistanceCommand(1000));
-
     SmartDashboard.putData("Elevator height 0", (Sendable) this.elevator.setTargetHeightCommand(0));
     SmartDashboard.putData("Elevator height 5", (Sendable) this.elevator.setTargetHeightCommand(5));
 
     SmartDashboard.putData("arm set target angle 0", (Sendable) this.arm.setTargetHeightCommand(0));
     SmartDashboard.putData("arm set target angle 5", (Sendable) this.arm.setTargetHeightCommand(5));
-
-    SmartDashboard.putData(
-        "arm set roller speed 1", (Sendable) this.arm.setRollerSpeedCommand(1, true));
-    SmartDashboard.putData(
-        "arm set roller speed -1", (Sendable) this.arm.setRollerSpeedCommand(-1, true));
 
     SmartDashboard.putData(
         "canrange set distance 100", (Sendable) this.canRange.setCanrangeDistanceCommand(100));
@@ -187,13 +177,12 @@ public class RobotContainer {
     SmartDashboard.putData(
         "intake set power 100", (Sendable) this.intake.setTargetSpeedCommand(100));
     SmartDashboard.putData("intake set power 0", (Sendable) this.intake.setTargetSpeedCommand(0));
+    SmartDashboard.putData(
+        "intake set power -100", (Sendable) this.intake.setTargetSpeedCommand(-100));
 
     SmartDashboard.putData(
-        "intake until canrange",
-        (Sendable) this.intake.intakeUntilCanRangeIsDetected(100, 10, true));
+        "intake until canrange", (Sendable) this.intake.intakeUntilCanRangeIsDetected(100, 10));
     ;
-
-    arm.setDefaultCommand(arm.setRollerSpeedCommand(0, true));
 
     List<Pose2d> pathPoses = new ArrayList<>();
     pathPoses.add(new Pose2d());
@@ -294,5 +283,13 @@ public class RobotContainer {
 
   public Elevator getElevator() {
     return elevator;
+  }
+
+  public RangeFinder getCanRange() {
+    return canRange;
+  }
+
+  public Intake getIntake() {
+    return intake;
   }
 }
