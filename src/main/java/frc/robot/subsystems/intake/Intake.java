@@ -2,6 +2,7 @@ package frc.robot.subsystems.intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -75,11 +76,11 @@ public class Intake extends SubsystemBase {
   }
 
   /** Sets a new target height for the Intake using PID control. */
-  public void setTargetSpeed(double height) {
+  public void setTargetSpeed(double targetSpeed) {
     manualOverride = false;
 
     // Clamp target speed to prevent exceeding limits
-    targetSpeed = VortechsUtil.clamp(targetSpeed, Constants.CIntake.MAX_TARGET_SPEED);
+    this.targetSpeed = VortechsUtil.clamp(targetSpeed, Constants.CIntake.MAX_TARGET_SPEED);
   }
 
   /** Allows manual control of the Intake, bypassing PID. */
@@ -95,6 +96,7 @@ public class Intake extends SubsystemBase {
 
   /** Holds the current position using PID control. */
   public void holdPositionPID() {
+    System.out.println("holding position pid");
     manualOverride = false;
     if (Math.abs(targetSpeed - currentSpeed) > CIntake.SPEED_TOLERANCE) {
 

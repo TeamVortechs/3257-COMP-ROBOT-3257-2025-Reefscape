@@ -119,7 +119,7 @@ public class IntakeIOSimulation implements IntakeIO {
     controlType = VTControlType.SPEED_PID;
     targetSpeed = speed;
 
-    motorSim.setAngularVelocity(speed * Math.PI * 2);
+    motorSim.setInputVoltage(speed * Math.PI * 2);
   }
 
   @Override
