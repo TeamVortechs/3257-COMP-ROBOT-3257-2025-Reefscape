@@ -33,6 +33,9 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.arm.ArmSimulationIO;
+import frc.robot.subsystems.canrange.RangeFinder;
+import frc.robot.subsystems.canrange.RangeFinderIO;
+import frc.robot.subsystems.canrange.RangeFinderSimulationIO;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -42,6 +45,9 @@ import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.elevator.ElevatorSimulationIO;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.IntakeIO;
+import frc.robot.subsystems.intake.IntakeIOSimulation;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.util.FieldMovement.VortechsUtil;
@@ -74,6 +80,9 @@ public class RobotContainer {
   private final Arm arm;
   private final Elevator elevator;
 
+  private final Intake intake;
+  private final RangeFinder canRange;
+
   private final PathfinderVortechs pathfinderVortechs;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -96,6 +105,9 @@ public class RobotContainer {
 
         arm = new Arm(new ArmIO() {});
         elevator = new Elevator(new ElevatorIO() {}, arm);
+
+        canRange = new RangeFinder(new RangeFinderIO() {});
+        intake = new Intake(new IntakeIO() {}, canRange);
         break;
 
       case SIM:
@@ -112,6 +124,10 @@ public class RobotContainer {
 
         arm = new Arm(new ArmSimulationIO());
         elevator = new Elevator(new ElevatorSimulationIO() {}, arm);
+
+        canRange = new RangeFinder(new RangeFinderSimulationIO());
+        intake = new Intake(new IntakeIOSimulation(), canRange);
+
         break;
 
       default:
@@ -127,6 +143,9 @@ public class RobotContainer {
 
         arm = new Arm(new ArmIO() {});
         elevator = new Elevator(new ElevatorIO() {}, arm);
+
+        canRange = new RangeFinder(new RangeFinderIO() {});
+        intake = new Intake(new IntakeIO() {}, canRange);
         break;
     }
 
@@ -159,6 +178,20 @@ public class RobotContainer {
         "arm set roller speed 1", (Sendable) this.arm.setRollerSpeedCommand(1, true));
     SmartDashboard.putData(
         "arm set roller speed -1", (Sendable) this.arm.setRollerSpeedCommand(-1, true));
+
+    SmartDashboard.putData(
+        "canrange set distance 100", (Sendable) this.canRange.setCanrangeDistanceCommand(100));
+    SmartDashboard.putData(
+        "canrange set distance 0", (Sendable) this.canRange.setCanrangeDistanceCommand(0));
+
+    SmartDashboard.putData(
+        "intake set power 100", (Sendable) this.intake.setTargetSpeedCommand(100));
+    SmartDashboard.putData("intake set power 0", (Sendable) this.intake.setTargetSpeedCommand(0));
+
+    SmartDashboard.putData(
+        "intake until canrange",
+        (Sendable) this.intake.intakeUntilCanRangeIsDetected(100, 10, true));
+    ;
 
     arm.setDefaultCommand(arm.setRollerSpeedCommand(0, true));
 

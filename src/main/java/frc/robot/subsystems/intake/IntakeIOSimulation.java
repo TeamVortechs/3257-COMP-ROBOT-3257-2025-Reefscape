@@ -7,97 +7,122 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
 public class IntakeIOSimulation implements IntakeIO {
-    private final DCMotorSim motorSim;
+  private final DCMotorSim motorSim;
 
-    private PIDController controller;
+  private PIDController controller;
 
-    protected double tolerance = 0.1;
-    protected double targetPosition = 0;
-    protected double maxPosition = 0.0;
+  protected double tolerance = 0.1;
+  protected double targetPosition = 0;
+  protected double maxPosition = 0.0;
 
-    public IntakeIOSimulation() {
+  public IntakeIOSimulation() {
 
-      this.motorSim =
-      new DCMotorSim(
-          LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(1), 0.001, 1),
-          DCMotor.getKrakenX60(1));
+    this.motorSim =
+        new DCMotorSim(
+            LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(1), 0.001, 1),
+            DCMotor.getKrakenX60(1));
 
-      rebuildMotorsPID();
-    }
+    rebuildMotorsPID();
+  }
 
-    // updates the given inputs with new values(advantage kit stuff)
-    public void updateInputs(IntakeIOInputsAutoLogged inputsAutoLogged) {
-      updatePID();
-    }
+  // updates the given inputs with new values(advantage kit stuff)
+  @Override
+  public void updateInputs(IntakeIOInputsAutoLogged inputsAutoLogged) {
+    updatePID();
+  }
 
-    // getters for motors
+  // getters for motors
 
-    // gets the height of the arm in meters
-    public double getCurrent() {
-        return motorSim.getCurrentDrawAmps();
-    }
+  // gets the height of the arm in meters
+  @Override
+  public double getCurrent() {
+    return motorSim.getCurrentDrawAmps();
+  }
 
-    public double getVoltage() {
-        return motorSim.getInputVoltage();
-    }
+  @Override
+  public double getVoltage() {
+    return motorSim.getInputVoltage();
+  }
 
-    // setters for motors
-    public void setVoltage(double volt) {
-      motorSim.setInputVoltage(MathUtil.clamp(volt, -12, 12));
-    }
+  // setters for motors
+  @Override
+  public void setVoltage(double volt) {
+    motorSim.setInputVoltage(MathUtil.clamp(volt, -12, 12));
+  }
 
-    // sets the position of the rollers. This function will most likely not be implemented
-    public void setRotationTarget(double position) {
-      targetPosition = position;
-    }
+  // sets the position of the rollers. This function will most likely not be implemented
+  @Override
+  public void setRotationTarget(double position) {
+    targetPosition = position;
+  }
 
-    // misc methods
+  // misc methods
 
-    // rebuilds the pid constants of the motors
-    public void rebuildMotorsPID() {
-      controller = new PIDController(0.9, 0, 0.1);
-    }
+  // rebuilds the pid constants of the motors
+  @Override
+  public void rebuildMotorsPID() {
+    controller = new PIDController(0.9, 0, 0.1);
+  }
 
-    /** Stops the motor immediately */
-    public void stop() {
-      setVoltage(0);
-    };
+  /** Stops the motor immediately */
+  @Override
+  public void stop() {
+    setVoltage(0);
+  }
+  ;
 
-    public void resetEncoders() {
-      motorSim.setAngle(0);
-    }
+  @Override
+  public void resetEncoders() {
+    motorSim.setAngle(0);
+  }
 
-    public void setBraked(boolean braked) {
+  @Override
+  public void setBraked(boolean braked) {}
 
-    }
+  // gets the highest possible height of the arm in radians
+  @Override
+  public double getMaxRotations() {
+    return maxPosition;
+  }
 
-    // gets the highest possible height of the arm in radians
-    public  double getMaxRotations() {
-        return maxPosition;
-    }
+  // gets the height of the arm in meters
+  @Override
+  public double getRotations() {
+    return motorSim.getAngularPositionRotations();
+  }
 
-    // gets the height of the arm in meters
-    public  double getRotations() {
-        return motorSim.getAngularPositionRotations();
-    }
+  @Override
+  public boolean isMaxPosition() {
+    return getMaxRotations() - getRotations() < tolerance;
+  }
 
-    public boolean isMaxPosition() {
-      return getMaxRotations() - getRotations() < tolerance;
-    }
+  @Override
+  public void setSpeedTarget(double speed) {
+    motorSim.setAngularVelocity(speed * Math.PI * 2);
+  }
 
-    public void setSpeedTarget(double speed) {
-      motorSim.setAngularVelocity(speed * Math.PI * 2);
-    }
+  @Override
+  public double getTargetSpeed() {
+    return motorSim.getAngularVelocityRadPerSec() * Math.PI * 2;
+  }
 
-    public double getTargetSpeed() {
-        return motorSim.getAngularVelocityRadPerSec() * Math.PI * 2;
-    }
+  @Override
+  public double getSpeed() {
+    return motorSim.getAngularVelocityRPM();
+  }
 
-    protected void updatePID() {
-      double currentAngle = motorSim.getAngularPositionRotations();
-      double inputVoltage =
-          controller.calculate(currentAngle, targetPosition);
-      // System.out.println("Input volt: "+inputVoltage+" Target Angle: "+targetAngle);
-      setVoltage(inputVoltage);
-    }
+  protected void updatePID() {
+    double currentAngle = motorSim.getAngularPositionRotations();
+    double inputVoltage = controller.calculate(currentAngle, targetPosition);
+    // System.out.println("Input volt: "+inputVoltage+" Target Angle: "+targetAngle);x
+    setVoltage(inputVoltage);
+  }
 }
+
+/*
+todolist:
+-add feedforward to simulation
+-make sure the different new subsystems work
+-take all of the extra functionality out of the arm class
+-standardize io layers
+ */

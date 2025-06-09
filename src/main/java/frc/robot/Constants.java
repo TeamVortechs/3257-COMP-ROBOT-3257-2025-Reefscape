@@ -61,8 +61,8 @@ public final class Constants {
 
   public class CIntake {
     // dummy values for now
-    public static final double MAX_TARGET_SPEED = 1;
-    public static final double MAX_MANUAL_SPEED = 1;
+    public static final double MAX_TARGET_SPEED = 100;
+    public static final double MAX_MANUAL_SPEED = 100;
     public static final double SPEED_TOLERANCE = 0.2;
   }
 }

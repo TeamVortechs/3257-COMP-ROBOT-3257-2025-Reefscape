@@ -32,27 +32,11 @@ public interface IntakeIO {
     return 0;
   }
 
-  public default double getRollerSpeed() {
-    return 0;
-  }
-
-  public default double getTargetSpeed() {
-    return 0;
-  }
-
-  public default double getRotations() {
-    return 0;
-  }
-
   // setters for motors
-
-  // sets the target in rotations per second that the roller pid tries to go to
-  public default void setRollerSpeedTarget(double speedRPS) {}
-
   public default void setVoltage(double volt) {}
 
   // sets the position of the rollers. This function will most likely not be implemented
-  public default void setPosition(double position) {}
+  public default void setRotationTarget(double position) {}
 
   // misc methods
 
@@ -61,13 +45,37 @@ public interface IntakeIO {
 
   /** Stops the motor immediately */
   public default void stop() {}
-
-  /** returns true if either motor has exceeded 40 amps of torque current */
-  public default boolean checkIfStalled() {
-    return false;
-  }
+  ;
 
   public default void resetEncoders() {}
 
   public default void setBraked(boolean braked) {}
+
+  // gets the highest possible height of the arm in radians
+  public default double getMaxRotations() {
+    return 0;
+  }
+
+  // gets the height of the arm in meters
+  public default double getRotations() {
+    return 0;
+  }
+
+  public default boolean isMaxPosition() {
+    return false;
+  }
+
+  public default void setSpeedTarget(double speed) {}
+
+  public default double getSpeed() {
+    return 0;
+  }
+
+  public default double getTargetSpeed() {
+    return 0;
+  }
+
+  public default boolean checkIfStalled() {
+    return false;
+  }
 }

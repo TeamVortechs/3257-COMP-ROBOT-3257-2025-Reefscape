@@ -40,7 +40,7 @@ public class Intake extends SubsystemBase {
     this.moduleIO = moduleIO;
     this.canRange = canRange;
 
-    currentSpeed = moduleIO.getRollerSpeed();
+    currentSpeed = moduleIO.getSpeed();
     targetSpeed = moduleIO.getTargetSpeed();
     setTargetSpeed(currentSpeed);
   }
@@ -59,7 +59,7 @@ public class Intake extends SubsystemBase {
       return;
     }
 
-    currentSpeed = moduleIO.getRollerSpeed();
+    currentSpeed = moduleIO.getSpeed();
 
     // if manual override return
     if (manualOverride) {
@@ -71,7 +71,7 @@ public class Intake extends SubsystemBase {
     // Clamp target speed to prevent exceeding limits
     targetSpeed = VortechsUtil.clamp(targetSpeed, Constants.CIntake.MAX_TARGET_SPEED);
 
-    moduleIO.setRollerSpeedTarget(targetSpeed);
+    moduleIO.setSpeedTarget(targetSpeed);
   }
 
   /** Sets a new target height for the Intake using PID control. */
@@ -99,7 +99,7 @@ public class Intake extends SubsystemBase {
     if (Math.abs(targetSpeed - currentSpeed) > CIntake.SPEED_TOLERANCE) {
 
       targetSpeed = currentSpeed;
-      moduleIO.setRollerSpeedTarget(targetSpeed);
+      moduleIO.setRotationTarget(moduleIO.getRotations());
     }
   }
 
@@ -141,7 +141,7 @@ public class Intake extends SubsystemBase {
 
   // gets the roller speed
   public double getRollerSpeed() {
-    return moduleIO.getRollerSpeed();
+    return moduleIO.getSpeed();
   }
 
   // resets the motors pid
@@ -152,13 +152,13 @@ public class Intake extends SubsystemBase {
   // commands
 
   // sets the target height of the subsystem. Ends immediately
-  public Command setTargetSpeedCommand(double targetHeight) {
-    return new InstantCommand(() -> this.setTargetSpeed(targetHeight), this);
+  public Command setTargetSpeedCommand(double targetSpeed) {
+    return new InstantCommand(() -> this.setTargetSpeed(targetSpeed), this);
   }
 
   // sets the target height of the subsystem. Ends when the subsystem reaches this height
-  public Command setTargetSpeedCommandConsistentEnd(double targetHeight) {
-    return new InstantCommand(() -> this.setTargetSpeed(targetHeight), this)
+  public Command setTargetSpeedCommandConsistentEnd(double targetSpeed) {
+    return new InstantCommand(() -> this.setTargetSpeed(targetSpeed), this)
         .andThen(new WaitUntilCommand(() -> this.isOnTarget));
   }
 
