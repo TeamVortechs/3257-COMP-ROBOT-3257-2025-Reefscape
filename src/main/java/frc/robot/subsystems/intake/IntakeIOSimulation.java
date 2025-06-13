@@ -68,10 +68,15 @@ public class IntakeIOSimulation implements IntakeIO {
 
   // sets the position of the rollers. This function will most likely not be implemented
   @Override
-  public void setRotationTarget(double position) {
+  public void setTargetPosition(double position) {
     controlType = VTControlType.POSITION_PID;
 
     targetPosition = position;
+  }
+
+  @Override
+  public double getTargetPosition() {
+    return targetPosition;
   }
 
   // misc methods
@@ -99,23 +104,23 @@ public class IntakeIOSimulation implements IntakeIO {
 
   // gets the highest possible height of the arm in radians
   @Override
-  public double getMaxRotations() {
+  public double getMaxPosition() {
     return maxPosition;
   }
 
   // gets the height of the arm in meters
   @Override
-  public double getRotations() {
+  public double getPosition() {
     return motorSim.getAngularPositionRotations();
   }
 
   @Override
   public boolean isMaxPosition() {
-    return getMaxRotations() - getRotations() < tolerance;
+    return getMaxPosition() - getPosition() < tolerance;
   }
 
   @Override
-  public void setSpeedTarget(double speed) {
+  public void setTargetSpeed(double speed) {
     controlType = VTControlType.SPEED_PID;
     targetSpeed = speed;
 
@@ -147,8 +152,5 @@ public class IntakeIOSimulation implements IntakeIO {
 
 /*
 todolist:
--add feedforward to simulation
--make sure the different new subsystems work
--take all of the extra functionality out of the arm class
 -standardize io layers
  */

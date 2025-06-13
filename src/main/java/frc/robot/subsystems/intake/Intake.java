@@ -71,7 +71,7 @@ public class Intake extends SubsystemBase {
     // Clamp target speed to prevent exceeding limits
     targetSpeed = VortechsUtil.clamp(targetSpeed, Constants.CIntake.MAX_TARGET_SPEED);
 
-    moduleIO.setSpeedTarget(targetSpeed);
+    moduleIO.setTargetSpeed(targetSpeed);
   }
 
   /** Sets a new target height for the Intake using PID control. */
@@ -100,7 +100,7 @@ public class Intake extends SubsystemBase {
     if (Math.abs(targetSpeed - currentSpeed) > CIntake.SPEED_TOLERANCE) {
 
       targetSpeed = currentSpeed;
-      moduleIO.setRotationTarget(moduleIO.getRotations());
+      moduleIO.setTargetPosition(moduleIO.getPosition());
     }
   }
 

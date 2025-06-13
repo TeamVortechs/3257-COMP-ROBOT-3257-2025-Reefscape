@@ -1,6 +1,5 @@
-package frc.robot.subsystems.intake;
+package frc.robot.util;
 
-import frc.robot.util.VTControlType;
 import org.littletonrobotics.junction.AutoLog;
 
 /**
@@ -16,9 +15,9 @@ seconds
 volts
 amperes
  */
-public interface IntakeIO {
+public interface MotorIO {
   @AutoLog
-  public static class IntakeIOInputs {
+  public static class MotorIOInputs {
     double rollerAmps = 0;
     double rollerVolts = 0;
     double rollerSpeed = 0;
@@ -32,7 +31,7 @@ public interface IntakeIO {
   }
 
   // updates the given inputs with new values(advantage kit stuff)
-  public default void updateInputs(IntakeIOInputsAutoLogged inputsAutoLogged) {}
+  public default void updateInputs(MotorIOInputsAutoLogged inputsAutoLogged) {}
 
   // getters for motors
 
