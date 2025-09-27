@@ -52,7 +52,17 @@ public final class Constants {
   }
 
   public class CDrivetrain {
-    public static PathConstraints pathConstraints =
+    public static PathConstraints DEFAULT_PATH_CONSTRAINTS =
         new PathConstraints(3.5, 4, Math.PI * 3.5, Math.PI * 4);
+
+    public static double TOLERANCE_DIST = 0.1;
+    public static double TOLERANCE_ROT = 0.1;
+  }
+
+  public class CIntake {
+    // dummy values for now
+    public static final double MAX_TARGET_SPEED = 100;
+    public static final double MAX_MANUAL_SPEED = 100;
+    public static final double SPEED_TOLERANCE = 0.2;
   }
 }

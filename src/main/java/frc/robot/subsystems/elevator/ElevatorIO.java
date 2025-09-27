@@ -38,11 +38,11 @@ public interface ElevatorIO {
   ;
 
   /** Stops the motor immediately */
-  default void stop() {}
+  public default void stop() {}
   ;
 
   /** returns true if either motor has exceeded 40 amps of torque current */
-  default boolean checkIfStalled() {
+  public default boolean checkIfStalled() {
     return false;
   }
   ;

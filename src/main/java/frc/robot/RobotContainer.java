@@ -23,10 +23,9 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants.CDrivetrain;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.communication.ControllerVibrateCommand;
 import frc.robot.commands.communication.TellCommand;
@@ -34,6 +33,9 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.arm.ArmSimulationIO;
+import frc.robot.subsystems.canrange.RangeFinder;
+import frc.robot.subsystems.canrange.RangeFinderIO;
+import frc.robot.subsystems.canrange.RangeFinderSimulationIO;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -43,10 +45,14 @@ import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.elevator.ElevatorSimulationIO;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.IntakeIO;
+import frc.robot.subsystems.intake.IntakeIOSimulation;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
-import frc.robot.util.FieldMovement.ClosestPoseSupplierVortechs;
-import frc.robot.util.FieldMovement.PathfinderVortechs;
+import frc.robot.util.FieldMovement.VortechsUtil;
+import frc.robot.util.FieldMovement.pathfindingUtil.PathfinderVortechs;
+import frc.robot.util.FieldMovement.pathfindingUtil.VortechsClosestPoseSupplier;
 import java.util.ArrayList;
 import java.util.List;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -74,6 +80,11 @@ public class RobotContainer {
   private final Arm arm;
   private final Elevator elevator;
 
+  private final Intake intake;
+  private final RangeFinder canRange;
+
+  private final PathfinderVortechs pathfinderVortechs;
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     switch (Constants.currentMode) {
@@ -94,6 +105,9 @@ public class RobotContainer {
 
         arm = new Arm(new ArmIO() {});
         elevator = new Elevator(new ElevatorIO() {}, arm);
+
+        canRange = new RangeFinder(new RangeFinderIO() {});
+        intake = new Intake(new IntakeIO() {}, canRange);
         break;
 
       case SIM:
@@ -110,6 +124,10 @@ public class RobotContainer {
 
         arm = new Arm(new ArmSimulationIO());
         elevator = new Elevator(new ElevatorSimulationIO() {}, arm);
+
+        canRange = new RangeFinder(new RangeFinderSimulationIO());
+        intake = new Intake(new IntakeIOSimulation(), canRange);
+
         break;
 
       default:
@@ -125,8 +143,15 @@ public class RobotContainer {
 
         arm = new Arm(new ArmIO() {});
         elevator = new Elevator(new ElevatorIO() {}, arm);
+
+        canRange = new RangeFinder(new RangeFinderIO() {});
+        intake = new Intake(new IntakeIO() {}, canRange);
         break;
     }
+
+    pathfinderVortechs =
+        new PathfinderVortechs(
+            Constants.CDrivetrain.DEFAULT_PATH_CONSTRAINTS, () -> drive.getPose());
 
     registerNamedCommandsAuto();
 
@@ -138,11 +163,6 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
 
-    SmartDashboard.putData(
-        "CanRange Distance 0", (Sendable) this.arm.setCanrangeDistanceCommand(0));
-    SmartDashboard.putData(
-        "CanRange Distance 1000", (Sendable) this.arm.setCanrangeDistanceCommand(1000));
-
     SmartDashboard.putData("Elevator height 0", (Sendable) this.elevator.setTargetHeightCommand(0));
     SmartDashboard.putData("Elevator height 5", (Sendable) this.elevator.setTargetHeightCommand(5));
 
@@ -150,33 +170,35 @@ public class RobotContainer {
     SmartDashboard.putData("arm set target angle 5", (Sendable) this.arm.setTargetHeightCommand(5));
 
     SmartDashboard.putData(
-        "arm set roller speed 1", (Sendable) this.arm.setRollerSpeedCommand(1, true));
+        "canrange set distance 100", (Sendable) this.canRange.setCanrangeDistanceCommand(100));
     SmartDashboard.putData(
-        "arm set roller speed -1", (Sendable) this.arm.setRollerSpeedCommand(-1, true));
+        "canrange set distance 0", (Sendable) this.canRange.setCanrangeDistanceCommand(0));
 
-    arm.setDefaultCommand(arm.setRollerSpeedCommand(0, true));
+    SmartDashboard.putData(
+        "intake set power 100", (Sendable) this.intake.setTargetSpeedCommand(100));
+    SmartDashboard.putData("intake set power 0", (Sendable) this.intake.setTargetSpeedCommand(0));
+    SmartDashboard.putData(
+        "intake set power -100", (Sendable) this.intake.setTargetSpeedCommand(-100));
 
-    List<Pose2d> index1 = new ArrayList<>();
-    index1.add(new Pose2d(7.050, 1, Rotation2d.fromDegrees(23)));
-    index1.add(new Pose2d(2.094, 1, Rotation2d.fromDegrees(345)));
-    index1.add(new Pose2d(2.000, 7, Rotation2d.fromDegrees(180)));
-    index1.add(new Pose2d(6.5, 7, Rotation2d.fromDegrees(270)));
+    SmartDashboard.putData(
+        "intake until canrange", (Sendable) this.intake.intakeUntilCanRangeIsDetected(100, 10));
+    ;
 
-    ClosestPoseSupplierVortechs targetPoseSupplier =
-        new ClosestPoseSupplierVortechs(() -> drive.getPose(), index1);
-    targetPoseSupplier.setPipeline(0);
+    List<Pose2d> pathPoses = new ArrayList<>();
+    pathPoses.add(new Pose2d());
+    pathPoses.add(new Pose2d(10, 2, new Rotation2d()));
+    VortechsClosestPoseSupplier poseSupplier =
+        new VortechsClosestPoseSupplier(pathPoses, () -> drive.getPose());
 
-    PathfinderVortechs pathfinderVortechs =
-        new PathfinderVortechs(CDrivetrain.pathConstraints, () -> drive.getPose());
-    pathfinderVortechs.setTargetPoseSupplier(() -> targetPoseSupplier.getClosestPose());
+    Command command =
+        pathfinderVortechs
+            .runPathCommand(() -> poseSupplier.getClosestPose())
+            .alongWith(
+                new WaitUntilCommand(() -> VortechsUtil.hasReachedDistance(0.2, pathfinderVortechs))
+                    .andThen(arm.setTargetHeightCommandConsistentEnd(5))
+                    .andThen(elevator.setTargetHeightCommand(5)));
 
-    pathfinderVortechs.addSecondaryCommand(1, () -> arm.setTargetHeightCommand(5));
-    controller
-        .rightTrigger()
-        .onTrue(
-            arm.setTargetHeightCommandConsistentEnd(0)
-                .andThen(new InstantCommand(() -> pathfinderVortechs.start())));
-    controller.rightTrigger().onFalse(new InstantCommand(() -> pathfinderVortechs.stop()));
+    SmartDashboard.putData("run auto routine", (Sendable) command);
   }
 
   /**
@@ -261,5 +283,13 @@ public class RobotContainer {
 
   public Elevator getElevator() {
     return elevator;
+  }
+
+  public RangeFinder getCanRange() {
+    return canRange;
+  }
+
+  public Intake getIntake() {
+    return intake;
   }
 }
