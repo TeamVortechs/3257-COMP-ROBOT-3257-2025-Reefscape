@@ -13,6 +13,8 @@
 
 package frc.robot;
 
+import static frc.robot.subsystems.vision.VisionConstants.ROBOT_TO_ARDUCAM_RIGHT;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.PathConstraints;
@@ -55,6 +57,8 @@ import frc.robot.subsystems.elevator.ElevatorModuleTalonFXIO;
 // import frc.robot.subsystems.elevator.Elevator2;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
+import frc.robot.subsystems.vision.VisionIOPhotonVision;
+import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.Wrist.WristAngle;
 import frc.robot.subsystems.wrist.WristIO;
@@ -120,8 +124,7 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive::addVisionMeasurement,
-                new VisionIO() {},
-                new VisionIO() {}); // disable vision in match
+                new VisionIOPhotonVision("Arducam_Right", ROBOT_TO_ARDUCAM_RIGHT));
         // new Vision(
         //     drive::addVisionMeasurement,
         //     // new VisionIOPhotonVision(
@@ -164,7 +167,11 @@ public class RobotContainer {
         //             VisionConstants.ARDUCAM_RIGHT_NAME,
         //             VisionConstants.ROBOT_TO_ARDUCAM_RIGHT,
         //             drive::getPose));
-        vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
+        vision =
+            new Vision(
+                drive::addVisionMeasurement,
+                new VisionIOPhotonVisionSim(
+                    "Fake_Arducam_Right", ROBOT_TO_ARDUCAM_RIGHT, () -> drive.getPose()));
         wrist = new Wrist(new WristIOSimulation());
         elevator = new Elevator(new ElevatorModuleIOSimulation(), wrist);
         break;

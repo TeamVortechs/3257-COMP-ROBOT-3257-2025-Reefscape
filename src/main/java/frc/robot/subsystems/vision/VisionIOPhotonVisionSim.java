@@ -54,7 +54,7 @@ public class VisionIOPhotonVisionSim extends VisionIOPhotonVision {
     // Create simulated camera properties. These can be set to mimic your actual camera.
     cameraProp.setCalibration(640, 480, Rotation2d.fromDegrees(70));
     cameraProp.setCalibError(0.35, 0.10);
-    cameraProp.setFPS(30);
+    cameraProp.setFPS(60);
     cameraProp.setAvgLatencyMs(10);
     cameraProp.setLatencyStdDevMs(3);
 

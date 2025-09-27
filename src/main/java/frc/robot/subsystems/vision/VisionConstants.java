@@ -43,8 +43,9 @@ public class VisionConstants {
   public static final Transform3d
       ROBOT_TO_ARDUCAM_RIGHT = // ORGNL TRANS: (0.17, -0.24, 0.76,) ROT:  (0.0, 0.3909538,
           // 0.0174533)
-          // new original Y is -0.2002028
-          new Transform3d(0.2794, -0.24, 0.739902, new Rotation3d(0.0, 0.174533, 0.349066));
+          // 9/27/25 new transform is  (x, y, z), (roll, pitch, 0.523599)
+          // note that x is forwards and y is left
+          new Transform3d(0.22, -0.3, 0.16, new Rotation3d(0.0, -0.4153884, 0.349066));
 
   // Basic filtering thresholds
   public static final double maxAmbiguity = 0.2;
