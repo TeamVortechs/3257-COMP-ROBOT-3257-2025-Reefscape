@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.9,
-        "y": 4.0
+        "x": 5.864856957087126,
+        "y": 4.0197659297789325
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.144715934090061,
-        "y": 4.051128383530374
+        "x": 6.109572891177186,
+        "y": 4.0708943133093065
       },
       "isLocked": false,
       "linkedName": "AlgaeIntakeMid"

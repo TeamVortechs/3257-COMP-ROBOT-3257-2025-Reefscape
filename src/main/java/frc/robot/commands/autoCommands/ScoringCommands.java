@@ -88,7 +88,8 @@ public class ScoringCommands {
                     wrist, () -> Constants.Arm.REEF_INTAKE_ANGLE))
             .andThen(
                 SetElevatorPresetCommand.withEndCondition(
-                    elevator, Constants.Elevator.INTAKE_LEVEL_1));
+                    elevator, Constants.Elevator.INTAKE_LEVEL_1))
+            .withDeadline(new WaitCommand(3));
 
       case 2: // high reef algae
         return new InstantCommand(() -> wrist.setHasCoral(false))
@@ -118,7 +119,8 @@ public class ScoringCommands {
             SetElevatorPresetCommand.withEndCondition(elevator, Constants.Elevator.BARGE_LEVEL))
         .andThen(SetWristTargetAngleCommand.withConsistentEnd(wrist, () -> 0))
         .andThen(
-            new InstantCommand(() -> wrist.setRollerSpeed(-1), wrist).andThen(new WaitCommand(1)));
+            new InstantCommand(() -> wrist.setRollerSpeedUncapped(-1), wrist)
+                .withDeadline(new WaitCommand(1)));
   }
 
   public static Command prepForScoring(int level, Wrist wrist, Elevator elevator) {

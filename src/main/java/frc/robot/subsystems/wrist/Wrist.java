@@ -1,5 +1,6 @@
 package frc.robot.subsystems.wrist;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -56,7 +57,7 @@ public class Wrist extends SubsystemBase {
     wristIO.PIDVoltage(targetAngle);
 
     // if canrange detects ball, switch to holding power instead
-    if (wristIO.isDetected()) {
+    if (wristIO.isDetected() && !DriverStation.isAutonomous()) {
       wristIO.setRollerSpeed(Constants.Arm.ROLLER_HOLDING_POWER);
     }
   }
@@ -107,12 +108,16 @@ public class Wrist extends SubsystemBase {
 
   // sets the roller speed
   public void setRollerSpeed(double speed) {
-    if (wristIO.isDetected() && speed > Constants.Arm.ROLLER_HOLDING_POWER) {
+    if (wristIO.isDetected() && (speed > Constants.Arm.ROLLER_HOLDING_POWER)) {
       // if there's a ball in there and you're trying to intake, set to holding power instead
       wristIO.setRollerSpeed(Constants.Arm.ROLLER_HOLDING_POWER);
     } else {
       wristIO.setRollerSpeed(speed);
     }
+  }
+
+  public void setRollerSpeedUncapped(double speed) {
+    wristIO.setRollerSpeed(speed);
   }
 
   // gets the roller speed
