@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 /*
 Names
 brief description
+Says something in chat, is good for debugging
  */
 public class TellCommand extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
