@@ -382,12 +382,16 @@ public class DriveCommands {
       DoubleSupplier limelightYSupplier,
       Supplier<Rotation2d> limelightRotationSupplier) {
 
-    if (LimelightHelpers.getTA("") > 0) {
-      return LimelightDrive(
-          drive, limelightXSupplier, limelightYSupplier, limelightRotationSupplier);
-    } else {
-      return RobotCentricDrive(drive, xSupplier, ySupplier, omegaSupplier);
-    }
+    // if (LimelightHelpers.getTA("") > 0) {
+    //   return LimelightDrive(
+    //       drive, limelightXSupplier, limelightYSupplier, limelightRotationSupplier);
+    // } else {
+    //   return RobotCentricDrive(drive, xSupplier, ySupplier, omegaSupplier);
+    // }
+    return Commands.either(
+        LimelightDrive(drive, limelightXSupplier, limelightYSupplier, limelightRotationSupplier),
+        RobotCentricDrive(drive, xSupplier, ySupplier, omegaSupplier),
+        () -> LimelightHelpers.getTA("") > 0);
   }
 
   /**

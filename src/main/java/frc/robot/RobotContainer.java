@@ -318,54 +318,43 @@ public class RobotContainer {
                 .ignoringDisable(true));
 
     // A while held does semi-automatic limelight tracking
-    // on release sets arm back to upright position
-    // controller
-    //     .a()
-    //     .whileTrue(
-    //         DriveCommands.ChooseIfLimelightDrive(
-    //                 drive,
-    //                 () -> -controller.getLeftY(),
-    //                 () -> -controller.getLeftX(),
-    //                 () -> -controller.getRightX(), // end regular drive input
-    //                 () -> getLLDTranslationX(),
-    //                 () -> getLLDTranslationY(),
-    //                 () -> getLLDOmega()) // end limelight inputs
-    //             // while this runs, start intaking if target spotted
-    //             .alongWith(
-    //                 // if valid target, not holding algae and not holding coral, intake
-    //                 // else, keep rollers at regular intake power
-    //                 Commands.either(
-    //                         Commands.run(
-    //                             () -> wrist.setRollerSpeed(Constants.Arm.ROLLER_INTAKE_POWER),
-    //                             wrist),
-    //                         Commands.run(
-    //                             () -> wrist.setRollerSpeed(Constants.Arm.ROLLER_HOLDING_POWER),
-    //                             wrist),
-    //                         () ->
-    //                             LimelightHelpers.getTA("") != 0
-    //                                 && !wrist.getIsDetected()
-    //                                 && !wrist.hasCoral()
-    //                         // true
-    //                         )
-    //                     .repeatedly()) // before running, set pipeline index to 1 for algae
-    // tracking
-    //             .beforeStarting(
-    //                 Commands.runOnce(
-    //                         () -> LimelightHelpers.setPipelineIndex("", 1),
-    //                         vision // technically doesn't need this since it's limelight
-    //                         // and then set the arm to ground intake position
-    //                         )
-    //                     .andThen(ScoringCommands.prepForScoring(6, wrist, elevator))))
-    //     .onFalse( // on release set roller speed back to holding and set arm back to ready
-    // position
-    //         new InstantCommand(
-    //                 () -> wrist.setRollerSpeed(Constants.Arm.ROLLER_HOLDING_POWER), wrist)
-    //             .andThen(
-    //                 new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.SCORING_ANGLE)
-    //                     .onlyIf(
-    //                         () ->
-    //                             elevator.getCurrentHeight() <=
-    // Constants.Elevator.INTAKE_LEVEL_2)));
+    // on second press sets back to upright position
+    controller
+        .a()
+        .toggleOnTrue(
+            DriveCommands.ChooseIfLimelightDrive(
+                    drive,
+                    () -> -controller.getLeftY(),
+                    () -> -controller.getLeftX(),
+                    () -> -controller.getRightX(), // end regular drive input
+                    () -> getLLDTranslationX(),
+                    () -> getLLDTranslationY(),
+                    () -> getLLDOmega()).until(() -> controller.a().getAsBoolean() == false).andThen(ScoringCommands.prepForScoring(4, wrist, elevator)) // end limelight inputs
+                // while this runs, start intaking if target spotted
+                // .alongWith(
+                //     // if valid target, not holding algae and not holding coral, intake
+                //     // else, keep rollers at regular intake power
+                //     Commands.either(
+                //             Commands.run(
+                //                 () -> wrist.setRollerSpeed(Constants.Arm.ROLLER_INTAKE_POWER),
+                //                 wrist),
+                //             Commands.run(
+                //                 () -> wrist.setRollerSpeed(Constants.Arm.ROLLER_HOLDING_POWER),
+                //                 wrist),
+                //             () ->
+                //                 LimelightHelpers.getTA("") != 0
+                //                     && !wrist.getIsDetected()
+                //                     && !wrist.hasCoral()
+                //             // true
+                //             )
+                //         .repeatedly()) // before running, set pipeline index to 0 for tag tracking
+                .beforeStarting(
+                    Commands.runOnce(
+                        () -> LimelightHelpers.setPipelineIndex("", 0),
+                        vision // technically doesn't need this since it's limelight
+                        // don't touch the arm controls at all
+                        ))
+                        );
 
     /*
      * operator control binds
