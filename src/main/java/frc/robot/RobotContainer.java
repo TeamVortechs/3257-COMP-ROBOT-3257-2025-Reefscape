@@ -125,6 +125,7 @@ public class RobotContainer {
             new Vision(
                 drive::addVisionMeasurement,
                 new VisionIOPhotonVision("Arducam_Right", ROBOT_TO_ARDUCAM_RIGHT));
+
         // new Vision(
         //     drive::addVisionMeasurement,
         //     // new VisionIOPhotonVision(
@@ -366,6 +367,18 @@ public class RobotContainer {
     //                         () ->
     //                             elevator.getCurrentHeight() <=
     // Constants.Elevator.INTAKE_LEVEL_2)));
+
+    // TEMP BIND: A enables automatic reef alignment
+    controller
+        .a()
+        .toggleOnTrue(
+            DriveCommands.CentralReefAlign(
+                drive,
+                () -> -controller.getLeftY(),
+                () -> -controller.getLeftX(),
+                () -> -controller.getRightX(),
+                vision,
+                0));
 
     /*
      * operator control binds

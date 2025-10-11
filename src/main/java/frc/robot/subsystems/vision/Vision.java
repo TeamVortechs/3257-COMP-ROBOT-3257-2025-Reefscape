@@ -63,6 +63,26 @@ public class Vision extends SubsystemBase {
   public Rotation2d getTargetX(int cameraIndex) {
     return inputs[cameraIndex].latestTargetObservation.tx();
   }
+  /**
+   * returns the first target ID if the last pose observation is fresher than leniencyTime
+   * (currently 0.5s) if no IDs found
+   *
+   * @param cameraIndex
+   * @return
+   */
+  public int getTargetID(int cameraIndex) {
+    var leniencyTime = 0.5; // time until latest pose observation is invalidated
+    if (inputs[cameraIndex].poseObservations.length > 0
+        && // if more than 0 observations,
+        // inputs[cameraIndex].poseObservations[0].timestamp() < leniencyTime
+        // && // latest observation is still fresh,
+        inputs[cameraIndex].tagIds.length > 0) { // and at least 1 tag is seen,
+      return inputs[cameraIndex]
+          .tagIds[0]; // return the first tag ID (not sure if this will break everything ngl)
+    } else { // otherwise, return -1
+      return -1;
+    }
+  }
 
   @Override
   public void periodic() {

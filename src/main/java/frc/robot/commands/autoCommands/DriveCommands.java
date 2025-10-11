@@ -13,13 +13,19 @@
 
 package frc.robot.commands.autoCommands;
 
+import static frc.robot.subsystems.vision.VisionConstants.aprilTagLayout;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
@@ -31,6 +37,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.LimelightHelpers;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.vision.Vision;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.LinkedList;
@@ -389,6 +396,65 @@ public class DriveCommands {
       return RobotCentricDrive(drive, xSupplier, ySupplier, omegaSupplier);
     }
   }
+
+  /**
+   * command that fetches photonvision camera data and uses its local coordinates to help line the
+   * robot with the center of the reef
+   *
+   * @return Command
+   */
+  public static Command CentralReefAlign(
+      Drive drive,
+      DoubleSupplier xSupplier,
+      DoubleSupplier ySupplier,
+      DoubleSupplier omegaSupplier,
+      Vision vision,
+      int cameraindex) {
+    return Commands.run(
+        () -> {
+          int tagID = vision.getTargetID(cameraindex);
+          System.out.println(tagID);
+          Command reefDrive;
+
+          if (tagID == -1) { // if no tags in result, just return normal driving
+            System.out.println("Choosing joystick drive.");
+            reefDrive = joystickDrive(drive, xSupplier, ySupplier, omegaSupplier);
+
+          } else {
+            System.out.println("Choosing vision.");
+            Pose3d tagPose = aprilTagLayout.getTagPose(tagID).orElseThrow();
+            Transform3d fieldToTag =
+                new Transform3d(tagPose.getTranslation(), tagPose.getRotation());
+            Transform3d fieldToRobot =
+                new Transform3d(
+                    new Translation3d(drive.getPose().getTranslation()),
+                    new Rotation3d(drive.getPose().getRotation()));
+            Transform3d robotToTag = fieldToTag.plus(fieldToRobot);
+            var dx = robotToTag.getX(); // i'm not sure if this is WPI x or not
+            double xMax = 7; // !!!DUMMY VALUE: max allowed x displacement from the robot allowed
+            double xTranslation =
+                dx / xMax > 1
+                    ? 1
+                    : dx / xMax; // if ratio of delta x to max x is greater than 1, set to 1;
+            // otherwise, set to dx/xMax
+            var domega = robotToTag.getRotation().getAngle();
+            reefDrive =
+                RobotCentricDriveWhileTurningToAngle(
+                    drive, () -> xTranslation, ySupplier, () -> new Rotation2d(domega));
+          }
+
+          reefDrive
+              .withName("Reef Drive")
+              .onlyWhile(
+                  () ->
+                      CentralReefAlign(
+                              drive, xSupplier, ySupplier, omegaSupplier, vision, cameraindex)
+                          .isScheduled())
+              .schedule();
+        },
+        drive,
+        vision);
+  } // end central reef align
 
   /**
    * Measures the velocity feedforward constants for the drive motors.
