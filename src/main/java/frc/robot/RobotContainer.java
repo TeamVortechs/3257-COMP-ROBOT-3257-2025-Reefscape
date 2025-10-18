@@ -57,7 +57,6 @@ import frc.robot.subsystems.elevator.ElevatorModuleTalonFXIO;
 // import frc.robot.subsystems.elevator.Elevator2;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
-import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.Wrist.WristAngle;
@@ -124,7 +123,10 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive::addVisionMeasurement,
-                new VisionIOPhotonVision("Arducam_Right", ROBOT_TO_ARDUCAM_RIGHT));
+                // new VisionIOPhotonVision("Arducam_Right", ROBOT_TO_ARDUCAM_RIGHT)
+                // new VisionIOLimelight("limelight", drive::getRotation)
+                new VisionIO() {} // disable vision measurements for now
+                );
         // new Vision(
         //     drive::addVisionMeasurement,
         //     // new VisionIOPhotonVision(
@@ -323,13 +325,16 @@ public class RobotContainer {
         .a()
         .toggleOnTrue(
             DriveCommands.ChooseIfLimelightDrive(
+                    controller,
                     drive,
                     () -> -controller.getLeftY(),
                     () -> -controller.getLeftX(),
                     () -> -controller.getRightX(), // end regular drive input
-                    () -> getLLDTranslationX(),
+                    // () -> getLLDTranslationX(),
+                    () -> -controller.getLeftY(), // use manual forward/backwards inputs
                     () -> getLLDTranslationY(),
-                    () -> getLLDOmega()).until(() -> controller.a().getAsBoolean() == false).andThen(ScoringCommands.prepForScoring(4, wrist, elevator)) // end limelight inputs
+                    () -> getLLDOmega()) // end limelight inputs
+
                 // while this runs, start intaking if target spotted
                 // .alongWith(
                 //     // if valid target, not holding algae and not holding coral, intake
@@ -347,14 +352,14 @@ public class RobotContainer {
                 //                     && !wrist.hasCoral()
                 //             // true
                 //             )
-                //         .repeatedly()) // before running, set pipeline index to 0 for tag tracking
+                //         .repeatedly()) // before running, set pipeline index to 0 for tag
+                // tracking
                 .beforeStarting(
                     Commands.runOnce(
                         () -> LimelightHelpers.setPipelineIndex("", 0),
                         vision // technically doesn't need this since it's limelight
                         // don't touch the arm controls at all
-                        ))
-                        );
+                        )));
 
     /*
      * operator control binds
@@ -419,7 +424,7 @@ public class RobotContainer {
    * @return double, 0-1 scaled like a joystick to feed into limelight drive for forwards movement
    */
   private double getLLDTranslationY() {
-    double scaleFactor = 1.4; // arbitrary constant to make movement stronger
+    double scaleFactor = 0.5; // arbitrary constant to make movement stronger
     // for safety, return 1 at most if ordered translation is above 1
     double orderedTranslation =
         Units.degreesToRadians(LimelightHelpers.getTX("") * -1) * scaleFactor <= 1
@@ -433,7 +438,7 @@ public class RobotContainer {
    * @return double, 0-1 scaled like a joystick to feed into limelight drive for forwards movement
    */
   private Rotation2d getLLDOmega() {
-    double scaleFactor = 2; // arbitrary constant to make turning stronger
+    double scaleFactor = 0.5; // arbitrary constant to make turning stronger
     return new Rotation2d(
         Units.degreesToRadians( // *-1 because robot is CCW+ while limelight is CW+
             LimelightHelpers.getTX("") * -1 * scaleFactor));

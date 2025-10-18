@@ -29,7 +29,9 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.LimelightHelpers;
+import frc.robot.commands.communication.ControllerVibrateCommand;
 import frc.robot.subsystems.drive.Drive;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -297,10 +299,10 @@ public class DriveCommands {
 
               // variables to ensure that the PID behaves itself and doesn't try
               // to switch the wheels back and forth rapidly at low speed input
-              double ACCEPTABLE_DEVIATION = 0.08; // acceptable angle deviation in radians
+              double ACCEPTABLE_DEVIATION = 0.04; // acceptable angle deviation in radians
               double MINIMUM_Y_VELOCITY = 0.1; // minimum *magnitude* of velocity
               double ACTIVATION_ANGLE =
-                  ACCEPTABLE_DEVIATION * 4; // angle in rads when to start going forwards
+                  ACCEPTABLE_DEVIATION * 1.5; // angle in rads when to start going forwards
               // Get linear velocity
               // if not greater than MINIMUM_LINEAR_VELOCITY then create a new translation2d
               // get linear magnitude and square it to mimic getLinearVelocityFromJoysticks
@@ -374,6 +376,7 @@ public class DriveCommands {
    * otherwise, return the normal joystick drive command
    */
   public static Command ChooseIfLimelightDrive(
+      CommandXboxController controller,
       Drive drive,
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
@@ -381,6 +384,14 @@ public class DriveCommands {
       DoubleSupplier limelightXSupplier,
       DoubleSupplier limelightYSupplier,
       Supplier<Rotation2d> limelightRotationSupplier) {
+    // safety measures to prevent robot smashing in manual mode
+    double horizontalSafetyScaling =
+        0.4; // multiply input supplier by this number (0-1) for safety reasons
+    // var xSupplierDoubleSafe = xSupplier.getAsDouble() * horizontalSafetyScaling;
+    // var ySupplierDoubleSafe = ySupplier.getAsDouble() * horizontalSafetyScaling;
+
+    double rotationalSafetyScaling = 0.4; // same as above
+    // var omegaSupplierDoubleSafe = omegaSupplier.getAsDouble() * rotationalSafetyScaling;
 
     // if (LimelightHelpers.getTA("") > 0) {
     //   return LimelightDrive(
@@ -388,10 +399,25 @@ public class DriveCommands {
     // } else {
     //   return RobotCentricDrive(drive, xSupplier, ySupplier, omegaSupplier);
     // }
-    return Commands.either(
-        LimelightDrive(drive, limelightXSupplier, limelightYSupplier, limelightRotationSupplier),
-        RobotCentricDrive(drive, xSupplier, ySupplier, omegaSupplier),
-        () -> LimelightHelpers.getTA("") > 0);
+    return Commands
+        .either( // using manual driving for the forward-back supplier, so limelightXSupplier goes
+            // unused
+            LimelightDrive(
+                    drive,
+                    () -> xSupplier.getAsDouble() * horizontalSafetyScaling,
+                    limelightYSupplier,
+                    limelightRotationSupplier)
+                .until(() -> LimelightHelpers.getTV("") == false)
+                .deadlineFor(new ControllerVibrateCommand(0.8, controller)),
+            RobotCentricDrive(
+                    drive,
+                    () -> xSupplier.getAsDouble() * horizontalSafetyScaling,
+                    () -> ySupplier.getAsDouble() * horizontalSafetyScaling,
+                    () -> omegaSupplier.getAsDouble() * rotationalSafetyScaling)
+                .until(() -> LimelightHelpers.getTV(""))
+                .deadlineFor(new ControllerVibrateCommand(0.015, controller)),
+            () -> LimelightHelpers.getTV(""))
+        .repeatedly();
   }
 
   /**
