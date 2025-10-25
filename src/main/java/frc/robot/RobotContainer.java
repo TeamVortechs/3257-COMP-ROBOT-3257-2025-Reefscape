@@ -327,9 +327,10 @@ public class RobotContainer {
             DriveCommands.ChooseIfLimelightDrive(
                     controller,
                     drive,
-                    () -> -controller.getLeftY(),
-                    () -> -controller.getLeftX(),
-                    () -> -controller.getRightX(), // end regular drive input
+                    () -> -controller.getLeftY() * controller.getLeftY(),
+                    () -> -controller.getLeftX() * controller.getLeftX(),
+                    () ->
+                        -controller.getRightX() * controller.getRightX(), // end regular drive input
                     // () -> getLLDTranslationX(),
                     () -> -controller.getLeftY(), // use manual forward/backwards inputs
                     () -> getLLDTranslationY(),

@@ -89,7 +89,7 @@ public class ScoringCommands {
             .andThen(
                 SetElevatorPresetCommand.withEndCondition(
                     elevator, Constants.Elevator.INTAKE_LEVEL_1))
-            .withDeadline(new WaitCommand(3));
+            .withDeadline(new WaitCommand(1.9));
 
       case 2: // high reef algae
         return new InstantCommand(() -> wrist.setHasCoral(false))
