@@ -487,7 +487,7 @@ public class RobotContainer {
 
     addNamedCommand(
         "reset",
-        ScoringCommands.prepForIntakeAuto(1, wrist, elevator).withDeadline(new WaitCommand(2)),
+        ScoringCommands.prepForIntakeAuto(1, wrist, elevator).withDeadline(new WaitCommand(5)),
         isReal);
 
     addNamedCommand("intakeStage2", ScoringCommands.intakeAuto(2, wrist, elevator), isReal);
