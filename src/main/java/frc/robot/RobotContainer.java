@@ -235,7 +235,7 @@ public class RobotContainer {
             drive,
             () -> -controller.getLeftY(),
             () -> -controller.getLeftX(),
-            () -> -controller.getRightX()));
+            () -> -controller.getRightX() * 0.8));
     // constantly slowly intake to keep algae from falling out uness the wrist has a coral in it as
     // part of startup
     wrist.setDefaultCommand(
