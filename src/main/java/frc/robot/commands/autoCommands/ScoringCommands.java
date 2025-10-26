@@ -89,7 +89,7 @@ public class ScoringCommands {
             .andThen(
                 SetElevatorPresetCommand.withEndCondition(
                     elevator, Constants.Elevator.INTAKE_LEVEL_1))
-            .withDeadline(new WaitCommand(1.9));
+            .withDeadline(new WaitCommand(3));
 
       case 2: // high reef algae
         return new InstantCommand(() -> wrist.setHasCoral(false))
@@ -106,8 +106,8 @@ public class ScoringCommands {
   }
 
   public static Command eject(Wrist wrist) {
-    return new InstantCommand();
-    // return new InstantCommand(() -> wrist.setRollerSpeed(-1), wrist).andThen(new WaitCommand(1));
+    // return new InstantCommand();
+    return new InstantCommand(() -> wrist.setRollerSpeed(-1), wrist).andThen(new WaitCommand(1));
   }
 
   public static Command scoreAuto(Wrist wrist, Elevator elevator) {
@@ -118,6 +118,7 @@ public class ScoringCommands {
         .andThen(
             SetElevatorPresetCommand.withEndCondition(elevator, Constants.Elevator.BARGE_LEVEL))
         .andThen(SetWristTargetAngleCommand.withConsistentEnd(wrist, () -> 0))
+        .withDeadline(new WaitCommand(2))
         .andThen(
             new InstantCommand(() -> wrist.setRollerSpeedUncapped(-1), wrist)
                 .withDeadline(new WaitCommand(1)));

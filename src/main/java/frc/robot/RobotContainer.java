@@ -327,10 +327,9 @@ public class RobotContainer {
             DriveCommands.ChooseIfLimelightDrive(
                     controller,
                     drive,
-                    () -> -controller.getLeftY() * controller.getLeftY(),
-                    () -> -controller.getLeftX() * controller.getLeftX(),
-                    () ->
-                        -controller.getRightX() * controller.getRightX(), // end regular drive input
+                    () -> -controller.getLeftY(),
+                    () -> -controller.getLeftX(),
+                    () -> -controller.getRightX(), // end regular drive input
                     // () -> getLLDTranslationX(),
                     () -> -controller.getLeftY(), // use manual forward/backwards inputs
                     () -> getLLDTranslationY(),
@@ -488,7 +487,7 @@ public class RobotContainer {
 
     addNamedCommand(
         "reset",
-        ScoringCommands.prepForIntakeAuto(1, wrist, elevator).withDeadline(new WaitCommand(5)),
+        ScoringCommands.prepForIntakeAuto(1, wrist, elevator).withDeadline(new WaitCommand(3)),
         isReal);
 
     addNamedCommand("intakeStage2", ScoringCommands.intakeAuto(2, wrist, elevator), isReal);
