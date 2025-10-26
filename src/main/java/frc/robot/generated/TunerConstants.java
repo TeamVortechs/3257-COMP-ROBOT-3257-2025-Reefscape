@@ -138,7 +138,7 @@ public class TunerConstants {
   private static final int kFrontLeftDriveMotorId = 31;
   private static final int kFrontLeftSteerMotorId = 41;
   private static final int kFrontLeftEncoderId = 51;
-  private static final Angle kFrontLeftEncoderOffset = Rotations.of(0.28076171875);
+  private static final Angle kFrontLeftEncoderOffset = Rotations.of(0.278076);
   private static final boolean kFrontLeftSteerMotorInverted = true;
   private static final boolean kFrontLeftEncoderInverted = false;
 
@@ -149,7 +149,7 @@ public class TunerConstants {
   private static final int kFrontRightDriveMotorId = 32;
   private static final int kFrontRightSteerMotorId = 42;
   private static final int kFrontRightEncoderId = 52;
-  private static final Angle kFrontRightEncoderOffset = Rotations.of(-0.49658203125);
+  private static final Angle kFrontRightEncoderOffset = Rotations.of(-0.495117);
   private static final boolean kFrontRightSteerMotorInverted = true;
   private static final boolean kFrontRightEncoderInverted = false;
 
@@ -160,7 +160,7 @@ public class TunerConstants {
   private static final int kBackLeftDriveMotorId = 33;
   private static final int kBackLeftSteerMotorId = 43;
   private static final int kBackLeftEncoderId = 53;
-  private static final Angle kBackLeftEncoderOffset = Rotations.of(0.00146484375);
+  private static final Angle kBackLeftEncoderOffset = Rotations.of(0.001221);
   private static final boolean kBackLeftSteerMotorInverted = true;
   private static final boolean kBackLeftEncoderInverted = false;
 
@@ -171,7 +171,7 @@ public class TunerConstants {
   private static final int kBackRightDriveMotorId = 34;
   private static final int kBackRightSteerMotorId = 44;
   private static final int kBackRightEncoderId = 54;
-  private static final Angle kBackRightEncoderOffset = Rotations.of(-0.144287109375);
+  private static final Angle kBackRightEncoderOffset = Rotations.of(-0.144287);
   private static final boolean kBackRightSteerMotorInverted = true;
   private static final boolean kBackRightEncoderInverted = false;
 
