@@ -35,6 +35,7 @@ import frc.robot.commands.autoCommands.DriveCommands;
 import frc.robot.commands.autoCommands.ScoringCommands;
 import frc.robot.commands.communication.ControllerVibrateCommand;
 import frc.robot.commands.communication.TellCommand;
+import frc.robot.commands.driveCommands.PathfindToPoseCommand;
 import frc.robot.commands.elevator.ManualElevatorCommand;
 import frc.robot.commands.elevator.SetElevatorPresetCommand;
 import frc.robot.commands.wrist.ManualSetWristSpeedCommand;
@@ -310,6 +311,8 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
+    controller.povRight().whileTrue(new PathfindToPoseCommand(drive));
+
     // A while held does semi-automatic limelight tracking
     // on release sets arm back to upright position
     // controller
@@ -573,6 +576,10 @@ public class RobotContainer {
 
   public Elevator getElevator() {
     return elevator;
+  }
+
+  public Drive getDrive() {
+    return drive;
   }
 
   public MechanismSimulator getSim() {
