@@ -1,10 +1,13 @@
 package frc.robot.commands.driveCommands;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.drive.Drive;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -27,11 +30,28 @@ public class PathfindToPoseCommand extends Command {
 
   @AutoLogOutput private Supplier<Pose2d> targetPoseSupplier;
 
-  private final PIDController translationController = new PIDController(1, 0, 0);
-  private final PIDController thetaController = new PIDController(50, 0, 0);
+  private final PIDController translationController =
+      new PIDController(Constants.Drive.transKp, Constants.Drive.transKi, Constants.Drive.transKd);
+  private final PIDController thetaController =
+      new PIDController(Constants.Drive.rotKp, Constants.Drive.rotKi, Constants.Drive.rotKd);
 
-  private final double translationTolerance = 0.1;
-  private final double rotationTolerance = 0.1;
+  // PIDControlelr w/ TrapezoidProfile
+  private final ProfiledPIDController translationController1 =
+      new ProfiledPIDController(
+          Constants.Drive.transKp,
+          Constants.Drive.transKi,
+          Constants.Drive.transKd,
+          new TrapezoidProfile.Constraints(
+              Constants.Drive.transTopSpeed, Constants.Drive.transAccMax));
+  private final ProfiledPIDController thetaController1 =
+      new ProfiledPIDController(
+          Constants.Drive.rotKp,
+          Constants.Drive.rotKi,
+          Constants.Drive.rotKd,
+          new TrapezoidProfile.Constraints(Constants.Drive.rotTopSpeed, Constants.Drive.rotAccMax));
+
+  private final double translationTolerance = Constants.Drive.translationTolerance;
+  private final double rotationTolerance = Constants.Drive.rotationTolerance;
 
   private final boolean endOnTarget;
   private Consumer<Boolean> onTarget = null;
@@ -74,7 +94,6 @@ public class PathfindToPoseCommand extends Command {
     Logger.recordOutput("DrivetoPose/PathfindtranslationDistanceY", translationDistanceY);
     Logger.recordOutput("DrivetoPose/PathfindthetaDistanceRad", thetaDistance);
     Logger.recordOutput("DriveToPose/WithinTolerance", false);
-
   }
 
   // Called when the command is initially scheduled.
@@ -97,10 +116,10 @@ public class PathfindToPoseCommand extends Command {
     thetaDistance = targetPose.getRotation().getRadians() - currentPose.getRotation().getRadians();
 
     // calculate velocities
-    xVelocity = translationController.calculate(currentPose.getX(), targetPose.getX());
-    yVelocity = translationController.calculate(currentPose.getY(), targetPose.getY());
+    xVelocity = translationController1.calculate(currentPose.getX(), targetPose.getX());
+    yVelocity = translationController1.calculate(currentPose.getY(), targetPose.getY());
     thetaVelocity =
-        thetaController.calculate(
+        thetaController1.calculate(
             currentPose.getRotation().getRadians(), targetPose.getRotation().getRadians());
 
     // run velocites

@@ -38,6 +38,25 @@ public final class Constants {
     REPLAY
   }
 
+  public static final class Drive {
+    public static final double transKp = 5;
+    public static final double transKi = .4;
+    public static final double transKd = 0;
+
+    public static final double transTopSpeed = 0.5;
+    public static final double transAccMax = 0.5;
+
+    public static final double rotKp = 5;
+    public static final double rotKi = .4;
+    public static final double rotKd = 0;
+
+    public static final double rotTopSpeed = 0.3;
+    public static final double rotAccMax = 0.3;
+
+    public static final double rotationTolerance = .1;
+    public static final double translationTolerance = 0.1;
+  }
+
   // constants used for the elevator
   public static final class Elevator {
 
