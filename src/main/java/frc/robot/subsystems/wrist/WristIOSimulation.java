@@ -131,7 +131,7 @@ public class WristIOSimulation implements WristIO {
 
   @Override
   public double getRollerSpeed() { // it's supposed to be -1 to 1 range
-    System.out.println(rollerMotorsSim.getInputVoltage() / 12);
+    // System.out.println(rollerMotorsSim.getInputVoltage() / 12);
     return rollerMotorsSim.getInputVoltage() / 12;
   }
 }
