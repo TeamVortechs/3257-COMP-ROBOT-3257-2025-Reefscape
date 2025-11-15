@@ -331,7 +331,7 @@ public class RobotContainer {
                     () -> -controller.getLeftX(),
                     () -> -controller.getRightX(), // end regular drive input
                     // () -> getLLDTranslationX(),
-                    () -> -controller.getLeftY(), // use manual forward/backwards inputs
+                    () -> getLLDTranslationX(), // use automatic forward/backward inputs
                     () -> getLLDTranslationY(),
                     () -> getLLDOmega()) // end limelight inputs
 
@@ -356,7 +356,7 @@ public class RobotContainer {
                 // tracking
                 .beforeStarting(
                     Commands.runOnce(
-                        () -> LimelightHelpers.setPipelineIndex("", 0),
+                        () -> LimelightHelpers.setPipelineIndex("", 1), // set for algae
                         vision // technically doesn't need this since it's limelight
                         // don't touch the arm controls at all
                         )));
