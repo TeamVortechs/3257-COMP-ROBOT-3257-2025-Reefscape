@@ -1,10 +1,9 @@
 package frc.robot.commands.driveCommands;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
@@ -30,25 +29,12 @@ public class PathfindToPoseCommand extends Command {
 
   @AutoLogOutput private Supplier<Pose2d> targetPoseSupplier;
 
+  // PIDControlelr w/ TrapezoidProfile
   private final PIDController translationController =
       new PIDController(Constants.Drive.transKp, Constants.Drive.transKi, Constants.Drive.transKd);
+
   private final PIDController thetaController =
       new PIDController(Constants.Drive.rotKp, Constants.Drive.rotKi, Constants.Drive.rotKd);
-
-  // PIDControlelr w/ TrapezoidProfile
-  private final ProfiledPIDController translationController1 =
-      new ProfiledPIDController(
-          Constants.Drive.transKp,
-          Constants.Drive.transKi,
-          Constants.Drive.transKd,
-          new TrapezoidProfile.Constraints(
-              Constants.Drive.transTopSpeed, Constants.Drive.transAccMax));
-  private final ProfiledPIDController thetaController1 =
-      new ProfiledPIDController(
-          Constants.Drive.rotKp,
-          Constants.Drive.rotKi,
-          Constants.Drive.rotKd,
-          new TrapezoidProfile.Constraints(Constants.Drive.rotTopSpeed, Constants.Drive.rotAccMax));
 
   private final double translationTolerance = Constants.Drive.translationTolerance;
   private final double rotationTolerance = Constants.Drive.rotationTolerance;
@@ -69,10 +55,9 @@ public class PathfindToPoseCommand extends Command {
 
   public PathfindToPoseCommand(
       Drive drive, Supplier<Pose2d> targetPose, boolean endOnTarget, Consumer<Boolean> onTarget) {
-    this.onTarget = onTarget;
+    this(drive, targetPose, endOnTarget);
 
-    this.endOnTarget = endOnTarget;
-    new PathfindToPoseCommand(drive, targetPose, endOnTarget);
+    this.onTarget = onTarget;
   }
 
   public PathfindToPoseCommand(Drive drive, Supplier<Pose2d> targetPose, boolean endOnTarget) {
@@ -100,6 +85,9 @@ public class PathfindToPoseCommand extends Command {
   @Override
   public void initialize() {
     timer.restart();
+
+    // (Optional but good): allow wrapping for theta
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -115,12 +103,18 @@ public class PathfindToPoseCommand extends Command {
     translationDistanceY = targetPose.getY() - currentPose.getY();
     thetaDistance = targetPose.getRotation().getRadians() - currentPose.getRotation().getRadians();
 
-    // calculate velocities
-    xVelocity = translationController1.calculate(currentPose.getX(), targetPose.getX());
-    yVelocity = translationController1.calculate(currentPose.getY(), targetPose.getY());
+    // calculate velocitie
+    xVelocity = -translationController.calculate(currentPose.getX());
+    yVelocity = -translationController.calculate(currentPose.getY());
+    thetaVelocity = thetaController.calculate(currentPose.getRotation().getRadians());
+
+    xVelocity =
+        MathUtil.clamp(xVelocity, -Constants.Drive.transTopSpeed, Constants.Drive.transTopSpeed);
+    yVelocity =
+        MathUtil.clamp(yVelocity, -Constants.Drive.transTopSpeed, Constants.Drive.transTopSpeed);
+
     thetaVelocity =
-        thetaController1.calculate(
-            currentPose.getRotation().getRadians(), targetPose.getRotation().getRadians());
+        MathUtil.clamp(thetaVelocity, -Constants.Drive.rotTopSpeed, Constants.Drive.rotTopSpeed);
 
     // run velocites
     drive.runVelocity(new ChassisSpeeds(xVelocity, yVelocity, thetaVelocity));

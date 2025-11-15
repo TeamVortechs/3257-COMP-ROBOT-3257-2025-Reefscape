@@ -314,7 +314,7 @@ public class RobotContainer {
     controller
         .povRight()
         .whileTrue(
-            new PathfindToPoseCommand(drive, () -> new Pose2d(0, 0, new Rotation2d()), false));
+            new PathfindToPoseCommand(drive, () -> new Pose2d(5, 4, new Rotation2d()), true));
 
     // A while held does semi-automatic limelight tracking
     // on release sets arm back to upright position
