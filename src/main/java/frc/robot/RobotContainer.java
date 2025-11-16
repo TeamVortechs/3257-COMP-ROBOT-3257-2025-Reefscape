@@ -324,9 +324,22 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    controller
-        .povRight()
-        .whileTrue(new PathfindToPoseCommand(drive, () -> detector.getObjectPose(), false));
+        Command pathfindToObjectCommand = new PathfindToPoseCommand(drive, () -> detector.getObjectPose(), false, () -> !detector.isDetected());
+
+        controller
+        .leftBumper()
+        //moves the robot to the detected object. SHould handle "is detected" issues
+        .whileTrue(pathfindToObjectCommand)
+        .onTrue(ScoringCommands.prepForScoring(6, wrist, elevator))
+        .onFalse(
+            new InstantCommand(
+                    () -> wrist.setRollerSpeed(Constants.KArm.ROLLER_HOLDING_POWER), wrist)
+                .andThen(
+                    new SetWristTargetAngleCommand(wrist, () -> Constants.KArm.SCORING_ANGLE)
+                        .onlyIf(
+                            () ->
+                                elevator.getCurrentHeight()
+                                    <= Constants.KElevator.INTAKE_LEVEL_2)));
 
     // A while held does semi-automatic limelight tracking
     // on release sets arm back to upright position

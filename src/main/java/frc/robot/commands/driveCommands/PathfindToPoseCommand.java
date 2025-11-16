@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.drive.Drive;
+
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -59,14 +61,23 @@ public class PathfindToPoseCommand extends Command {
   private Timer timer;
   private double timeout = 10; // times out after timer reaches this time
 
+  private BooleanSupplier interrupter;
+
   public PathfindToPoseCommand(
       Drive drive, Supplier<Pose2d> targetPose, boolean endOnTarget, Consumer<Boolean> onTarget) {
-    this(drive, targetPose, endOnTarget);
+    this(drive, targetPose, endOnTarget, () -> false);
 
     this.onTarget = onTarget;
   }
 
-  public PathfindToPoseCommand(Drive drive, Supplier<Pose2d> targetPose, boolean endOnTarget) {
+  /**
+   * 
+   * @param drive
+   * @param targetPose
+   * @param endOnTarget
+   * @param interrupter a way to interrupt the
+   */
+  public PathfindToPoseCommand(Drive drive, Supplier<Pose2d> targetPose, boolean endOnTarget, BooleanSupplier interrupter) {
     addRequirements(drive);
     this.drive = drive;
 
@@ -76,6 +87,8 @@ public class PathfindToPoseCommand extends Command {
 
     timer = new Timer();
     timer.reset();
+
+    this.interrupter = interrupter;
 
     // record outputs
     Logger.recordOutput("DrivetoPose/PathfindxVelocity", xVelocity);
@@ -99,6 +112,8 @@ public class PathfindToPoseCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+
+    if(interrupter.getAsBoolean()) return;
 
     // obtains this for alliance multipler + field relative conversions
     boolean isFlipped =
