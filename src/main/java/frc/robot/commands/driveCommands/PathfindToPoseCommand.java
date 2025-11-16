@@ -104,9 +104,11 @@ public class PathfindToPoseCommand extends Command {
     thetaDistance = targetPose.getRotation().getRadians() - currentPose.getRotation().getRadians();
 
     // calculate velocitie
-    xVelocity = -translationController.calculate(currentPose.getX());
-    yVelocity = -translationController.calculate(currentPose.getY());
-    thetaVelocity = thetaController.calculate(currentPose.getRotation().getRadians());
+    xVelocity = -translationController.calculate(currentPose.getX(), targetPose.getX());
+    yVelocity = -translationController.calculate(currentPose.getY(), targetPose.getY());
+    thetaVelocity =
+        thetaController.calculate(
+            currentPose.getRotation().getRadians(), targetPose.getRotation().getRadians());
 
     xVelocity =
         MathUtil.clamp(xVelocity, -Constants.Drive.transTopSpeed, Constants.Drive.transTopSpeed);
