@@ -81,7 +81,7 @@ public class DetectionIOLimelight implements DetectionIO {
 
     closestDetection = getClosestFieldObject(drive.getPose(), fieldObjects);
 
-    // sets wether it detects something to wether a detection exists
+    // sets wether it detected something to wether a detection exists
     isDetected = closestDetection != null;
 
     if (isDetected) {
