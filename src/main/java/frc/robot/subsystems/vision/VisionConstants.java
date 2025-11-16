@@ -17,6 +17,8 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Distance;
 
 public class VisionConstants {
   // AprilTag layout
@@ -45,6 +47,17 @@ public class VisionConstants {
           // 0.0174533)
           // new original Y is -0.2002028
           new Transform3d(0.2794, -0.24, 0.739902, new Rotation3d(0.0, 0.174533, 0.349066));
+
+  // object detection
+  // PLACEHOLDER VALUE
+  public static final Transform3d ROBOT_TO_ARDUCAM_DETECTION =
+      new Transform3d(0.2794, -0.24, 0.739902, new Rotation3d(0.0, 0.174533, 0.349066));
+
+  // PLACEHOLDER VALUE
+  public static final Distance ALGAE_RADIUS = Units.Inches.of(4.5 / 2);
+
+  public static final double objTimeoutTimeSec = 0.2;
+  public static final int maxObjAmount = 20;
 
   // Basic filtering thresholds
   public static final double maxAmbiguity = 0.2;

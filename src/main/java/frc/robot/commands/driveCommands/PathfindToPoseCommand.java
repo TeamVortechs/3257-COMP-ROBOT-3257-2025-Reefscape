@@ -29,7 +29,7 @@ public class PathfindToPoseCommand extends Command {
 
   @AutoLogOutput private Supplier<Pose2d> targetPoseSupplier;
 
-  // PIDController 
+  // PIDController
   private final PIDController translationController =
       new PIDController(Constants.Drive.transKp, Constants.Drive.transKi, Constants.Drive.transKd);
 
@@ -141,13 +141,13 @@ public class PathfindToPoseCommand extends Command {
   @Override
   public boolean isFinished() {
 
-    //calculates wether or not the robot is within goal tolerance
+    // calculates wether or not the robot is within goal tolerance
     boolean atGoal =
         Math.abs(translationDistanceX) < translationTolerance
             && Math.abs(translationDistanceY) < translationTolerance
             && Math.abs(thetaDistance) < rotationTolerance;
-    
-    //updates the "ontarget" boolean consumer in case extraneous systems need it
+
+    // updates the "ontarget" boolean consumer in case extraneous systems need it
     if (onTarget != null) {
       if (atGoal) {
         onTarget.accept(true);
@@ -158,7 +158,7 @@ public class PathfindToPoseCommand extends Command {
 
     Logger.recordOutput("DriveToPose/WithinTolerance", atGoal);
 
-    //if the command is sent to end on target then end if reached timeout or it is at goal
+    // if the command is sent to end on target then end if reached timeout or it is at goal
     if (endOnTarget) {
       return atGoal || timer.hasElapsed(timeout);
     }
