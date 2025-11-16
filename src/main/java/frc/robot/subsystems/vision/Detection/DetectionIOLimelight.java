@@ -98,18 +98,18 @@ public class DetectionIOLimelight implements DetectionIO {
   }
 
   /**
-   * gets the rotation that the robot needs to be to pick this up. PERHAPS THIS NEEDS TX TO WORK WELL. EXPERIMENT
+   * gets the rotation that the robot needs to be to pick this up. PERHAPS THIS NEEDS TX TO WORK
+   * WELL. EXPERIMENT
    */
   @Override
   public Rotation2d getHeading() {
 
-    if(!isDetected()) return new Rotation2d();
+    if (!isDetected()) return new Rotation2d();
 
-    Translation2d delta =  closestDetection.position.minus(drive.getPose().getTranslation());
+    Translation2d delta = closestDetection.position.minus(drive.getPose().getTranslation());
 
     return new Rotation2d(delta.getX(), delta.getY());
   }
-
 
   /**
    * Gets the position of the object. Use isDetected first

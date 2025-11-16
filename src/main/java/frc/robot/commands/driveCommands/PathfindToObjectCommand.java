@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.drive.Drive;
-
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -22,7 +21,7 @@ import org.littletonrobotics.junction.Logger;
 Names
 brief description
  */
-public class PathfindToPoseCommand extends Command {
+public class PathfindToObjectCommand extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
 
   /**
@@ -63,7 +62,7 @@ public class PathfindToPoseCommand extends Command {
 
   private BooleanSupplier interrupter;
 
-  public PathfindToPoseCommand(
+  public PathfindToObjectCommand(
       Drive drive, Supplier<Pose2d> targetPose, boolean endOnTarget, Consumer<Boolean> onTarget) {
     this(drive, targetPose, endOnTarget, () -> false);
 
@@ -71,13 +70,13 @@ public class PathfindToPoseCommand extends Command {
   }
 
   /**
-   * 
    * @param drive
    * @param targetPose
    * @param endOnTarget
    * @param interrupter a way to interrupt the
    */
-  public PathfindToPoseCommand(Drive drive, Supplier<Pose2d> targetPose, boolean endOnTarget, BooleanSupplier interrupter) {
+  public PathfindToObjectCommand(
+      Drive drive, Supplier<Pose2d> targetPose, boolean endOnTarget, BooleanSupplier interrupter) {
     addRequirements(drive);
     this.drive = drive;
 
@@ -91,13 +90,13 @@ public class PathfindToPoseCommand extends Command {
     this.interrupter = interrupter;
 
     // record outputs
-    Logger.recordOutput("DrivetoPose/PathfindxVelocity", xVelocity);
-    Logger.recordOutput("DrivetoPose/PathfindyVelocity", yVelocity);
-    Logger.recordOutput("DrivetoPose/PathfindthetaVelocity", thetaVelocity);
-    Logger.recordOutput("DrivetoPose/PathfindtranslationDistanceX", translationDistanceX);
-    Logger.recordOutput("DrivetoPose/PathfindtranslationDistanceY", translationDistanceY);
-    Logger.recordOutput("DrivetoPose/PathfindthetaDistanceRad", thetaDistance);
-    Logger.recordOutput("DrivetoPose/WithinTolerance", false);
+    Logger.recordOutput("DriveToObject/PathfindxVelocity", xVelocity);
+    Logger.recordOutput("DriveToObject/PathfindyVelocity", yVelocity);
+    Logger.recordOutput("DriveToObject/PathfindthetaVelocity", thetaVelocity);
+    Logger.recordOutput("DriveToObject/PathfindtranslationDistanceX", translationDistanceX);
+    Logger.recordOutput("DriveToObject/PathfindtranslationDistanceY", translationDistanceY);
+    Logger.recordOutput("DriveToObject/PathfindthetaDistanceRad", thetaDistance);
+    Logger.recordOutput("DriveToObject/WithinTolerance", false);
   }
 
   // Called when the command is initially scheduled.
@@ -113,56 +112,30 @@ public class PathfindToPoseCommand extends Command {
   @Override
   public void execute() {
 
-    if(interrupter.getAsBoolean()) return;
-
     // obtains this for alliance multipler + field relative conversions
     boolean isFlipped =
         DriverStation.getAlliance().isPresent()
             && DriverStation.getAlliance().get() == Alliance.Red;
 
-    // obtain target/current poses
-    Pose2d currentPose = drive.getPose();
-    Pose2d targetPose = targetPoseSupplier.get();
+    //calculates the speeds needed(field relative) to move the robot towards the target
+    ChassisSpeeds fieldRelativeSpeeds = calculateFieldRelativeSpeedsToTarget(isFlipped);
 
-    // calculate distances
-    translationDistanceX = targetPose.getX() - currentPose.getX();
-    translationDistanceY = targetPose.getY() - currentPose.getY();
-    thetaDistance = targetPose.getRotation().minus(currentPose.getRotation()).getRadians();
-
-    int allianceMultiplier = !isFlipped ? 1 : -1;
-
-    // calculate velocitie
-    xVelocity =
-        allianceMultiplier * translationController.calculate(currentPose.getX(), targetPose.getX());
-    yVelocity =
-        allianceMultiplier * translationController.calculate(currentPose.getY(), targetPose.getY());
-    thetaVelocity =
-        thetaController.calculate(
-            currentPose.getRotation().getRadians(), targetPose.getRotation().getRadians());
-
-    // restrict velocity to within top speeds, implemented bc trapezoidal profile didn't work
-    xVelocity =
-        MathUtil.clamp(xVelocity, -Constants.KDrive.transTopSpeed, Constants.KDrive.transTopSpeed);
-    yVelocity =
-        MathUtil.clamp(yVelocity, -Constants.KDrive.transTopSpeed, Constants.KDrive.transTopSpeed);
-
-    thetaVelocity =
-        MathUtil.clamp(thetaVelocity, -Constants.KDrive.rotTopSpeed, Constants.KDrive.rotTopSpeed);
-
-    // convert from field relative to robot relative
-    ChassisSpeeds speeds = new ChassisSpeeds(xVelocity, yVelocity, thetaVelocity);
+    // if the interupter is true we shouldn't move so I'll just make chassis speeds zero
+    if (interrupter.getAsBoolean()) {
+      fieldRelativeSpeeds = new ChassisSpeeds();
+    }
 
     drive.runVelocity(
         ChassisSpeeds.fromFieldRelativeSpeeds(
-            speeds,
+            fieldRelativeSpeeds,
             isFlipped ? drive.getRotation().plus(new Rotation2d(Math.PI)) : drive.getRotation()));
     // record outputs
-    Logger.recordOutput("DrivetoPose/xVelocity", xVelocity);
-    Logger.recordOutput("DrivetoPose/yVelocity", yVelocity);
-    Logger.recordOutput("DrivetoPose/thetaVelocity", thetaVelocity);
-    Logger.recordOutput("DrivetoPose/PathfindtranslationDistanceX", translationDistanceX);
-    Logger.recordOutput("DrivetoPose/PathfindtranslationDistanceY", translationDistanceY);
-    Logger.recordOutput("DrivetoPose/thetaDistanceRad", thetaDistance);
+    Logger.recordOutput("DriveToObject/xVelocity", xVelocity);
+    Logger.recordOutput("DriveToObject/yVelocity", yVelocity);
+    Logger.recordOutput("DriveToObject/thetaVelocity", thetaVelocity);
+    Logger.recordOutput("DriveToObject/PathfindtranslationDistanceX", translationDistanceX);
+    Logger.recordOutput("DriveToObject/PathfindtranslationDistanceY", translationDistanceY);
+    Logger.recordOutput("DriveToObject/thetaDistanceRad", thetaDistance);
   }
 
   // Called once the command ends or is interrupted.
@@ -188,7 +161,7 @@ public class PathfindToPoseCommand extends Command {
       }
     }
 
-    Logger.recordOutput("DrivetoPose/WithinTolerance", atGoal);
+    Logger.recordOutput("DriveToObject/WithinTolerance", atGoal);
 
     // if the command is sent to end on target then end if reached timeout or it is at goal
     if (endOnTarget) {
@@ -196,5 +169,39 @@ public class PathfindToPoseCommand extends Command {
     }
 
     return false;
+  }
+
+  private ChassisSpeeds calculateFieldRelativeSpeedsToTarget(boolean isFlipped) {
+    // obtain target/current poses
+    Pose2d currentPose = drive.getPose();
+    Pose2d targetPose = targetPoseSupplier.get();
+
+    // calculate distances
+    translationDistanceX = targetPose.getX() - currentPose.getX();
+    translationDistanceY = targetPose.getY() - currentPose.getY();
+    thetaDistance = targetPose.getRotation().minus(currentPose.getRotation()).getRadians();
+
+    int allianceMultiplier = !isFlipped ? 1 : -1;
+
+    // calculate velocitie
+    xVelocity =
+        allianceMultiplier * translationController.calculate(currentPose.getX(), targetPose.getX());
+    yVelocity =
+        allianceMultiplier * translationController.calculate(currentPose.getY(), targetPose.getY());
+    thetaVelocity =
+        thetaController.calculate(
+            currentPose.getRotation().getRadians(), targetPose.getRotation().getRadians());
+
+    // restrict velocity to within top speeds, implemented bc trapezoidal profile didn't work
+    xVelocity =
+        MathUtil.clamp(xVelocity, -Constants.KDrive.transTopSpeed, Constants.KDrive.transTopSpeed);
+
+    yVelocity =
+        MathUtil.clamp(yVelocity, -Constants.KDrive.transTopSpeed, Constants.KDrive.transTopSpeed);
+
+    thetaVelocity =
+        MathUtil.clamp(thetaVelocity, -Constants.KDrive.rotTopSpeed, Constants.KDrive.rotTopSpeed);
+
+    return new ChassisSpeeds(xVelocity, yVelocity, thetaVelocity);
   }
 }

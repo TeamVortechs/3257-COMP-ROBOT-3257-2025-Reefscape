@@ -29,9 +29,8 @@ public class Decector extends SubsystemBase {
 
     Pose2d objectPose = detectionIO.getObjectPosition();
 
-    //makes it so the robot will rotate towards where it is moving when driving to the pose
+    // makes it so the robot will rotate towards where it is moving when driving to the pose
     Rotation2d heading = detectionIO.getHeading();
-
 
     return new Pose2d(objectPose.getTranslation(), heading);
   }

@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.subsystems.drive.Drive;
 import java.util.Random;
 
-//simulation class just for testing purposes
+// simulation class just for testing purposes
 public class DetectionIOSimulation implements DetectionIO {
 
   private Pose2d objectPose;
@@ -52,7 +52,6 @@ public class DetectionIOSimulation implements DetectionIO {
     }
   }
 
-
   public Pose2d getObjectPosition() {
 
     return objectPose;
@@ -60,7 +59,7 @@ public class DetectionIOSimulation implements DetectionIO {
 
   public Rotation2d getHeading() {
 
-    if(!isDetected()) return new Rotation2d();
+    if (!isDetected()) return new Rotation2d();
 
     Translation2d delta = objectPose.getTranslation().minus(drive.getPose().getTranslation());
 

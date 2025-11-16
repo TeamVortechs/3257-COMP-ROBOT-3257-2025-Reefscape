@@ -15,29 +15,32 @@ public interface DetectionIO {
     double objectDistance = 0;
   }
 
-  /**updates the inputs for advantage kit logging purposes */
+  /** updates the inputs for advantage kit logging purposes */
   public default void updateInputs(DetectionIOInputsAutoLogged inputs) {}
 
-  /**updates the vision systems. THis should be called in the periodic function of the subsystem */
+  /** updates the vision systems. THis should be called in the periodic function of the subsystem */
   public default void update() {}
   ;
 
-  /**gets the position of the object field relative */
+  /** gets the position of the object field relative */
   public default Pose2d getObjectPosition() {
     return new Pose2d(new Translation2d(), new Rotation2d());
   }
 
-  /**Gets the rotation that the robot should be facing in order to pick up the object */
+  /** Gets the rotation that the robot should be facing in order to pick up the object */
   public default Rotation2d getHeading() {
     return new Rotation2d();
   }
 
-  /**Gets wether or not the vision detects something. This should be called before getHeading or getObjectPosition */
+  /**
+   * Gets wether or not the vision detects something. This should be called before getHeading or
+   * getObjectPosition
+   */
   public default boolean isDetected() {
     return false;
   }
 
-  /**sets the pipeline of the limelight. This is currently not implemented */
+  /** sets the pipeline of the limelight. This is currently not implemented */
   public default void setPipeline(int pipeline) {}
   ;
 }

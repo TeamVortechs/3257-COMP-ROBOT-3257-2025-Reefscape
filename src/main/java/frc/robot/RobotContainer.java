@@ -35,10 +35,8 @@ import frc.robot.commands.autoCommands.DriveCommands;
 import frc.robot.commands.autoCommands.ScoringCommands;
 import frc.robot.commands.communication.ControllerVibrateCommand;
 import frc.robot.commands.communication.TellCommand;
-import frc.robot.commands.driveCommands.PathfindToPoseCommand;
-import frc.robot.commands.elevator.ManualElevatorCommand;
+import frc.robot.commands.driveCommands.PathfindToObjectCommand;
 import frc.robot.commands.elevator.SetElevatorPresetCommand;
-import frc.robot.commands.wrist.ManualSetWristSpeedCommand;
 import frc.robot.commands.wrist.SetWristRollerSpeedCommand;
 import frc.robot.commands.wrist.SetWristTargetAngleCommand;
 // import frc.robot.commands.SetWristRollerSpeed;
@@ -60,7 +58,6 @@ import frc.robot.subsystems.vision.Detection.DetectionIOSimulation;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.wrist.Wrist;
-import frc.robot.subsystems.wrist.Wrist.WristAngle;
 import frc.robot.subsystems.wrist.WristIO;
 import frc.robot.subsystems.wrist.WristIOSimulation;
 import frc.robot.subsystems.wrist.WristIOTalonFX;
@@ -324,11 +321,13 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-        Command pathfindToObjectCommand = new PathfindToPoseCommand(drive, () -> detector.getObjectPose(), false, () -> !detector.isDetected());
+    Command pathfindToObjectCommand =
+        new PathfindToObjectCommand(
+            drive, () -> detector.getObjectPose(), false, () -> !detector.isDetected());
 
-        controller
+    controller
         .leftBumper()
-        //moves the robot to the detected object. SHould handle "is detected" issues
+        // moves the robot to the detected object. SHould handle "is detected" issues
         .whileTrue(pathfindToObjectCommand)
         .onTrue(ScoringCommands.prepForScoring(6, wrist, elevator))
         .onFalse(
