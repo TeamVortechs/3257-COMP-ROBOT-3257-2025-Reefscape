@@ -29,7 +29,7 @@ public class PathfindToPoseCommand extends Command {
 
   @AutoLogOutput private Supplier<Pose2d> targetPoseSupplier;
 
-  // PIDControlelr w/ TrapezoidProfile
+  // PIDController 
   private final PIDController translationController =
       new PIDController(Constants.Drive.transKp, Constants.Drive.transKi, Constants.Drive.transKd);
 
@@ -42,6 +42,7 @@ public class PathfindToPoseCommand extends Command {
   private final boolean endOnTarget;
   private Consumer<Boolean> onTarget = null;
 
+  // variable changing velocities
   private double xVelocity = 0;
   private double yVelocity = 0;
   private double thetaVelocity = 0;
@@ -50,8 +51,9 @@ public class PathfindToPoseCommand extends Command {
   private double translationDistanceX = 0;
   private double translationDistanceY = 0;
 
+  // max time command runs for, starts on init
   private Timer timer;
-  private double timeout = 10;
+  private double timeout = 10; // times out after timer reaches this time
 
   public PathfindToPoseCommand(
       Drive drive, Supplier<Pose2d> targetPose, boolean endOnTarget, Consumer<Boolean> onTarget) {
@@ -109,7 +111,7 @@ public class PathfindToPoseCommand extends Command {
     thetaVelocity =
         thetaController.calculate(
             currentPose.getRotation().getRadians(), targetPose.getRotation().getRadians());
-
+    // restrict velocity to within top speeds, implemented bc trapezoidal profile didn't work
     xVelocity =
         MathUtil.clamp(xVelocity, -Constants.Drive.transTopSpeed, Constants.Drive.transTopSpeed);
     yVelocity =
@@ -142,7 +144,7 @@ public class PathfindToPoseCommand extends Command {
         Math.abs(translationDistanceX) < translationTolerance
             && Math.abs(translationDistanceY) < translationTolerance
             && Math.abs(thetaDistance) < rotationTolerance;
-
+    
     if (onTarget != null) {
       if (atGoal) {
         onTarget.accept(true);
