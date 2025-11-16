@@ -2,12 +2,12 @@ package frc.robot.subsystems.vision.Detection;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.subsystems.drive.Drive;
 import java.util.Random;
 
+//simulation class just for testing purposes
 public class DetectionIOSimulation implements DetectionIO {
 
   private Pose2d objectPose;

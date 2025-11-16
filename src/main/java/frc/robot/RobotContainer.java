@@ -378,49 +378,6 @@ public class RobotContainer {
     //                             elevator.getCurrentHeight() <=
     // Constants.Elevator.INTAKE_LEVEL_2)));
 
-    /*
-     * operator control binds
-     */
-    // L1/LB sets to lower-algae position
-    operatorController.leftBumper().whileTrue(ScoringCommands.prepForScoring(2, wrist, elevator));
-    // R1/RB sets to upper-algae position
-    operatorController.rightBumper().whileTrue(ScoringCommands.prepForScoring(3, wrist, elevator));
-    // L2/LT sets elevator to minimum height
-    operatorController.leftTrigger().whileTrue(ScoringCommands.prepForScoring(4, wrist, elevator));
-    // R2/RT intakes algae
-    operatorController.rightTrigger().whileTrue(new SetWristRollerSpeedCommand(wrist, 0.6));
-    // (DEPRECATED) A tells the arm to use PID to control itself
-    operatorController
-        .a()
-        .onTrue(new SetWristTargetAngleCommand(wrist, () -> wrist.getTargetAngle()));
-    // B sets the arm outwards manually
-    operatorController
-        .b()
-        .whileTrue(new SetWristTargetAngleCommand(wrist, () -> WristAngle.STAGE2_ANGLE.getAngle()));
-    // X fully retracts the arm
-    operatorController
-        .x()
-        .whileTrue(new SetWristTargetAngleCommand(wrist, () -> WristAngle.INTAKE_ANGLE.getAngle()));
-    // Y sets the arm to ground intake position
-    operatorController
-        .y()
-        .whileTrue(
-            new InstantCommand(
-                    () -> wrist.setRollerSpeed(Constants.KArm.ROLLER_HOLDING_POWER), wrist)
-                .andThen(
-                    new SetWristTargetAngleCommand(
-                        wrist, () -> Constants.KArm.GROUND_INTAKE_ANGLE)));
-    // dpad up manually moves arm outwards
-    operatorController.povUp().whileTrue(new ManualSetWristSpeedCommand(wrist, () -> 0.15));
-    // dpad down manually moves arm inwards
-    operatorController.povDown().whileTrue(new ManualSetWristSpeedCommand(wrist, () -> -0.1));
-
-    operatorController
-        .start()
-        .whileTrue(
-            new ManualElevatorCommand(elevator, () -> -0.4)
-                .until(() -> elevator.getCurrent() > 40)
-                .andThen(new InstantCommand(() -> elevator.resetEncoders())));
   } // end configure bindings
 
   /**
