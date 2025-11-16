@@ -53,6 +53,9 @@ public class DetectionIOLimelight implements DetectionIO {
 
     inputsAutoLogged.numberOfObjects = fieldObjects.size();
 
+    if(!isDetected) {
+      inputsAutoLogged.objectDistance = -1;
+    }
     inputsAutoLogged.objectDistance = closestDetectionPose.getTranslation().getDistance(drive.getPose().getTranslation());
   }
 
@@ -200,7 +203,7 @@ public class DetectionIOLimelight implements DetectionIO {
   /** tx: horizantonal offset of object from camera ty: vertical offset */
 
   // LIFTED DIRECTLY FROM CITRUS
-  //we aim at the lower end of the object. This works for coral but maybe not for algae. Test and report back
+  //we aim at the lower end of the object. This works for coral but maybe not for algae. Test and report back. Also keep in mind we can use TA and confidence from json if needed
   public Translation2d calcDistToObject(double tx, double ty) {
 
     Transform3d cameraOffset = VisionConstants.ROBOT_TO_ARDUCAM_DETECTION;
