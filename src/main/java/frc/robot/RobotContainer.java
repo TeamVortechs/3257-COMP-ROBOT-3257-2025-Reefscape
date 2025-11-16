@@ -323,7 +323,7 @@ public class RobotContainer {
 
     Command pathfindToObjectCommand =
         new PathfindToObjectCommand(
-            drive, () -> detector.getObjectPose(), false, () -> !detector.isDetected());
+            drive, () -> detector.getObjectPose(), false, () -> !detector.isDetected(), controller);
 
     controller
         .leftBumper()

@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
 import frc.robot.subsystems.drive.Drive;
 import java.util.function.BooleanSupplier;
@@ -62,9 +63,15 @@ public class PathfindToObjectCommand extends Command {
 
   private BooleanSupplier interrupter;
 
+  private CommandXboxController controller;
+
   public PathfindToObjectCommand(
-      Drive drive, Supplier<Pose2d> targetPose, boolean endOnTarget, Consumer<Boolean> onTarget) {
-    this(drive, targetPose, endOnTarget, () -> false);
+      Drive drive,
+      Supplier<Pose2d> targetPose,
+      boolean endOnTarget,
+      Consumer<Boolean> onTarget,
+      CommandXboxController controller) {
+    this(drive, targetPose, endOnTarget, () -> false, controller);
 
     this.onTarget = onTarget;
   }
@@ -76,7 +83,11 @@ public class PathfindToObjectCommand extends Command {
    * @param interrupter a way to interrupt the
    */
   public PathfindToObjectCommand(
-      Drive drive, Supplier<Pose2d> targetPose, boolean endOnTarget, BooleanSupplier interrupter) {
+      Drive drive,
+      Supplier<Pose2d> targetPose,
+      boolean endOnTarget,
+      BooleanSupplier interrupter,
+      CommandXboxController controller) {
     addRequirements(drive);
     this.drive = drive;
 
@@ -88,6 +99,8 @@ public class PathfindToObjectCommand extends Command {
     timer.reset();
 
     this.interrupter = interrupter;
+
+    this.controller = controller;
 
     // record outputs
     Logger.recordOutput("DriveToObject/PathfindxVelocity", xVelocity);
@@ -117,13 +130,16 @@ public class PathfindToObjectCommand extends Command {
         DriverStation.getAlliance().isPresent()
             && DriverStation.getAlliance().get() == Alliance.Red;
 
-    //calculates the speeds needed(field relative) to move the robot towards the target
+    // calculates the speeds needed(field relative) to move the robot towards the target
     ChassisSpeeds fieldRelativeSpeeds = calculateFieldRelativeSpeedsToTarget(isFlipped);
 
     // if the interupter is true we shouldn't move so I'll just make chassis speeds zero
     if (interrupter.getAsBoolean()) {
       fieldRelativeSpeeds = new ChassisSpeeds();
     }
+
+    // if the contorller is greater than the deadband use the controller for translation instead of
+    // the given speeds
 
     drive.runVelocity(
         ChassisSpeeds.fromFieldRelativeSpeeds(
@@ -171,6 +187,12 @@ public class PathfindToObjectCommand extends Command {
     return false;
   }
 
+  /**
+   * helper method to calculate the field relative speeds needed to drive the robot to the object
+   *
+   * @param isFlipped
+   * @return
+   */
   private ChassisSpeeds calculateFieldRelativeSpeedsToTarget(boolean isFlipped) {
     // obtain target/current poses
     Pose2d currentPose = drive.getPose();
@@ -204,4 +226,41 @@ public class PathfindToObjectCommand extends Command {
 
     return new ChassisSpeeds(xVelocity, yVelocity, thetaVelocity);
   }
+
+  // // this method needs to updated as control methods change. NEED TO FIX IT
+  // private ChassisSpeeds overrideWithController(boolean isFlipped, ChassisSpeeds speeds) {
+
+  //   // Get linear velocity
+  //   Translation2d linearVelocity =
+  //       DriveCommands.getLinearVelocityFromJoysticks(
+  //           -controller.getLeftX(), -controller.getLeftY());
+
+  //   // Apply rotation deadband
+  //   double omega = MathUtil.applyDeadband(-controller.getRightX(), DriveCommands.DEADBAND);
+
+  //   // Square rotation value for more precise control
+  //   omega = Math.copySign(omega * omega, omega);
+
+  //   double newX = 0;
+  //   double newY = 0;
+  //   double newTheta = 0;
+
+  //   // override translation if the controller velocity is great enough
+  //   if (linearVelocity.getX() > DriveCommands.DEADBAND
+  //       || linearVelocity.getY() > DriveCommands.DEADBAND) {
+  //     newX = linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec();
+  //     newY = linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec();
+
+  //     System.out.println("overriding");
+  //   } else {
+  //     newX = speeds.vxMetersPerSecond;
+  //     newY = speeds.vyMetersPerSecond;
+  //   }
+
+  //   newTheta = speeds.omegaRadiansPerSecond;
+
+  //   // override rotation if the controller v
+
+  //   return new ChassisSpeeds(newX, newY, newTheta);
+  // }
 }
