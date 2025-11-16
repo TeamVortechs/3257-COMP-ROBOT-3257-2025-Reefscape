@@ -38,7 +38,7 @@ public final class Constants {
     REPLAY
   }
 
-  public static final class Drive {
+  public static final class KDrive {
     // PID constants for frc.robot.commands.driveCommands.PathfindToPoseCommand
 
     // translational const
@@ -54,8 +54,8 @@ public final class Constants {
     public static final double rotKi = .4;
     public static final double rotKd = 0;
 
-    public static final double rotTopSpeed = 1;
-    public static final double rotAccMax = 0.75;
+    public static final double rotTopSpeed = 40;
+    public static final double rotAccMax = 30;
 
     // tolerances
     public static final double rotationTolerance = 0.1;
@@ -63,7 +63,7 @@ public final class Constants {
   }
 
   // constants used for the elevator
-  public static final class Elevator {
+  public static final class KElevator {
 
     public static final int MOTOR_LEFT_ID = 21;
     public static final int MOTOR_RIGHT_ID = 22;
@@ -83,7 +83,7 @@ public final class Constants {
   }
 
   // constants used for the arm/wrist (naming inconsistency)
-  public static final class Arm {
+  public static final class KArm {
     public static final int ROLLER_MOTOR_ID = 23;
     public static final int ARM_MOTOR_ID = 24;
     public static final int CANRANGE_ID = 60;

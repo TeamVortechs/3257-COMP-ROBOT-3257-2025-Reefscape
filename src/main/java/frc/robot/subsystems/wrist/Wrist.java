@@ -58,7 +58,7 @@ public class Wrist extends SubsystemBase {
 
     // if canrange detects ball, switch to holding power instead
     if (wristIO.isDetected() && !DriverStation.isAutonomous()) {
-      wristIO.setRollerSpeed(Constants.Arm.ROLLER_HOLDING_POWER);
+      wristIO.setRollerSpeed(Constants.KArm.ROLLER_HOLDING_POWER);
     }
   }
 
@@ -81,7 +81,7 @@ public class Wrist extends SubsystemBase {
   // returns wether or not the arm is clear from the elevator
   public boolean isClearFromElevator() {
     return wristIO.getAngleRotations()
-        >= Constants.Arm.ELEVATOR_CLEARANCE_ANGLE - PWrist.tolerance.getValue();
+        >= Constants.KArm.ELEVATOR_CLEARANCE_ANGLE - PWrist.tolerance.getValue();
   }
 
   // turns manual override and sets the manual speeed
@@ -108,9 +108,9 @@ public class Wrist extends SubsystemBase {
 
   // sets the roller speed
   public void setRollerSpeed(double speed) {
-    if (wristIO.isDetected() && (speed > Constants.Arm.ROLLER_HOLDING_POWER)) {
+    if (wristIO.isDetected() && (speed > Constants.KArm.ROLLER_HOLDING_POWER)) {
       // if there's a ball in there and you're trying to intake, set to holding power instead
-      wristIO.setRollerSpeed(Constants.Arm.ROLLER_HOLDING_POWER);
+      wristIO.setRollerSpeed(Constants.KArm.ROLLER_HOLDING_POWER);
     } else {
       wristIO.setRollerSpeed(speed);
     }
@@ -154,10 +154,10 @@ public class Wrist extends SubsystemBase {
 
   // enum for each level that the wrist could be
   public enum WristAngle {
-    STAGE2_ANGLE(Constants.Arm.REEF_INTAKE_ANGLE),
+    STAGE2_ANGLE(Constants.KArm.REEF_INTAKE_ANGLE),
     INTAKE_ANGLE(0),
-    ALGAE_GROUND_INTAKE(Constants.Arm.GROUND_INTAKE_ANGLE),
-    CORAL_SCORE(Constants.Arm.WRIST_CORAL_SCORE);
+    ALGAE_GROUND_INTAKE(Constants.KArm.GROUND_INTAKE_ANGLE),
+    CORAL_SCORE(Constants.KArm.WRIST_CORAL_SCORE);
 
     // STAGE2_ANGLE(Stage2angle),
 

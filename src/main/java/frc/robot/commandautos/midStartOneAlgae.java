@@ -74,7 +74,7 @@ public class midStartOneAlgae extends SequentialCommandGroup {
         new PrintCommand("Set roller speed to 0.6."),
         DriveCommands.joystickDrive(drive, () -> (-driveVelocity * 0.75), () -> 0, () -> 0)
             .withTimeout(0.6),
-        new InstantCommand(() -> wrist.setRollerSpeed(Constants.Arm.ROLLER_HOLDING_POWER), wrist),
+        new InstantCommand(() -> wrist.setRollerSpeed(Constants.KArm.ROLLER_HOLDING_POWER), wrist),
         new PrintCommand("Set wrist to do its automatic thing."),
         // .beforeStarting(new WaitUntilCommand(() -> elevator.isOnTarget()))
         // keep

@@ -54,6 +54,9 @@ import frc.robot.subsystems.elevator.ElevatorModuleIO;
 import frc.robot.subsystems.elevator.ElevatorModuleIOSimulation;
 import frc.robot.subsystems.elevator.ElevatorModuleTalonFXIO;
 // import frc.robot.subsystems.elevator.Elevator2;
+import frc.robot.subsystems.vision.Detection.Decector;
+import frc.robot.subsystems.vision.Detection.DetectionIO;
+import frc.robot.subsystems.vision.Detection.DetectionIOSimulation;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.wrist.Wrist;
@@ -86,6 +89,8 @@ public class RobotContainer {
   private final Elevator elevator;
 
   private final MechanismSimulator sim;
+
+  private final Decector detector;
 
   //   private final Elevator2 elevator2 =
   //       new Elevator2(
@@ -123,6 +128,9 @@ public class RobotContainer {
                 drive::addVisionMeasurement,
                 new VisionIO() {},
                 new VisionIO() {}); // disable vision in match
+
+        detector = new Decector(new DetectionIO() {});
+
         // new Vision(
         //     drive::addVisionMeasurement,
         //     // new VisionIOPhotonVision(
@@ -132,16 +140,16 @@ public class RobotContainer {
         wrist =
             new Wrist(
                 new WristIOTalonFX(
-                    Constants.Arm.ARM_MOTOR_ID,
-                    Constants.Arm.ROLLER_MOTOR_ID,
-                    Constants.Arm.CANBUS,
-                    Constants.Arm.CANRANGE_ID));
+                    Constants.KArm.ARM_MOTOR_ID,
+                    Constants.KArm.ROLLER_MOTOR_ID,
+                    Constants.KArm.CANBUS,
+                    Constants.KArm.CANRANGE_ID));
         elevator =
             new Elevator(
                 new ElevatorModuleTalonFXIO(
-                    Constants.Elevator.MOTOR_LEFT_ID,
-                    Constants.Elevator.MOTOR_RIGHT_ID,
-                    Constants.Elevator.CANBUS),
+                    Constants.KElevator.MOTOR_LEFT_ID,
+                    Constants.KElevator.MOTOR_RIGHT_ID,
+                    Constants.KElevator.CANBUS),
                 wrist);
         break;
 
@@ -168,6 +176,8 @@ public class RobotContainer {
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
         wrist = new Wrist(new WristIOSimulation());
         elevator = new Elevator(new ElevatorModuleIOSimulation(), wrist);
+
+        detector = new Decector(new DetectionIOSimulation(drive));
         break;
 
       default:
@@ -182,6 +192,8 @@ public class RobotContainer {
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
         wrist = new Wrist(new WristIO() {});
         elevator = new Elevator(new ElevatorModuleIO() {}, wrist);
+
+        detector = new Decector(new DetectionIO() {});
         break;
     }
 
@@ -232,7 +244,7 @@ public class RobotContainer {
     // part of startup
     wrist.setDefaultCommand(
         new ConditionalCommand(
-            new SetWristRollerSpeedCommand(wrist, Constants.Arm.ROLLER_HOLDING_POWER),
+            new SetWristRollerSpeedCommand(wrist, Constants.KArm.ROLLER_HOLDING_POWER),
             new SetWristRollerSpeedCommand(wrist, 0),
             () -> !wrist.hasCoral()));
 
@@ -251,17 +263,18 @@ public class RobotContainer {
         .onTrue(ScoringCommands.prepForScoring(6, wrist, elevator))
         .onFalse(
             new InstantCommand(
-                    () -> wrist.setRollerSpeed(Constants.Arm.ROLLER_HOLDING_POWER), wrist)
+                    () -> wrist.setRollerSpeed(Constants.KArm.ROLLER_HOLDING_POWER), wrist)
                 .andThen(
-                    new SetWristTargetAngleCommand(wrist, () -> Constants.Arm.SCORING_ANGLE)
+                    new SetWristTargetAngleCommand(wrist, () -> Constants.KArm.SCORING_ANGLE)
                         .onlyIf(
                             () ->
-                                elevator.getCurrentHeight() <= Constants.Elevator.INTAKE_LEVEL_2)));
+                                elevator.getCurrentHeight()
+                                    <= Constants.KElevator.INTAKE_LEVEL_2)));
     // L2/LT intakes algae while held
     controller
         .leftTrigger()
         .whileTrue(
-            new RunCommand(() -> wrist.setRollerSpeed(Constants.Arm.ROLLER_INTAKE_POWER), wrist));
+            new RunCommand(() -> wrist.setRollerSpeed(Constants.KArm.ROLLER_INTAKE_POWER), wrist));
     // R1/RB sets to barge-scoring position
     controller.rightBumper().onTrue(ScoringCommands.prepForScoring(3, wrist, elevator));
     // R2/RT ejects algae while held, then sets to floor on release
@@ -278,7 +291,7 @@ public class RobotContainer {
         .y()
         .onTrue(
             new InstantCommand(
-                    () -> wrist.setRollerSpeed(Constants.Arm.ROLLER_HOLDING_POWER), wrist)
+                    () -> wrist.setRollerSpeed(Constants.KArm.ROLLER_HOLDING_POWER), wrist)
                 .andThen(new SetWristTargetAngleCommand(wrist, () -> 0)));
     // start resets arm and elevator encoders
     controller
@@ -313,8 +326,7 @@ public class RobotContainer {
 
     controller
         .povRight()
-        .whileTrue(
-            new PathfindToPoseCommand(drive, () -> new Pose2d(5, 4, new Rotation2d()), true));
+        .whileTrue(new PathfindToPoseCommand(drive, () -> detector.getObjectPose(), false));
 
     // A while held does semi-automatic limelight tracking
     // on release sets arm back to upright position
@@ -394,10 +406,10 @@ public class RobotContainer {
         .y()
         .whileTrue(
             new InstantCommand(
-                    () -> wrist.setRollerSpeed(Constants.Arm.ROLLER_HOLDING_POWER), wrist)
+                    () -> wrist.setRollerSpeed(Constants.KArm.ROLLER_HOLDING_POWER), wrist)
                 .andThen(
                     new SetWristTargetAngleCommand(
-                        wrist, () -> Constants.Arm.GROUND_INTAKE_ANGLE)));
+                        wrist, () -> Constants.KArm.GROUND_INTAKE_ANGLE)));
     // dpad up manually moves arm outwards
     operatorController.povUp().whileTrue(new ManualSetWristSpeedCommand(wrist, () -> 0.15));
     // dpad down manually moves arm inwards
@@ -508,10 +520,10 @@ public class RobotContainer {
 
     addNamedCommand(
         "mechanismBack",
-        new InstantCommand(() -> wrist.setRollerSpeed(Constants.Arm.ROLLER_HOLDING_POWER))
+        new InstantCommand(() -> wrist.setRollerSpeed(Constants.KArm.ROLLER_HOLDING_POWER))
             .andThen(
                 SetWristTargetAngleCommand.withConsistentEnd(
-                    wrist, () -> Constants.Arm.ELEVATOR_CLEARANCE_ANGLE + 0.2))
+                    wrist, () -> Constants.KArm.ELEVATOR_CLEARANCE_ANGLE + 0.2))
             .andThen(SetElevatorPresetCommand.withEndCondition(elevator, 0))
             .andThen(new SetWristTargetAngleCommand(wrist, () -> 0)),
         isReal);

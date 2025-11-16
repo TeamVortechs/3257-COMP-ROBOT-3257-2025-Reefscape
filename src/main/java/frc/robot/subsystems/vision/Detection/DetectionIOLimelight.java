@@ -19,22 +19,22 @@ import java.util.List;
 
 public class DetectionIOLimelight implements DetectionIO {
 
-    //name of the limelight
+  // name of the limelight
   private String name;
 
-  //drive system
+  // drive system
   private Drive drive;
 
-  //the id of the object that is tracking
+  // the id of the object that is tracking
   private int objectID;
 
-  //the list of field objects currently being tracked
+  // the list of field objects currently being tracked
   private List<FieldObject> fieldObjects;
 
-  //the cloest field object
+  // the cloest field object
   private FieldObject closestDetection = null;
 
-  //outputs
+  // outputs
   private Pose2d closestDetectionPose = null;
   private boolean isDetected = false;
 
@@ -53,10 +53,11 @@ public class DetectionIOLimelight implements DetectionIO {
 
     inputsAutoLogged.numberOfObjects = fieldObjects.size();
 
-    if(!isDetected) {
+    if (!isDetected) {
       inputsAutoLogged.objectDistance = -1;
     }
-    inputsAutoLogged.objectDistance = closestDetectionPose.getTranslation().getDistance(drive.getPose().getTranslation());
+    inputsAutoLogged.objectDistance =
+        closestDetectionPose.getTranslation().getDistance(drive.getPose().getTranslation());
   }
 
   // interface methods
@@ -70,7 +71,8 @@ public class DetectionIOLimelight implements DetectionIO {
     fieldObjects.removeIf(
         (object) -> curTime - object.detectionTime > VisionConstants.objTimeoutTimeSec);
 
-    // thin the list to 20 of the most recent detections. Slightly inneficient(n^2 theory). Fine for 20 objects
+    // thin the list to 20 of the most recent detections. Slightly inneficient(n^2 theory). Fine for
+    // 20 objects
     while (fieldObjects.size() > VisionConstants.maxObjAmount) {
       fieldObjects.remove(0);
     }
@@ -96,9 +98,23 @@ public class DetectionIOLimelight implements DetectionIO {
   }
 
   /**
+   * gets the rotation that the robot needs to be to pick this up. PERHAPS THIS NEEDS TX TO WORK WELL. EXPERIMENT
+   */
+  @Override
+  public Rotation2d getHeading() {
+
+    if(!isDetected()) return new Rotation2d();
+
+    Translation2d delta =  closestDetection.position.minus(drive.getPose().getTranslation());
+
+    return new Rotation2d(delta.getX(), delta.getY());
+  }
+
+
+  /**
    * Gets the position of the object. Use isDetected first
-   * 
-   * If no object is detected it will return the position of the robot
+   *
+   * <p>If no object is detected it will return the position of the robot
    */
   @Override
   public Pose2d getObjectPosition() {
@@ -106,7 +122,8 @@ public class DetectionIOLimelight implements DetectionIO {
   }
 
   /**
-   * Gets wether or not the robot detects the object. This should always be used before get object position
+   * Gets wether or not the robot detects the object. This should always be used before get object
+   * position
    */
   @Override
   public boolean isDetected() {
@@ -120,8 +137,8 @@ public class DetectionIOLimelight implements DetectionIO {
     RawDetection[] detections = LimelightHelpers.getRawDetections(name);
     List<RawDetection> filteredDetections = new ArrayList<>();
 
-    //null check
-    if(detections == null) return new ArrayList<>();
+    // null check
+    if (detections == null) return new ArrayList<>();
 
     // loop through every detection for validiation
     for (int i = 0; i < detections.length; i++) {
@@ -203,7 +220,8 @@ public class DetectionIOLimelight implements DetectionIO {
   /** tx: horizantonal offset of object from camera ty: vertical offset */
 
   // LIFTED DIRECTLY FROM CITRUS
-  //we aim at the lower end of the object. This works for coral but maybe not for algae. Test and report back. Also keep in mind we can use TA and confidence from json if needed
+  // we aim at the lower end of the object. This works for coral but maybe not for algae. Test and
+  // report back. Also keep in mind we can use TA and confidence from json if needed
   public Translation2d calcDistToObject(double tx, double ty) {
 
     Transform3d cameraOffset = VisionConstants.ROBOT_TO_ARDUCAM_DETECTION;

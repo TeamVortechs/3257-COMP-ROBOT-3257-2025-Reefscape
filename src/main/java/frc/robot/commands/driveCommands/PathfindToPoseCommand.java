@@ -3,7 +3,10 @@ package frc.robot.commands.driveCommands;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
@@ -31,13 +34,14 @@ public class PathfindToPoseCommand extends Command {
 
   // PIDController
   private final PIDController translationController =
-      new PIDController(Constants.Drive.transKp, Constants.Drive.transKi, Constants.Drive.transKd);
+      new PIDController(
+          Constants.KDrive.transKp, Constants.KDrive.transKi, Constants.KDrive.transKd);
 
   private final PIDController thetaController =
-      new PIDController(Constants.Drive.rotKp, Constants.Drive.rotKi, Constants.Drive.rotKd);
+      new PIDController(Constants.KDrive.rotKp, Constants.KDrive.rotKi, Constants.KDrive.rotKd);
 
-  private final double translationTolerance = Constants.Drive.translationTolerance;
-  private final double rotationTolerance = Constants.Drive.rotationTolerance;
+  private final double translationTolerance = Constants.KDrive.translationTolerance;
+  private final double rotationTolerance = Constants.KDrive.rotationTolerance;
 
   private final boolean endOnTarget;
   private Consumer<Boolean> onTarget = null;
@@ -80,7 +84,7 @@ public class PathfindToPoseCommand extends Command {
     Logger.recordOutput("DrivetoPose/PathfindtranslationDistanceX", translationDistanceX);
     Logger.recordOutput("DrivetoPose/PathfindtranslationDistanceY", translationDistanceY);
     Logger.recordOutput("DrivetoPose/PathfindthetaDistanceRad", thetaDistance);
-    Logger.recordOutput("DriveToPose/WithinTolerance", false);
+    Logger.recordOutput("DrivetoPose/WithinTolerance", false);
   }
 
   // Called when the command is initially scheduled.
@@ -96,6 +100,11 @@ public class PathfindToPoseCommand extends Command {
   @Override
   public void execute() {
 
+    // obtains this for alliance multipler + field relative conversions
+    boolean isFlipped =
+        DriverStation.getAlliance().isPresent()
+            && DriverStation.getAlliance().get() == Alliance.Red;
+
     // obtain target/current poses
     Pose2d currentPose = drive.getPose();
     Pose2d targetPose = targetPoseSupplier.get();
@@ -103,27 +112,35 @@ public class PathfindToPoseCommand extends Command {
     // calculate distances
     translationDistanceX = targetPose.getX() - currentPose.getX();
     translationDistanceY = targetPose.getY() - currentPose.getY();
-    thetaDistance = targetPose.getRotation().getRadians() - currentPose.getRotation().getRadians();
+    thetaDistance = targetPose.getRotation().minus(currentPose.getRotation()).getRadians();
+
+    int allianceMultiplier = !isFlipped ? 1 : -1;
 
     // calculate velocitie
-    xVelocity = -translationController.calculate(currentPose.getX(), targetPose.getX());
-    yVelocity = -translationController.calculate(currentPose.getY(), targetPose.getY());
+    xVelocity =
+        allianceMultiplier * translationController.calculate(currentPose.getX(), targetPose.getX());
+    yVelocity =
+        allianceMultiplier * translationController.calculate(currentPose.getY(), targetPose.getY());
     thetaVelocity =
         thetaController.calculate(
             currentPose.getRotation().getRadians(), targetPose.getRotation().getRadians());
 
     // restrict velocity to within top speeds, implemented bc trapezoidal profile didn't work
     xVelocity =
-        MathUtil.clamp(xVelocity, -Constants.Drive.transTopSpeed, Constants.Drive.transTopSpeed);
+        MathUtil.clamp(xVelocity, -Constants.KDrive.transTopSpeed, Constants.KDrive.transTopSpeed);
     yVelocity =
-        MathUtil.clamp(yVelocity, -Constants.Drive.transTopSpeed, Constants.Drive.transTopSpeed);
+        MathUtil.clamp(yVelocity, -Constants.KDrive.transTopSpeed, Constants.KDrive.transTopSpeed);
 
     thetaVelocity =
-        MathUtil.clamp(thetaVelocity, -Constants.Drive.rotTopSpeed, Constants.Drive.rotTopSpeed);
+        MathUtil.clamp(thetaVelocity, -Constants.KDrive.rotTopSpeed, Constants.KDrive.rotTopSpeed);
 
-    // run velocites
-    drive.runVelocity(new ChassisSpeeds(xVelocity, yVelocity, thetaVelocity));
+    // convert from field relative to robot relative
+    ChassisSpeeds speeds = new ChassisSpeeds(xVelocity, yVelocity, thetaVelocity);
 
+    drive.runVelocity(
+        ChassisSpeeds.fromFieldRelativeSpeeds(
+            speeds,
+            isFlipped ? drive.getRotation().plus(new Rotation2d(Math.PI)) : drive.getRotation()));
     // record outputs
     Logger.recordOutput("DrivetoPose/xVelocity", xVelocity);
     Logger.recordOutput("DrivetoPose/yVelocity", yVelocity);
@@ -156,7 +173,7 @@ public class PathfindToPoseCommand extends Command {
       }
     }
 
-    Logger.recordOutput("DriveToPose/WithinTolerance", atGoal);
+    Logger.recordOutput("DrivetoPose/WithinTolerance", atGoal);
 
     // if the command is sent to end on target then end if reached timeout or it is at goal
     if (endOnTarget) {

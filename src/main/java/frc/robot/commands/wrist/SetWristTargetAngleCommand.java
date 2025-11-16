@@ -37,7 +37,7 @@ public class SetWristTargetAngleCommand extends Command {
   @Override
   public void execute() {
     if (!wrist.hasCoral()) {
-      wrist.setRollerSpeed(Constants.Arm.ROLLER_HOLDING_POWER);
+      wrist.setRollerSpeed(Constants.KArm.ROLLER_HOLDING_POWER);
     }
     wrist.setTargetAngle(targetAngle.getAsDouble());
   }
