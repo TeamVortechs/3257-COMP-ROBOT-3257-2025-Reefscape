@@ -57,6 +57,7 @@ import frc.robot.subsystems.vision.Detection.DetectionIO;
 import frc.robot.subsystems.vision.Detection.DetectionIOSimulation;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
+import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.WristIO;
 import frc.robot.subsystems.wrist.WristIOSimulation;
@@ -123,8 +124,8 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive::addVisionMeasurement,
-                new VisionIO() {},
-                new VisionIO() {}); // disable vision in match
+                new VisionIOLimelight(
+                    "asdjkfljkadsf", () -> drive.getRotation()) {}); // disable vision in match
 
         detector = new Decector(new DetectionIOSimulation(drive));
 
