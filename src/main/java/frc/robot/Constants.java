@@ -50,7 +50,7 @@ public final class Constants {
     public static final double transAccMax = 2;
 
     // rot const
-    public static final double rotKp = 1.3;
+    public static final double rotKp = 1.7;
     public static final double rotKi = 0;
     public static final double rotKd = 0;
 

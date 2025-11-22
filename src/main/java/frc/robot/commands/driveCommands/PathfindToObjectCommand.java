@@ -56,6 +56,7 @@ public class PathfindToObjectCommand extends Command {
   private double thetaDistance = 0;
   private double translationDistanceX = 0;
   private double translationDistanceY = 0;
+  private double totalDist = 0;
 
   // max time command runs for, starts on init
   private Timer timer;
@@ -152,6 +153,7 @@ public class PathfindToObjectCommand extends Command {
     Logger.recordOutput("DriveToObject/PathfindtranslationDistanceX", translationDistanceX);
     Logger.recordOutput("DriveToObject/PathfindtranslationDistanceY", translationDistanceY);
     Logger.recordOutput("DriveToObject/thetaDistanceRad", thetaDistance);
+    Logger.recordOutput("DriveToObject/totalDist", totalDist);
   }
 
   // Called once the command ends or is interrupted.
@@ -210,9 +212,17 @@ public class PathfindToObjectCommand extends Command {
         allianceMultiplier * translationController.calculate(currentPose.getX(), targetPose.getX());
     yVelocity =
         allianceMultiplier * translationController.calculate(currentPose.getY(), targetPose.getY());
+
+    double totalDist = Math.sqrt(xVelocity * xVelocity + yVelocity * yVelocity);
+
     thetaVelocity =
         thetaController.calculate(
             currentPose.getRotation().getRadians(), targetPose.getRotation().getRadians());
+
+    if (totalDist < 2 && Math.abs(thetaDistance) > 0.2) {
+      xVelocity = 0;
+      yVelocity = 0;
+    }
 
     // restrict velocity to within top speeds, implemented bc trapezoidal profile didn't work
     xVelocity =
