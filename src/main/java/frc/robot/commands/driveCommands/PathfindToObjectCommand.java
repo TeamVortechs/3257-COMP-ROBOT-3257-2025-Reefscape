@@ -219,7 +219,7 @@ public class PathfindToObjectCommand extends Command {
         thetaController.calculate(
             currentPose.getRotation().getRadians(), targetPose.getRotation().getRadians());
 
-    if (totalDist < 2 && Math.abs(thetaDistance) > 0.2) {
+    if (totalDist < 2.3 && Math.abs(thetaDistance) > 0.2) {
       xVelocity = 0;
       yVelocity = 0;
     }
