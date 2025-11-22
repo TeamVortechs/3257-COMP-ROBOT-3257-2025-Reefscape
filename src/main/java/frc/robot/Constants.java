@@ -60,6 +60,9 @@ public final class Constants {
     // tolerances
     public static final double rotationTolerance = 0.1;
     public static final double translationTolerance = 0.1;
+
+    public static final double totalDistTol = 2.3;
+    public static final double totalRotTol = .2;
   }
 
   // constants used for the elevator
