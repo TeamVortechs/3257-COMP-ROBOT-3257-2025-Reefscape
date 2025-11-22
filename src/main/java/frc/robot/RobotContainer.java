@@ -126,7 +126,7 @@ public class RobotContainer {
                 new VisionIO() {},
                 new VisionIO() {}); // disable vision in match
 
-        detector = new Decector(new DetectionIO() {});
+        detector = new Decector(new DetectionIOSimulation(drive));
 
         // new Vision(
         //     drive::addVisionMeasurement,
@@ -255,18 +255,18 @@ public class RobotContainer {
     // L1/LB sets to ground-intake position while held if low enough; on release, sets arm back to
     // elevator-ready
     // position
-    controller
-        .leftBumper()
-        .onTrue(ScoringCommands.prepForScoring(6, wrist, elevator))
-        .onFalse(
-            new InstantCommand(
-                    () -> wrist.setRollerSpeed(Constants.KArm.ROLLER_HOLDING_POWER), wrist)
-                .andThen(
-                    new SetWristTargetAngleCommand(wrist, () -> Constants.KArm.SCORING_ANGLE)
-                        .onlyIf(
-                            () ->
-                                elevator.getCurrentHeight()
-                                    <= Constants.KElevator.INTAKE_LEVEL_2)));
+    // controller
+    //     .leftBumper()
+    //     .onTrue(ScoringCommands.prepForScoring(6, wrist, elevator))
+    //     .onFalse(
+    //         new InstantCommand(
+    //                 () -> wrist.setRollerSpeed(Constants.KArm.ROLLER_HOLDING_POWER), wrist)
+    //             .andThen(
+    //                 new SetWristTargetAngleCommand(wrist, () -> Constants.KArm.SCORING_ANGLE)
+    //                     .onlyIf(
+    //                         () ->
+    //                             elevator.getCurrentHeight()
+    //                                 <= Constants.KElevator.INTAKE_LEVEL_2)));
     // L2/LT intakes algae while held
     controller
         .leftTrigger()
@@ -325,6 +325,14 @@ public class RobotContainer {
         new PathfindToObjectCommand(
             drive, () -> detector.getObjectPose(), false, () -> !detector.isDetected(), controller);
 
+    // pathfindToObjectCommand =
+    //     new PathfindToObjectCommand(
+    //         drive,
+    //         () -> new Pose2d(6, 4, Rotation2d.fromDegrees(180)),
+    //         false,
+    //         () -> false,
+    //         controller);
+
     controller
         .leftBumper()
         // moves the robot to the detected object. SHould handle "is detected" issues
@@ -339,6 +347,13 @@ public class RobotContainer {
                             () ->
                                 elevator.getCurrentHeight()
                                     <= Constants.KElevator.INTAKE_LEVEL_2)));
+
+    controller
+        .povLeft()
+        .onTrue(
+            Commands.runOnce(
+                    () -> drive.setPose(new Pose2d(0, 0, Rotation2d.fromDegrees(180))), drive)
+                .ignoringDisable(true));
 
     // A while held does semi-automatic limelight tracking
     // on release sets arm back to upright position

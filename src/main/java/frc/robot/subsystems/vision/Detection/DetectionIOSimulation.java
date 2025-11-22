@@ -12,13 +12,15 @@ public class DetectionIOSimulation implements DetectionIO {
 
   private Pose2d objectPose;
   private Timer timer;
-  private double timeToSwitchSec = 5;
+  private double timeToSwitchSec = 60;
+
+  private boolean gotPose = false;
 
   private Drive drive;
 
   private Random random;
 
-  private boolean isDetected = false;
+  private boolean isDetected = true;
 
   public DetectionIOSimulation(Drive drive) {
     this.drive = drive;
@@ -40,19 +42,25 @@ public class DetectionIOSimulation implements DetectionIO {
   }
 
   public void update() {
-    if (timer.hasElapsed(timeToSwitchSec)) {
-      timer.restart();
-      objectPose =
-          new Pose2d(
-              drive.getPose().getX() + random.nextDouble(-2, 2),
-              drive.getPose().getY() + random.nextDouble(-2, 2),
-              drive.getRotation());
-
-      isDetected = !isDetected;
-    }
+    // if (timer.hasElapsed(timeToSwitchSec)) {
+    //   timer.restart();
+    //   objectPose = new Pose2d(drive.getPose().getX(), drive.getPose().getY(),
+    // drive.getRotation());
+    //   // new Pose2d(
+    //   //     drive.getPose().getX() + random.nextDouble(-2, 2),
+    //   //     drive.getPose().getY() + random.nextDouble(-2, 2),
+    //   //     drive.getRotation());
+    // }
   }
 
   public Pose2d getObjectPosition() {
+
+    if (gotPose == false) {
+      objectPose = new Pose2d(drive.getPose().getX(), drive.getPose().getY(), drive.getRotation());
+      new Pose2d(drive.getPose().getX(), drive.getPose().getY(), drive.getRotation());
+
+      gotPose = true;
+    }
 
     return objectPose;
   }

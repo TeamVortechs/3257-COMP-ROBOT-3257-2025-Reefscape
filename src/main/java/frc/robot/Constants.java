@@ -42,20 +42,20 @@ public final class Constants {
     // PID constants for frc.robot.commands.driveCommands.PathfindToPoseCommand
 
     // translational const
-    public static final double transKp = 5;
-    public static final double transKi = .4;
+    public static final double transKp = 2;
+    public static final double transKi = 0;
     public static final double transKd = 0;
 
-    public static final double transTopSpeed = 1;
-    public static final double transAccMax = 0.75;
+    public static final double transTopSpeed = 1.5;
+    public static final double transAccMax = 2;
 
     // rot const
-    public static final double rotKp = 5;
-    public static final double rotKi = .4;
+    public static final double rotKp = 1.3;
+    public static final double rotKi = 0;
     public static final double rotKd = 0;
 
-    public static final double rotTopSpeed = 40;
-    public static final double rotAccMax = 30;
+    public static final double rotTopSpeed = 100;
+    public static final double rotAccMax = 110;
 
     // tolerances
     public static final double rotationTolerance = 0.1;

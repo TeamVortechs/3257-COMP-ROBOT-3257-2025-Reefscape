@@ -217,7 +217,7 @@ public class ScoringCommands {
 
       case 6: // ground intake position
         return new InstantCommand(
-                () -> wrist.setRollerSpeed(Constants.KArm.ROLLER_HOLDING_POWER),
+                () -> wrist.setRollerSpeed(Constants.KArm.ROLLER_INTAKE_POWER),
                 wrist) // keep wrist auto intaking
             .andThen(
                 new SetWristTargetAngleCommand(wrist, () -> Constants.KArm.SCORING_ANGLE)
