@@ -135,6 +135,12 @@ public class DetectionIOLimelight implements DetectionIO {
   /** get a list of raw detections that has been filtered out according to our specifications */
   public List<RawDetection> getFilteredRawDetections() {
     RawDetection[] detections = LimelightHelpers.getRawDetections(name);
+
+    // System.out.println("raw detections detection IO limelight");
+    for (int i = 0; i < detections.length; i++) {
+      System.out.println(detections[i].classId);
+    }
+
     List<RawDetection> filteredDetections = new ArrayList<>();
 
     // null check
@@ -164,6 +170,8 @@ public class DetectionIOLimelight implements DetectionIO {
       List<RawDetection> detections, double timestamp) {
 
     List<FieldObject> output = new ArrayList<>();
+
+    // System.out.println("detections to field obkjects");
 
     // go through every detection and convert it to a field-relative pose
     for (RawDetection detection : detections) {
@@ -230,6 +238,8 @@ public class DetectionIOLimelight implements DetectionIO {
     // verticlal angle
     double totalAngleY = Units.degreesToRadians(-ty) - cameraOffset.getRotation().getY();
 
+    // System.out.println("total angle: " + totalAngleY);
+
     // all this is doing is : horizantol = z/tan(angle)
     Distance distAwayY =
         // the hieght of the camera
@@ -238,6 +248,7 @@ public class DetectionIOLimelight implements DetectionIO {
             // aims at the lower end of the coral
             .minus(algaeRad)
             .div(Math.tan(totalAngleY)); // robot x
+    // System.out.println("dist away y" + distAwayY);
 
     // distance of camera to ground on y axis I believe it
     Distance distHypotenuseYToGround =
@@ -246,10 +257,16 @@ public class DetectionIOLimelight implements DetectionIO {
                 distAwayY.in(BaseUnits.DistanceUnit),
                 cameraOffset.getMeasureZ().minus(algaeRad).in(BaseUnits.DistanceUnit)));
 
+    // System.out.println("dist hypo to ground: " + distHypotenuseYToGround);
+
     // same thing as before
     double totalAngleX = Units.degreesToRadians(-tx) + cameraOffset.getZ();
 
+    // System.out.println("total angle x: " + totalAngleX);
+
     Distance distAwayX = distHypotenuseYToGround.times(Math.tan(totalAngleX)); // robot y
+
+    // System.out.println("dist away x: " + distAwayX);
 
     SmartDashboard.putNumber(name + "/tx", tx);
     SmartDashboard.putNumber(name + "/ty", ty);

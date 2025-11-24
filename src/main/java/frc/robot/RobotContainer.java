@@ -16,6 +16,7 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
@@ -51,6 +52,7 @@ import frc.robot.subsystems.elevator.ElevatorModuleIOSimulation;
 // import frc.robot.subsystems.elevator.Elevator2;
 import frc.robot.subsystems.vision.Detection.Decector;
 import frc.robot.subsystems.vision.Detection.DetectionIO;
+import frc.robot.subsystems.vision.Detection.DetectionIOLimelight;
 import frc.robot.subsystems.vision.Detection.DetectionIOSimulation;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
@@ -131,9 +133,9 @@ public class RobotContainer {
                 new VisionIOLimelight(
                     "limelight", () -> drive.getRotation()) {}); // disable vision in match
 
-        detector = new Decector(new DetectionIOSimulation(drive));
+        detector = new Decector(new DetectionIOLimelight("detection", drive, 0));
 
-        // new Vision(
+        // ne w Vision(
         //     drive::addVisionMeasurement,
         //     // new VisionIOPhotonVision(
         //     //     VisionConstants.ARDUCAM_LEFT_NAME, VisionConstants.ROBOT_TO_ARDUCAM_LEFT),
@@ -287,6 +289,16 @@ public class RobotContainer {
     controller.b().onTrue(ScoringCommands.prepForScoring(4, wrist, elevator));
     // X sets the arm to processor-scoring position
     controller.x().onTrue(ScoringCommands.prepForScoring(5, wrist, elevator));
+
+    PathPlannerPath path = null;
+
+    try {
+      path = PathPlannerPath.fromPathFile("ID 7 algae intake");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    controller.a().whileTrue(AutoBuilder.pathfindThenFollowPath(path, pathConstraints));
     // Y fully retracts the arm (sets the arm's angle to 0)
     controller
         .y()
