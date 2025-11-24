@@ -43,14 +43,11 @@ import frc.robot.commands.wrist.SetWristTargetAngleCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
-import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
-import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorModuleIO;
 import frc.robot.subsystems.elevator.ElevatorModuleIOSimulation;
-import frc.robot.subsystems.elevator.ElevatorModuleTalonFXIO;
 // import frc.robot.subsystems.elevator.Elevator2;
 import frc.robot.subsystems.vision.Detection.Decector;
 import frc.robot.subsystems.vision.Detection.DetectionIO;
@@ -61,7 +58,6 @@ import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.WristIO;
 import frc.robot.subsystems.wrist.WristIOSimulation;
-import frc.robot.subsystems.wrist.WristIOTalonFX;
 // import frc.robot.subsystems.wrist.WristIOTalonFX;
 import frc.robot.util.simulation.MechanismSimulator;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -116,16 +112,24 @@ public class RobotContainer {
         // Real robot, instantiate hardware IO implementations
         drive =
             new Drive(
-                new GyroIOPigeon2(),
-                new ModuleIOTalonFX(TunerConstants.FrontLeft),
-                new ModuleIOTalonFX(TunerConstants.FrontRight),
-                new ModuleIOTalonFX(TunerConstants.BackLeft),
-                new ModuleIOTalonFX(TunerConstants.BackRight));
+                new GyroIO() {},
+                new ModuleIOSim(TunerConstants.FrontLeft),
+                new ModuleIOSim(TunerConstants.FrontRight),
+                new ModuleIOSim(TunerConstants.BackLeft),
+                new ModuleIOSim(TunerConstants.BackRight));
+
+        // new Drive(
+
+        //     new GyroIOPigeon2(),
+        //     new ModuleIOTalonFX(TunerConstants.FrontLeft),
+        //     new ModuleIOTalonFX(TunerConstants.FrontRight),
+        //     new ModuleIOTalonFX(TunerConstants.BackLeft),
+        //     new ModuleIOTalonFX(TunerConstants.BackRight));
         vision =
             new Vision(
                 drive::addVisionMeasurement,
                 new VisionIOLimelight(
-                    "asdjkfljkadsf", () -> drive.getRotation()) {}); // disable vision in match
+                    "limelight", () -> drive.getRotation()) {}); // disable vision in match
 
         detector = new Decector(new DetectionIOSimulation(drive));
 
@@ -135,20 +139,19 @@ public class RobotContainer {
         //     //     VisionConstants.ARDUCAM_LEFT_NAME, VisionConstants.ROBOT_TO_ARDUCAM_LEFT),
         //     new VisionIOPhotonVision(
         //         VisionConstants.ARDUCAM_RIGHT_NAME, VisionConstants.ROBOT_TO_ARDUCAM_RIGHT));
-        wrist =
-            new Wrist(
-                new WristIOTalonFX(
-                    Constants.KArm.ARM_MOTOR_ID,
-                    Constants.KArm.ROLLER_MOTOR_ID,
-                    Constants.KArm.CANBUS,
-                    Constants.KArm.CANRANGE_ID));
-        elevator =
-            new Elevator(
-                new ElevatorModuleTalonFXIO(
-                    Constants.KElevator.MOTOR_LEFT_ID,
-                    Constants.KElevator.MOTOR_RIGHT_ID,
-                    Constants.KElevator.CANBUS),
-                wrist);
+        wrist = new Wrist(new WristIOSimulation());
+        // new WristIOTalonFX(
+        //     Constants.KArm.ARM_MOTOR_ID,
+        //     Constants.KArm.ROLLER_MOTOR_ID,
+        //     Constants.KArm.CANBUS,
+        //     Constants.KArm.CANRANGE_ID));
+        elevator = new Elevator(new ElevatorModuleIOSimulation(), wrist);
+        // new Elevator(
+        //     new ElevatorModuleTalonFXIO(
+        //         Constants.KElevator.MOTOR_LEFT_ID,
+        //         Constants.KElevator.MOTOR_RIGHT_ID,
+        //         Constants.KElevator.CANBUS),
+        //     wrist);
         break;
 
       case SIM:
