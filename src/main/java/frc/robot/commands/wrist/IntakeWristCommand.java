@@ -40,9 +40,9 @@ public class IntakeWristCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
-    if(lastDetectedTimeStamp != -1) {
-      if(Timer.getFPGATimestamp() - lastDetectedTimeStamp > totalDetectedTime) {
+
+    if (lastDetectedTimeStamp != -1) {
+      if (Timer.getFPGATimestamp() - lastDetectedTimeStamp > totalDetectedTime) {
         wrist.setRollerSpeed(0);
         return;
       }

@@ -42,20 +42,18 @@ import frc.robot.commands.wrist.SetWristTargetAngleCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
-import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
-import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.elevator.Elevator;
-import frc.robot.subsystems.elevator.ElevatorModuleTalonFXIO;
+import frc.robot.subsystems.elevator.ElevatorModuleIOSimulation;
 // import frc.robot.subsystems.elevator.Elevator2;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
-import frc.robot.subsystems.vision.VisionIOPhotonVision;
+import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import frc.robot.subsystems.wrist.Wrist;
-import frc.robot.subsystems.wrist.WristIOTalonFX;
+import frc.robot.subsystems.wrist.WristIOSimulation;
 // import frc.robot.subsystems.wrist.WristIOTalonFX;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -72,24 +70,12 @@ public class RobotContainer {
   private final Vision vision;
 
   // physical subsystems
-  private final Wrist wrist =
-      new Wrist(
-          new WristIOTalonFX(
-              Constants.Arm.ARM_MOTOR_ID,
-              Constants.Arm.ROLLER_MOTOR_ID,
-              Constants.Arm.CANBUS,
-              Constants.Arm.CANRANGE_ID));
+  private final Wrist wrist = new Wrist(new WristIOSimulation());
 
   // DigitalInput limitSwitch =
   // new DigitalInput(20); // !!!!! FAKE CHANNEL! CHANGE WHEN PROPERLY IMPLEMENTED !!!!!!
   // private final Intake intake = new Intake(new IntakeIOTalonFX(), limitSwitch);
-  private final Elevator elevator =
-      new Elevator(
-          new ElevatorModuleTalonFXIO(
-              Constants.Elevator.MOTOR_LEFT_ID,
-              Constants.Elevator.MOTOR_RIGHT_ID,
-              Constants.Elevator.CANBUS),
-          wrist);
+  private final Elevator elevator = new Elevator(new ElevatorModuleIOSimulation(), wrist);
   //   private final Elevator2 elevator2 =
   //       new Elevator2(
   //           new ElevatorModuleTalonFXIO(
@@ -115,18 +101,17 @@ public class RobotContainer {
         // Real robot, instantiate hardware IO implementations
         drive =
             new Drive(
-                new GyroIOPigeon2(),
-                new ModuleIOTalonFX(TunerConstants.FrontLeft),
-                new ModuleIOTalonFX(TunerConstants.FrontRight),
-                new ModuleIOTalonFX(TunerConstants.BackLeft),
-                new ModuleIOTalonFX(TunerConstants.BackRight));
+                new GyroIO() {},
+                new ModuleIOSim(TunerConstants.FrontLeft),
+                new ModuleIOSim(TunerConstants.FrontRight),
+                new ModuleIOSim(TunerConstants.BackLeft),
+                new ModuleIOSim(TunerConstants.BackRight));
         vision =
             new Vision(
                 drive::addVisionMeasurement,
                 // new VisionIOPhotonVision(
                 //     VisionConstants.ARDUCAM_LEFT_NAME, VisionConstants.ROBOT_TO_ARDUCAM_LEFT),
-                new VisionIOPhotonVision(
-                    VisionConstants.ARDUCAM_RIGHT_NAME, VisionConstants.ROBOT_TO_ARDUCAM_RIGHT));
+                new VisionIOLimelight("limelight", () -> drive.getRotation()));
         break;
 
       case SIM:
