@@ -131,9 +131,9 @@ public class RobotContainer {
             new Vision(
                 drive::addVisionMeasurement,
                 new VisionIOLimelight(
-                    "limelight", () -> drive.getRotation()) {}); // disable vision in match
+                    "detection", () -> drive.getRotation()) {}); // disable vision in match
 
-        detector = new Decector(new DetectionIOLimelight("detection", drive, 0));
+        detector = new Decector(new DetectionIOLimelight("limelight", drive, 0));
 
         // ne w Vision(
         //     drive::addVisionMeasurement,

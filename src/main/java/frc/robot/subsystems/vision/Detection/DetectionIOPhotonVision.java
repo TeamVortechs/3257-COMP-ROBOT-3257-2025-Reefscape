@@ -1,32 +1,19 @@
 package frc.robot.subsystems.vision.Detection;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.BaseUnits;
-import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.LimelightHelpers;
-import frc.robot.LimelightHelpers.RawDetection;
 import frc.robot.subsystems.drive.Drive;
-import frc.robot.subsystems.vision.VisionConstants;
-
-import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.List;
-
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class DetectionIOPhotonVision implements DetectionIO {
 
-//the camera
+  // the camera
   private PhotonCamera camera;
 
   // drive system
@@ -47,7 +34,6 @@ public class DetectionIOPhotonVision implements DetectionIO {
 
     this.drive = drive;
     this.objectID = objectID;
-
   }
 
   @Override
@@ -71,20 +57,18 @@ public class DetectionIOPhotonVision implements DetectionIO {
 
     double curTime = Timer.getFPGATimestamp();
 
-
-
     List<PhotonPipelineResult> results = camera.getAllUnreadResults();
 
-    if(results.isEmpty()) {
-        isDetected = false;
-        return;
+    if (results.isEmpty()) {
+      isDetected = false;
+      return;
     }
 
     PhotonPipelineResult result = results.get(0);
 
-    if(!result.hasTargets()) {
-        isDetected = false;
-        return;
+    if (!result.hasTargets()) {
+      isDetected = false;
+      return;
     }
 
     isDetected = true;
@@ -97,9 +81,6 @@ public class DetectionIOPhotonVision implements DetectionIO {
     FieldObject obj = new FieldObject(pose, curTime);
 
     closestDetection = obj;
-
-
-
   }
 
   /**
@@ -135,7 +116,6 @@ public class DetectionIOPhotonVision implements DetectionIO {
     return isDetected;
   }
 
-
   // how we define an object that we are detecting. Data holder
   public static class FieldObject {
     Translation2d position;
@@ -146,5 +126,4 @@ public class DetectionIOPhotonVision implements DetectionIO {
       this.detectionTime = detectionTime;
     }
   }
-
 }
