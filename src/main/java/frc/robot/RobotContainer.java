@@ -57,6 +57,7 @@ import frc.robot.subsystems.elevator.ElevatorModuleTalonFXIO;
 // import frc.robot.subsystems.elevator.Elevator2;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
+import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.Wrist.WristAngle;
@@ -124,8 +125,8 @@ public class RobotContainer {
             new Vision(
                 drive::addVisionMeasurement,
                 // new VisionIOPhotonVision("Arducam_Right", ROBOT_TO_ARDUCAM_RIGHT)
-                // new VisionIOLimelight("limelight", drive::getRotation)
-                new VisionIO() {} // disable vision measurements for now
+                new VisionIOLimelight("limelight0", drive::getRotation)
+                // new VisionIO() {} // disable vision measurements for now
                 );
         // new Vision(
         //     drive::addVisionMeasurement,
