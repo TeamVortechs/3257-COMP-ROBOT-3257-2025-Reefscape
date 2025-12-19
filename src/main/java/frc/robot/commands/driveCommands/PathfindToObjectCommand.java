@@ -4,6 +4,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -11,6 +12,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
+import frc.robot.commands.autoCommands.DriveCommands;
 import frc.robot.subsystems.drive.Drive;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
@@ -64,7 +66,10 @@ public class PathfindToObjectCommand extends Command {
 
   private BooleanSupplier interrupter;
 
-  private CommandXboxController controller;
+  private CommandXboxController controllerOverride;
+  private double translationOverrideDeadband = 0.1;
+  private double rotationOverrideDeadband = 0.1;
+
 
   public PathfindToObjectCommand(
       Drive drive,
@@ -101,7 +106,7 @@ public class PathfindToObjectCommand extends Command {
 
     this.interrupter = interrupter;
 
-    this.controller = controller;
+    this.controllerOverride = controller;
 
     // record outputs
     Logger.recordOutput("DriveToObject/PathfindxVelocity", xVelocity);
@@ -205,6 +210,11 @@ public class PathfindToObjectCommand extends Command {
     translationDistanceY = targetPose.getY() - currentPose.getY();
     thetaDistance = targetPose.getRotation().minus(currentPose.getRotation()).getRadians();
 
+    //makeks the robot always choose the shortest rotational path
+    if(thetaDistance > Math.PI) {
+      thetaDistance = Math.PI * 2 - thetaDistance;
+    }
+
     int allianceMultiplier = !isFlipped ? 1 : -1;
 
     // calculate velocitie
@@ -235,8 +245,64 @@ public class PathfindToObjectCommand extends Command {
     thetaVelocity =
         MathUtil.clamp(thetaVelocity, -Constants.KDrive.rotTopSpeed, Constants.KDrive.rotTopSpeed);
 
-    return new ChassisSpeeds(xVelocity, yVelocity, thetaVelocity);
+    //overriden rotation/translation part
+    double[] translationOverriden = getOverridenTranslation(xVelocity, yVelocity);
+    double rotationOverriden = getOverridenRotation(thetaVelocity);
+
+    return new ChassisSpeeds(translationOverriden[0], translationOverriden[1], rotationOverriden);
   }
+
+  public double[] getOverridenTranslation(double xVelocity, double yVelocity) {
+    //get linear velocity from the controller
+    Translation2d controllerVelocity =
+        DriveCommands.getLinearVelocityFromJoysticks(
+            -controllerOverride.getLeftX(), -controllerOverride.getLeftY());
+
+    double controllerMagnitude = Math.hypot(controllerVelocity.getX(), controllerVelocity.getY());
+
+    //if the controller magnitude is to low don't override just return the values
+    if(controllerMagnitude < translationOverrideDeadband) {
+      return new double[] {xVelocity, yVelocity};
+    }
+
+    double controllerX = controllerVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec();
+    double controllerY = controllerVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec();
+    
+    return new double [] {controllerX, controllerY};
+
+    
+  }
+
+  public double getOverridenRotation(double thetaVelocity) {
+      //apply rotaiton deadband
+      double omega = MathUtil.applyDeadband(-controllerOverride.getRightX(), DriveCommands.DEADBAND);
+      //square rotaiton value for better control
+      omega = Math.copySign(omega * omega, omega);
+
+      if(omega > rotationOverrideDeadband) {
+        return omega;
+      }
+
+      return thetaVelocity;
+  }
+
+  /*
+             // Convert to field relative speeds & send command
+          ChassisSpeeds speeds =
+              new ChassisSpeeds(
+                  linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
+                  linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
+                  omega * drive.getMaxAngularSpeedRadPerSec());
+          boolean isFlipped =
+              DriverStation.getAlliance().isPresent()
+                  && DriverStation.getAlliance().get() == Alliance.Red;
+          drive.runVelocity(
+              ChassisSpeeds.fromFieldRelativeSpeeds(
+                  speeds,
+                  isFlipped
+                      ? drive.getRotation().plus(new Rotation2d(Math.PI))
+                      : drive.getRotation()));
+   */
 
   // // this method needs to updated as control methods change. NEED TO FIX IT
   // private ChassisSpeeds overrideWithController(boolean isFlipped, ChassisSpeeds speeds) {
