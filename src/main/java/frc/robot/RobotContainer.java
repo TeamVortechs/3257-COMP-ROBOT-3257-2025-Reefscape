@@ -117,31 +117,28 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.FrontRight),
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight));
-        vision =
-            new Vision(
-                drive::addVisionMeasurement,
-                new VisionIO() {},
-                new VisionIO() {}); // disable vision in match
-        // new Vision(
-        //     drive::addVisionMeasurement,
-        //     // new VisionIOPhotonVision(
-        //     //     VisionConstants.ARDUCAM_LEFT_NAME, VisionConstants.ROBOT_TO_ARDUCAM_LEFT),
-        //     new VisionIOPhotonVision(
-        //         VisionConstants.ARDUCAM_RIGHT_NAME, VisionConstants.ROBOT_TO_ARDUCAM_RIGHT));
-        wrist =
-            new Wrist(
-                new WristIOTalonFX(
-                    Constants.Arm.ARM_MOTOR_ID,
-                    Constants.Arm.ROLLER_MOTOR_ID,
-                    Constants.Arm.CANBUS,
-                    Constants.Arm.CANRANGE_ID));
-        elevator =
-            new Elevator(
-                new ElevatorModuleTalonFXIO(
-                    Constants.Elevator.MOTOR_LEFT_ID,
-                    Constants.Elevator.MOTOR_RIGHT_ID,
-                    Constants.Elevator.CANBUS),
-                wrist);
+        // Sim robot, instantiate physics sim IO implementations
+        drive =
+            new Drive(
+                new GyroIO() {},
+                new ModuleIOSim(TunerConstants.FrontLeft),
+                new ModuleIOSim(TunerConstants.FrontRight),
+                new ModuleIOSim(TunerConstants.BackLeft),
+                new ModuleIOSim(TunerConstants.BackRight));
+        // vision =
+        //     new Vision(
+        //         drive::addVisionMeasurement,
+        //         new VisionIOPhotonVisionSim(
+        //             VisionConstants.ARDUCAM_LEFT_NAME,
+        //             VisionConstants.ROBOT_TO_ARDUCAM_LEFT,
+        //             drive::getPose),
+        //         new VisionIOPhotonVisionSim(
+        //             VisionConstants.ARDUCAM_RIGHT_NAME,
+        //             VisionConstants.ROBOT_TO_ARDUCAM_RIGHT,
+        //             drive::getPose));
+        vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
+        wrist = new Wrist(new WristIOSimulation());
+        elevator = new Elevator(new ElevatorModuleIOSimulation(), wrist);
         break;
 
       case SIM:
